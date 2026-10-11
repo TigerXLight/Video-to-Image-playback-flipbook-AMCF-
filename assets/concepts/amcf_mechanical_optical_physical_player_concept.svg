@@ -1,77 +1,129 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc">
-  <title id="title">AMCF Physical Player - Mechanical / Optical Analog Playback Concept</title>
-  <desc id="desc">A deterministic concept diagram showing AMCF indexed media, section transport, fixed view gate, illumination, optical path, direct human viewing, secondary reader recovery lane, and claim boundaries.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1280" viewBox="0 0 1800 1280" role="img" aria-labelledby="title desc">
+  <title id="title">AMCF Mechanical / Optical Physical Player - Indexed Thin-Section Concept</title>
+  <desc id="desc">A richer deterministic concept diagram based on the AMCF physical plan: indexed thin-page carrier, vertical section transport, scan/view gate, lane structure, actuator options, energy layers, optical presentation, and secondary reader recovery.</desc>
   <defs>
     <style>
       text{font-family:Arial,Helvetica,sans-serif}
-      .bg{fill:#f5f8fb}.ink{fill:#122033}.muted{fill:#4b5e73}.panel{fill:white;stroke:#b9c6d3;stroke-width:2}
-      .machine{fill:#26313e;stroke:#111827;stroke-width:3}.slot{fill:#0b1420;stroke:#60c7ff;stroke-width:3}
-      .media{fill:#e7fbff;stroke:#0f8aa8;stroke-width:2}.section{fill:#fdfefe;stroke:#0f8aa8;stroke-width:1.5}
-      .light{fill:#fff0a6;stroke:#b7791f;stroke-width:2}.optics{fill:#e8f2ff;stroke:#34699a;stroke-width:2}.safe{fill:#ecfdf5;stroke:#15803d;stroke-width:2}.warn{fill:#fff7ed;stroke:#c2410c;stroke-width:2}
-      .arrow{stroke:#09677f;stroke-width:5;fill:none;marker-end:url(#arrow)}.thin{stroke:#53677a;stroke-width:2;fill:none}
-      .h1{font-size:38px;font-weight:700}.h2{font-size:23px;font-weight:700}.label{font-size:17px}.small{font-size:14px}.tiny{font-size:12px}
+      .bg{fill:#f4f8fb}.ink{fill:#132033}.muted{fill:#4b6076}
+      .panel{fill:white;stroke:#b7c5d6;stroke-width:2}.machine{fill:#1f2937;stroke:#111827;stroke-width:3}.slot{fill:#06131f;stroke:#6bd5ff;stroke-width:3}
+      .media{fill:#e6fbff;stroke:#0d819a;stroke-width:2}.page{fill:#ffffff;stroke:#0d819a;stroke-width:1.7}
+      .drive{fill:#edf2ff;stroke:#4f46e5;stroke-width:2}.light{fill:#fff0a8;stroke:#b7791f;stroke-width:2}
+      .optics{fill:#eaf3ff;stroke:#2f6f9f;stroke-width:2}.ok{fill:#ecfdf5;stroke:#15803d;stroke-width:2}
+      .warn{fill:#fff7ed;stroke:#c2410c;stroke-width:2}.no{fill:#fff1f2;stroke:#be123c;stroke-width:2}
+      .arrow{stroke:#09677f;stroke-width:5;fill:none;marker-end:url(#arrow)}.arrow2{stroke:#4f46e5;stroke-width:4;fill:none;marker-end:url(#arrow2)}
+      .thin{stroke:#53677a;stroke-width:2;fill:none}
+      .h1{font-size:40px;font-weight:700}.h2{font-size:24px;font-weight:700}.label{font-size:17px}.small{font-size:14px}.tiny{font-size:12px}
     </style>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#09677f"/></marker>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f46e5"/></marker>
   </defs>
-  <rect class="bg" width="1600" height="960"/>
-  <text x="42" y="58" class="h1 ink">AMCF PHYSICAL PLAYER</text>
-  <text x="42" y="92" class="h2 muted">Mechanical / Optical Analog Playback Concept</text>
-  <text x="42" y="122" class="label muted">AMCF physical media -> indexed transport -> fixed view/playback gate -> illumination / optical viewing path -> direct human viewing</text>
+  <rect class="bg" width="1800" height="1280"/>
+  <text x="44" y="58" class="h1 ink">AMCF MECHANICAL / OPTICAL PHYSICAL PLAYER</text>
+  <text x="44" y="92" class="h2 muted">Indexed thin-section carrier + fixed scan/view gate + optical presentation</text>
+  <text x="44" y="124" class="label muted">Physical plan direction: AMCF digital remains canonical; physical playback is a future carrier/player branch, simulated in software now.</text>
 
-  <rect x="44" y="160" width="290" height="220" rx="10" class="panel"/>
-  <text x="66" y="198" class="h2 ink">1. Indexed media</text>
-  <rect x="72" y="232" width="220" height="86" rx="7" class="media"/>
-  <line x1="105" y1="246" x2="105" y2="305" class="thin"/><line x1="140" y1="246" x2="140" y2="305" class="thin"/><line x1="175" y1="246" x2="175" y2="305" class="thin"/><line x1="210" y1="246" x2="210" y2="305" class="thin"/><line x1="245" y1="246" x2="245" y2="305" class="thin"/>
-  <text x="72" y="344" class="small muted">Cartridge / indexed section stack</text>
-  <text x="72" y="365" class="tiny muted">Not continuous film/ribbon default.</text>
+  <rect x="44" y="160" width="315" height="270" rx="10" class="panel"/>
+  <text x="66" y="198" class="h2 ink">1. Media cartridge</text>
+  <text x="66" y="225" class="small muted">Indexed thin-page / section stack</text>
+  <g transform="translate(86 250)">
+    <rect x="0" y="0" width="210" height="120" rx="8" class="media"/>
+    <rect x="22" y="-13" width="170" height="92" rx="4" class="page"/>
+    <rect x="30" y="-5" width="170" height="92" rx="4" class="page"/>
+    <rect x="38" y="3" width="170" height="92" rx="4" class="page"/>
+    <line x1="58" y1="18" x2="58" y2="79" class="thin"/><line x1="92" y1="18" x2="92" y2="79" class="thin"/>
+    <line x1="126" y1="18" x2="126" y2="79" class="thin"/><line x1="160" y1="18" x2="160" y2="79" class="thin"/>
+  </g>
+  <text x="66" y="395" class="tiny muted">Not continuous ribbon default. Not left-to-right flipbook default.</text>
 
-  <path d="M340 270 H455" class="arrow"/>
-  <rect x="462" y="160" width="330" height="220" rx="10" class="panel"/>
-  <text x="486" y="198" class="h2 ink">2. Section transport</text>
-  <rect x="510" y="248" width="230" height="32" rx="6" fill="#dff6ff" stroke="#0f8aa8" stroke-width="2"/>
-  <circle cx="545" cy="291" r="22" fill="#334155"/><circle cx="705" cy="291" r="22" fill="#334155"/>
-  <path d="M520 232 H725" class="arrow"/>
-  <text x="506" y="332" class="small muted">Regulated indexed motion: step, pause, reverse, seek</text>
-  <text x="506" y="354" class="tiny muted">No left-to-right flipbook default.</text>
+  <path d="M366 292 H458" class="arrow"/>
+  <rect x="468" y="160" width="405" height="270" rx="10" class="panel"/>
+  <text x="492" y="198" class="h2 ink">2. Indexed vertical transport</text>
+  <rect x="532" y="235" width="246" height="48" rx="7" class="media"/>
+  <circle cx="560" cy="304" r="24" fill="#334155"/><circle cx="750" cy="304" r="24" fill="#334155"/>
+  <path d="M655 350 V235" class="arrow"/>
+  <text x="492" y="382" class="small muted">Controlled section motion: pause, restart, reverse, seek/index</text>
+  <text x="492" y="405" class="tiny muted">Manual crank remains slow recovery mode, not primary fluid playback.</text>
 
-  <path d="M800 270 H915" class="arrow"/>
-  <rect x="922" y="160" width="310" height="220" rx="10" class="panel"/>
-  <text x="946" y="198" class="h2 ink">3. Fixed view/playback gate</text>
-  <rect x="980" y="238" width="192" height="96" rx="8" class="machine"/>
-  <rect x="1012" y="264" width="128" height="44" rx="3" class="slot"/>
-  <rect x="1022" y="273" width="108" height="26" class="section"/>
-  <text x="966" y="356" class="small muted">Aligned section is physically presented</text>
+  <path d="M880 292 H965" class="arrow"/>
+  <rect x="976" y="160" width="380" height="270" rx="10" class="panel"/>
+  <text x="1000" y="198" class="h2 ink">3. Fixed scan/view gate</text>
+  <rect x="1050" y="232" width="220" height="110" rx="9" class="machine"/>
+  <rect x="1088" y="262" width="145" height="50" rx="3" class="slot"/>
+  <rect x="1102" y="275" width="118" height="24" class="page"/>
+  <line x1="1102" y1="282" x2="1220" y2="282" stroke="#0d819a" stroke-width="2"/>
+  <line x1="1102" y1="291" x2="1220" y2="291" stroke="#be123c" stroke-width="2"/>
+  <text x="1000" y="380" class="small muted">Aligned page/section presented in a physical window</text>
+  <text x="1000" y="404" class="tiny muted">Same gate family can support asynchronous scan/recovery.</text>
 
-  <rect x="952" y="420" width="250" height="120" rx="10" class="light"/>
-  <text x="978" y="456" class="h2 ink">4. Illumination</text>
-  <text x="978" y="486" class="small muted">Backlight / front light</text>
-  <text x="978" y="509" class="small muted">for physical visibility</text>
-  <path d="M1078 420 V344" class="arrow"/>
+  <path d="M1365 292 H1452" class="arrow"/>
+  <rect x="1462" y="160" width="294" height="270" rx="10" class="panel"/>
+  <text x="1484" y="198" class="h2 ink">4. Optical viewing</text>
+  <polygon points="1506,260 1576,228 1576,336" class="optics"/>
+  <circle cx="1640" cy="282" r="42" class="light"/>
+  <path d="M1595 354 Q1640 322 1688 354 Q1640 388 1595 354Z" fill="#eef6ff" stroke="#334155" stroke-width="3"/>
+  <circle cx="1640" cy="354" r="13" fill="#132033"/>
+  <text x="1484" y="404" class="small muted">Lens / prism / magnifier / viewing aperture</text>
 
-  <path d="M1238 270 H1330" class="arrow"/>
-  <rect x="1338" y="160" width="220" height="220" rx="10" class="panel"/>
-  <text x="1360" y="198" class="h2 ink">5-6. Optics + viewing</text>
-  <polygon points="1380,250 1438,228 1438,312" class="optics"/>
-  <circle cx="1498" cy="276" r="34" class="light"/>
-  <path d="M1460 325 Q1498 300 1538 325 Q1498 350 1460 325Z" fill="#eef6ff" stroke="#334155" stroke-width="3"/>
-  <circle cx="1498" cy="325" r="10" fill="#122033"/>
-  <text x="1360" y="356" class="small muted">Viewing aperture / lens / prism</text>
+  <rect x="1002" y="468" width="332" height="142" rx="10" class="light"/>
+  <text x="1026" y="506" class="h2 ink">Illumination layer</text>
+  <text x="1026" y="536" class="small muted">Backlight or front light for direct physical visibility</text>
+  <text x="1026" y="560" class="small muted">Exposure is modeled; no digital screen required.</text>
+  <path d="M1168 468 V348" class="arrow"/>
 
-  <rect x="44" y="440" width="560" height="210" rx="10" class="panel"/>
-  <text x="66" y="478" class="h2 ink">7. Optional reader / recovery lane</text>
-  <rect x="80" y="508" width="470" height="40" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
-  <text x="96" y="534" class="label muted">Secondary scan/recovery path for diagnostics or digital export</text>
-  <text x="80" y="582" class="small muted">This lane is separate from the physical viewing act.</text>
-  <text x="80" y="606" class="small muted">The main physical player is not scanner-first and not the software UI viewer.</text>
+  <rect x="44" y="470" width="825" height="250" rx="10" class="panel"/>
+  <text x="66" y="508" class="h2 ink">5. AMCF section lane structure</text>
+  <text x="66" y="534" class="small muted">Every physical section can carry visual payload plus recovery/validation lanes.</text>
+  <g transform="translate(74 565)">
+    <rect x="0" y="0" width="730" height="86" rx="6" fill="#f7fbff" stroke="#8da7be" stroke-width="2"/>
+    <rect x="14" y="18" width="90" height="50" fill="#111827"/>
+    <rect x="120" y="18" width="190" height="50" fill="#dbeafe" stroke="#2563eb"/>
+    <rect x="326" y="18" width="86" height="50" fill="#fef3c7" stroke="#b7791f"/>
+    <rect x="428" y="18" width="110" height="50" fill="#fce7f3" stroke="#be185d"/>
+    <rect x="554" y="18" width="74" height="50" fill="#dcfce7" stroke="#15803d"/>
+    <rect x="644" y="18" width="72" height="50" fill="#f3f4f6" stroke="#374151"/>
+    <text x="18" y="104" class="tiny muted">timing/index</text>
+    <text x="154" y="104" class="tiny muted">image/component payload</text>
+    <text x="318" y="104" class="tiny muted">colour registry</text>
+    <text x="430" y="104" class="tiny muted">metadata/transform</text>
+    <text x="552" y="104" class="tiny muted">hash/checksum</text>
+    <text x="640" y="104" class="tiny muted">registration</text>
+  </g>
+  <text x="66" y="700" class="tiny muted">Lane model supports marker recovery, colour calibration, frame-order recovery, and fail-closed validation.</text>
 
-  <rect x="660" y="585" width="530" height="90" rx="10" class="safe"/>
-  <text x="684" y="622" class="h2 ink">8. Controls</text>
-  <text x="684" y="654" class="label muted">Play | Pause | Step | Reverse | Seek</text>
-  <path d="M780 585 C760 510 740 430 690 350" class="thin"/>
+  <rect x="44" y="760" width="538" height="260" rx="10" class="panel"/>
+  <text x="66" y="798" class="h2 ink">6. Controlled-drive candidates</text>
+  <rect x="76" y="830" width="455" height="44" rx="7" class="drive"/>
+  <text x="94" y="858" class="label ink">Motor/encoder feed: strongest controlled baseline</text>
+  <rect x="76" y="890" width="455" height="44" rx="7" class="drive"/>
+  <text x="94" y="918" class="label ink">Piezo/electrostatic inchworm: strongest indexed-feed candidate</text>
+  <rect x="76" y="950" width="455" height="44" rx="7" class="drive"/>
+  <text x="94" y="978" class="label ink">Constant-force / spring + governor: self-contained candidate</text>
 
-  <rect x="44" y="720" width="1514" height="150" rx="10" class="warn"/>
-  <text x="66" y="758" class="h2 ink">9. Claim boundary strip</text>
-  <text x="66" y="793" class="label muted">Mechanical/optical playback. No digital screen required. Not the software UI viewer. Not the reader/scanner path.</text>
-  <text x="66" y="825" class="label muted">Concept only. Not physical proof. Not hardware validation. Future manufactured device.</text>
-  <text x="66" y="856" class="small muted">Generated locally as deterministic SVG/HTML for AMCF public repository context.</text>
+  <rect x="628" y="760" width="520" height="260" rx="10" class="panel"/>
+  <text x="650" y="798" class="h2 ink">7. Energy and recovery layers</text>
+  <text x="650" y="836" class="label muted">Primary supply options</text>
+  <text x="674" y="865" class="small muted">USB/external power, thin-film/flexible battery, supercapacitor, stored mechanical tension.</text>
+  <text x="650" y="910" class="label muted">Efficiency/recovery options</text>
+  <text x="674" y="939" class="small muted">Electret, triboelectric, piezo charge recovery, capacitive recovery, regenerative braking.</text>
+  <rect x="660" y="966" width="430" height="35" rx="6" class="no"/>
+  <text x="678" y="989" class="small ink">Not infinite energy; recovery/buffering only.</text>
+
+  <rect x="1192" y="760" width="564" height="260" rx="10" class="panel"/>
+  <text x="1214" y="798" class="h2 ink">8. Secondary reader / recovery lane</text>
+  <rect x="1230" y="832" width="480" height="52" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+  <text x="1248" y="865" class="label muted">CIS / line-scan + LED + marker/hash validation</text>
+  <text x="1230" y="920" class="small muted">Reader path can reconstruct AMCF digital state or export recovered payloads.</text>
+  <text x="1230" y="948" class="small muted">It is not the physical viewing act and not hardware validation.</text>
+  <path d="M1230 982 H1708" class="arrow2"/>
+  <text x="1230" y="1008" class="tiny muted">diagnostics / scan recovery / colour calibration / checksum policy</text>
+
+  <rect x="44" y="1062" width="805" height="140" rx="10" class="ok"/>
+  <text x="66" y="1100" class="h2 ink">Software support that exists now</text>
+  <text x="66" y="1132" class="label muted">Source frames -> AMCF archive -> indexed carrier package -> virtual reader recovery/export -> mechanical/optical player simulator.</text>
+  <text x="66" y="1162" class="small muted">This supports future reader, printer/physical-output preparation, and player behavior without manufactured hardware.</text>
+
+  <rect x="895" y="1062" width="861" height="140" rx="10" class="warn"/>
+  <text x="917" y="1100" class="h2 ink">Claim boundary</text>
+  <text x="917" y="1132" class="label muted">Concept only. Not physical proof. Not real printing. Not real scanner hardware. Not real physical playback.</text>
+  <text x="917" y="1162" class="small muted">No hardware validation, no final UI, no manufactured prototype, no physical Level 5 claim.</text>
 </svg>
