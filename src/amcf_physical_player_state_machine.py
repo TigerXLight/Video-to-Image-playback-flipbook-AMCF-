@@ -29,15 +29,58 @@ STATE_PLAYBACK_COMPLETE = "playback_complete"
 FAIL_CLOSED_UNVERIFIED_SECTION = "fail_closed_unverified_section"
 FAIL_CLOSED_WRONG_SECTION = "fail_closed_wrong_section"
 FAIL_CLOSED_HASH_MISMATCH = "fail_closed_hash_mismatch"
+FAIL_CLOSED_MISSING_MARKER = "fail_closed_missing_marker"
 FAIL_CLOSED_REGISTRATION_FAILURE = "fail_closed_registration_failure"
 FAIL_CLOSED_GATE_UNLOCKED = "fail_closed_gate_unlocked"
 FAIL_CLOSED_PREFETCH_TIMEOUT = "fail_closed_prefetch_timeout"
 FAIL_CLOSED_SHUTTER_FAILURE = "fail_closed_shutter_failure"
 FAIL_CLOSED_ILLUMINATION_FAILURE = "fail_closed_illumination_failure"
 FAIL_CLOSED_JAM = "fail_closed_jam"
+FAIL_CLOSED_DOUBLE_FEED = "fail_closed_double_feed"
+FAIL_CLOSED_MISFEED = "fail_closed_misfeed"
 FAIL_CLOSED_MANIFEST_MISMATCH = "fail_closed_manifest_mismatch"
 FAIL_CLOSED_UNSUPPORTED_CARRIER = "fail_closed_unsupported_carrier"
 FAIL_CLOSED_AUDIO_SYNC_LIMIT = "fail_closed_audio_sync_limit"
+FAIL_CLOSED_UNSAFE_TRANSITION = "fail_closed_unsafe_transition"
+FAIL_CLOSED_HIDDEN_GATE_NOT_READY = "fail_closed_hidden_gate_not_ready"
+FAIL_CLOSED_VIEW_GATE_NOT_LOCKED = "fail_closed_view_gate_not_locked"
+FAIL_CLOSED_UNKNOWN_CRITICAL_LANE = "fail_closed_unknown_critical_lane"
+
+FAIL_CLOSED_REASON_CATALOGUE = [
+    FAIL_CLOSED_UNVERIFIED_SECTION,
+    FAIL_CLOSED_WRONG_SECTION,
+    FAIL_CLOSED_HASH_MISMATCH,
+    FAIL_CLOSED_MISSING_MARKER,
+    FAIL_CLOSED_REGISTRATION_FAILURE,
+    FAIL_CLOSED_GATE_UNLOCKED,
+    FAIL_CLOSED_PREFETCH_TIMEOUT,
+    FAIL_CLOSED_SHUTTER_FAILURE,
+    FAIL_CLOSED_ILLUMINATION_FAILURE,
+    FAIL_CLOSED_JAM,
+    FAIL_CLOSED_DOUBLE_FEED,
+    FAIL_CLOSED_MISFEED,
+    FAIL_CLOSED_MANIFEST_MISMATCH,
+    FAIL_CLOSED_UNSUPPORTED_CARRIER,
+    FAIL_CLOSED_AUDIO_SYNC_LIMIT,
+    FAIL_CLOSED_UNSAFE_TRANSITION,
+    FAIL_CLOSED_HIDDEN_GATE_NOT_READY,
+    FAIL_CLOSED_VIEW_GATE_NOT_LOCKED,
+    FAIL_CLOSED_UNKNOWN_CRITICAL_LANE,
+]
+
+DECISION_ACCEPTED = "accepted"
+DECISION_ACCEPTED_WITH_WARNING = "accepted_with_warning"
+DECISION_RESCAN_REQUIRED = "rescan_required"
+DECISION_RETRY_ALLOWED = "retry_allowed"
+DECISION_HOLD_PREVIOUS_SAFE_STATE = "hold_previous_safe_state"
+DECISION_REJECTED_FAIL_CLOSED = "rejected_fail_closed"
+DECISION_MECHANICAL_STOP = "mechanical_stop"
+
+SEVERITY_INFO = "info"
+SEVERITY_WARNING = "warning"
+SEVERITY_RECOVERABLE = "recoverable"
+SEVERITY_CRITICAL = "critical"
+SEVERITY_MECHANICAL_STOP = "mechanical_stop"
 
 
 @dataclass
@@ -64,14 +107,22 @@ class MechanismProfile:
 class PhysicalPlayerSection:
     section_id: str
     update_timestamp_ms: int
+    section_index: int = 0
     playback_required: bool = True
+    expected_section_id: str | None = None
+    marker_read: bool = True
     timing_index_read: bool = True
+    timing_index_ok: bool = True
+    section_index_ok: bool = True
     registration_read: bool = True
     metadata_read: bool = True
+    metadata_critical_ok: bool = True
     hash_read: bool = True
+    hash_status_known: bool = True
     hash_ok: bool = True
     registration_ok: bool = True
     colour_ok: bool = True
+    supported_section_type: bool = True
     display_allowed_hint: bool = True
 
 
@@ -102,8 +153,33 @@ class VerificationState:
     display_allowed: bool = False
     decision: str = "not_started"
     reason: str = ""
+    severity: str = "info"
+    unsafe_acceptance: bool = False
+    rescan_allowed: bool = False
+    retry_allowed: bool = False
+    hold_previous_safe_state_allowed: bool = False
     warnings: list[str] = field(default_factory=list)
     lanes_read: dict[str, bool] = field(default_factory=dict)
+
+
+@dataclass
+class PhysicalPlayerSafetyDecision:
+    decision_id: str
+    timestamp_ms: int
+    decision: str
+    reason: str
+    severity: str
+    current_section_id: str | None
+    next_section_id: str | None
+    display_allowed: bool
+    motion_allowed: bool
+    transition_allowed: bool
+    rescan_allowed: bool
+    retry_allowed: bool
+    hold_previous_safe_state_allowed: bool
+    recommended_action: str
+    unsafe_acceptance: bool = False
+    notes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -186,15 +262,28 @@ def _to_plain(value: Any) -> Any:
 
 def build_sample_cartridge(kind: str = "valid") -> PhysicalPlayerCartridge:
     sections = [
-        PhysicalPlayerSection("section_000", 0),
-        PhysicalPlayerSection("section_001", 120),
-        PhysicalPlayerSection("section_002", 260),
-        PhysicalPlayerSection("section_003_degraded_colour", 420, colour_ok=False),
+        PhysicalPlayerSection("section_000", 0, section_index=0),
+        PhysicalPlayerSection("section_001", 120, section_index=1),
+        PhysicalPlayerSection("section_002", 260, section_index=2),
+        PhysicalPlayerSection("section_003_degraded_colour", 420, section_index=3, colour_ok=False),
     ]
     if kind == "hash_mismatch":
         sections[1].hash_ok = False
     if kind == "registration_failure":
         sections[1].registration_ok = False
+    if kind == "missing_marker":
+        sections[1].marker_read = False
+    if kind == "wrong_section_index":
+        sections[1].expected_section_id = "section_002"
+        sections[1].section_index_ok = False
+    if kind == "invalid_timing":
+        sections[1].timing_index_ok = False
+    if kind == "unsupported_section_type":
+        sections[1].supported_section_type = False
+    if kind == "missing_metadata_critical":
+        sections[1].metadata_critical_ok = False
+    if kind == "unknown_hash_status":
+        sections[1].hash_status_known = False
     return PhysicalPlayerCartridge(
         cartridge_id=f"demo_cartridge_{kind}",
         manifest_id="demo_manifest_state_machine_v1",
@@ -205,47 +294,97 @@ def build_sample_cartridge(kind: str = "valid") -> PhysicalPlayerCartridge:
     )
 
 
-def verify_physical_section(section: PhysicalPlayerSection | None) -> VerificationState:
+def build_failure_section(kind: str) -> PhysicalPlayerSection:
+    section = PhysicalPlayerSection(f"failure_{kind}", 120, section_index=1)
+    if kind == "degraded_colour":
+        section.colour_ok = False
+    elif kind == "hash_mismatch":
+        section.hash_ok = False
+    elif kind == "missing_marker":
+        section.marker_read = False
+    elif kind == "wrong_section":
+        section.expected_section_id = "expected_other_section"
+        section.section_index_ok = False
+    elif kind == "invalid_timing":
+        section.timing_index_ok = False
+    elif kind == "invalid_registration":
+        section.registration_ok = False
+    elif kind == "unsupported_section_type":
+        section.supported_section_type = False
+    elif kind == "missing_metadata_critical":
+        section.metadata_critical_ok = False
+    elif kind == "unknown_hash_status":
+        section.hash_status_known = False
+    return section
+
+
+def _verification(
+    section: PhysicalPlayerSection | None,
+    decision: str,
+    reason: str,
+    severity: str,
+    display_allowed: bool,
+    lanes_read: dict[str, bool] | None = None,
+    warnings: list[str] | None = None,
+    rescan_allowed: bool = False,
+    retry_allowed: bool = False,
+    hold_previous_safe_state_allowed: bool = False,
+) -> VerificationState:
+    return VerificationState(
+        section_id=section.section_id if section else None,
+        display_allowed=display_allowed,
+        decision=decision,
+        reason=reason,
+        severity=severity,
+        unsafe_acceptance=False,
+        rescan_allowed=rescan_allowed,
+        retry_allowed=retry_allowed,
+        hold_previous_safe_state_allowed=hold_previous_safe_state_allowed,
+        warnings=warnings or [],
+        lanes_read=lanes_read or {},
+    )
+
+
+def verify_physical_section(section: PhysicalPlayerSection | None, expected_section_id: str | None = None) -> VerificationState:
     if section is None:
-        return VerificationState(display_allowed=False, decision="rejected_fail_closed", reason=FAIL_CLOSED_WRONG_SECTION)
+        return _verification(None, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_WRONG_SECTION, SEVERITY_CRITICAL, False)
     lanes_read = {
+        "marker": section.marker_read,
         "timing_index": section.timing_index_read,
         "registration": section.registration_read,
         "metadata": section.metadata_read,
         "hash": section.hash_read,
     }
+    expected = expected_section_id or section.expected_section_id
+    if expected is not None and section.section_id != expected:
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_WRONG_SECTION, SEVERITY_CRITICAL, False, lanes_read)
+    if not section.supported_section_type:
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_UNSUPPORTED_CARRIER, SEVERITY_CRITICAL, False, lanes_read)
+    if not section.marker_read:
+        return _verification(section, DECISION_RESCAN_REQUIRED, FAIL_CLOSED_MISSING_MARKER, SEVERITY_RECOVERABLE, False, lanes_read, rescan_allowed=True)
     if not all(lanes_read.values()):
-        return VerificationState(
-            section_id=section.section_id,
-            display_allowed=False,
-            decision="rescan_required",
-            reason="required_lane_not_read",
-            lanes_read=lanes_read,
-        )
+        return _verification(section, DECISION_RESCAN_REQUIRED, FAIL_CLOSED_UNKNOWN_CRITICAL_LANE, SEVERITY_RECOVERABLE, False, lanes_read, rescan_allowed=True)
+    if not section.timing_index_ok or not section.section_index_ok:
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_UNVERIFIED_SECTION, SEVERITY_CRITICAL, False, lanes_read)
+    if not section.metadata_critical_ok:
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_UNKNOWN_CRITICAL_LANE, SEVERITY_CRITICAL, False, lanes_read)
+    if not section.hash_status_known:
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_UNKNOWN_CRITICAL_LANE, SEVERITY_CRITICAL, False, lanes_read)
     if not section.hash_ok:
-        return VerificationState(
-            section_id=section.section_id,
-            display_allowed=False,
-            decision="rejected_fail_closed",
-            reason=FAIL_CLOSED_HASH_MISMATCH,
-            lanes_read=lanes_read,
-        )
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_HASH_MISMATCH, SEVERITY_CRITICAL, False, lanes_read)
     if not section.registration_ok:
-        return VerificationState(
-            section_id=section.section_id,
-            display_allowed=False,
-            decision="rescan_required",
-            reason=FAIL_CLOSED_REGISTRATION_FAILURE,
-            lanes_read=lanes_read,
-        )
+        return _verification(section, DECISION_RESCAN_REQUIRED, FAIL_CLOSED_REGISTRATION_FAILURE, SEVERITY_RECOVERABLE, False, lanes_read, rescan_allowed=True)
     warnings = [] if section.colour_ok else ["colour_degraded_but_hash_and_registration_passed"]
-    return VerificationState(
-        section_id=section.section_id,
-        display_allowed=section.display_allowed_hint,
-        decision="display_allowed" if section.display_allowed_hint else "rejected_fail_closed",
-        reason="" if section.display_allowed_hint else FAIL_CLOSED_UNVERIFIED_SECTION,
+    if not section.display_allowed_hint:
+        return _verification(section, DECISION_REJECTED_FAIL_CLOSED, FAIL_CLOSED_UNVERIFIED_SECTION, SEVERITY_CRITICAL, False, lanes_read)
+    return _verification(
+        section,
+        DECISION_ACCEPTED_WITH_WARNING if warnings else DECISION_ACCEPTED,
+        "",
+        SEVERITY_WARNING if warnings else SEVERITY_INFO,
+        True,
+        lanes_read,
         warnings=warnings,
-        lanes_read=lanes_read,
     )
 
 
@@ -277,7 +416,11 @@ class AMCFPhysicalPlayerStateMachine:
         self.safety_state = SafetyState()
         self.event_log: list[dict[str, Any]] = []
         self.fail_closed_events: list[FailClosedDecision] = []
+        self.safety_decisions: list[PhysicalPlayerSafetyDecision] = []
         self.unsafe_acceptance_count = 0
+        self.shutter_state = "operational"
+        self.illumination_state = "operational"
+        self.simulated_feed_fault = ""
         if cartridge is not None:
             self.insert_cartridge(cartridge)
 
@@ -306,6 +449,58 @@ class AMCFPhysicalPlayerStateMachine:
 
     def _playback_sections(self) -> list[PhysicalPlayerSection]:
         return self.cartridge.playback_sections() if self.cartridge else []
+
+    def _append_safety_decision(
+        self,
+        decision: str,
+        reason: str,
+        severity: str,
+        display_allowed: bool,
+        motion_allowed: bool,
+        transition_allowed: bool,
+        recommended_action: str,
+        rescan_allowed: bool = False,
+        retry_allowed: bool = False,
+        hold_previous_safe_state_allowed: bool = False,
+        notes: list[str] | None = None,
+    ) -> PhysicalPlayerSafetyDecision:
+        safety_decision = PhysicalPlayerSafetyDecision(
+            decision_id=f"safety_decision_{len(self.safety_decisions):04d}",
+            timestamp_ms=self.current_time_ms,
+            decision=decision,
+            reason=reason,
+            severity=severity,
+            current_section_id=self.current_section_id,
+            next_section_id=self.next_section_id,
+            display_allowed=display_allowed,
+            motion_allowed=motion_allowed,
+            transition_allowed=transition_allowed,
+            rescan_allowed=rescan_allowed,
+            retry_allowed=retry_allowed,
+            hold_previous_safe_state_allowed=hold_previous_safe_state_allowed,
+            recommended_action=recommended_action,
+            unsafe_acceptance=False,
+            notes=notes or [],
+        )
+        self.safety_decisions.append(safety_decision)
+        return safety_decision
+
+    def _append_verification_decision(self, verification: VerificationState, recommended_action: str = "") -> PhysicalPlayerSafetyDecision:
+        display_allowed = bool(verification.display_allowed)
+        transition_allowed = bool(verification.display_allowed)
+        return self._append_safety_decision(
+            decision=verification.decision,
+            reason=verification.reason,
+            severity=verification.severity,
+            display_allowed=display_allowed,
+            motion_allowed=display_allowed,
+            transition_allowed=transition_allowed,
+            rescan_allowed=verification.rescan_allowed,
+            retry_allowed=verification.retry_allowed,
+            hold_previous_safe_state_allowed=verification.hold_previous_safe_state_allowed,
+            recommended_action=recommended_action or ("continue" if display_allowed else "do not display section"),
+            notes=list(verification.warnings),
+        )
 
     def insert_cartridge(self, cartridge: PhysicalPlayerCartridge) -> None:
         self.cartridge = cartridge
@@ -342,8 +537,9 @@ class AMCFPhysicalPlayerStateMachine:
         return True
 
     def verify_current(self) -> bool:
-        verification = verify_physical_section(self._section_by_id(self.current_section_id))
+        verification = verify_physical_section(self._section_by_id(self.current_section_id), self.current_section_id)
         self.current_verification_state = verification
+        self._append_verification_decision(verification)
         if verification.display_allowed:
             self._set_state(STATE_VERIFY_CURRENT, "verify_current", verification.section_id or "")
             return True
@@ -374,7 +570,8 @@ class AMCFPhysicalPlayerStateMachine:
 
     def enter_playback_ready(self) -> bool:
         if not self.view_gate_state.locked or not self.current_verification_state.display_allowed:
-            self.fail_closed(FAIL_CLOSED_GATE_UNLOCKED, "lock verified view gate before playback")
+            self.view_gate_state.illumination_allowed = False
+            self.fail_closed(FAIL_CLOSED_VIEW_GATE_NOT_LOCKED, "lock verified view gate before playback")
             return False
         self.view_gate_state.visible = True
         self.ab_gate_state.visible_section_id = self.current_section_id
@@ -414,8 +611,9 @@ class AMCFPhysicalPlayerStateMachine:
         return True
 
     def verify_next(self) -> bool:
-        verification = verify_physical_section(self._section_by_id(self.next_section_id))
+        verification = verify_physical_section(self._section_by_id(self.next_section_id), self.next_section_id)
         self.next_verification_state = verification
+        self._append_verification_decision(verification)
         if verification.display_allowed:
             self._set_state(STATE_VERIFY_NEXT, "verify_next", verification.section_id or "")
             return True
@@ -452,7 +650,14 @@ class AMCFPhysicalPlayerStateMachine:
 
     def begin_transition_blank(self) -> bool:
         if not self.hidden_gate_state.ready_for_switch:
-            self.fail_closed(FAIL_CLOSED_SHUTTER_FAILURE, "hidden gate not ready for blanked transition")
+            self.fail_closed(FAIL_CLOSED_HIDDEN_GATE_NOT_READY, "hidden gate not ready for blanked transition")
+            return False
+        if self.shutter_state in {"stuck_open", "stuck_closed"}:
+            self.fail_closed(FAIL_CLOSED_SHUTTER_FAILURE, f"simulated shutter failure: {self.shutter_state}")
+            return False
+        if self.illumination_state in {"fault", "cannot_blank"}:
+            reason = FAIL_CLOSED_ILLUMINATION_FAILURE if self.illumination_state == "fault" else FAIL_CLOSED_UNSAFE_TRANSITION
+            self.fail_closed(reason, f"simulated illumination failure: {self.illumination_state}")
             return False
         self.ab_gate_state.blanking_active = True
         self.transition_state = "blanking_active"
@@ -462,7 +667,7 @@ class AMCFPhysicalPlayerStateMachine:
 
     def switch_visible_section(self) -> bool:
         if not self.ab_gate_state.blanking_active:
-            self.fail_closed(FAIL_CLOSED_SHUTTER_FAILURE, "transition blanking must be active before switch")
+            self.fail_closed(FAIL_CLOSED_UNSAFE_TRANSITION, "transition blanking must be active before switch")
             return False
         if not self.hidden_gate_state.ready_for_switch or not self.next_verification_state.display_allowed:
             self.fail_closed(FAIL_CLOSED_UNVERIFIED_SECTION, "hidden staged section is not verified")
@@ -499,6 +704,77 @@ class AMCFPhysicalPlayerStateMachine:
         self.view_gate_state.illumination_allowed = True
         self._set_state(STATE_PARK_OLD_SECTION, "park_old_section", "old section parked")
         return True
+
+    def simulate_prefetch_timeout(self) -> FailClosedDecision:
+        self.next_verification_state = VerificationState(
+            section_id=self.next_section_id,
+            display_allowed=False,
+            decision=DECISION_REJECTED_FAIL_CLOSED,
+            reason=FAIL_CLOSED_PREFETCH_TIMEOUT,
+            severity=SEVERITY_CRITICAL,
+        )
+        return self.fail_closed(FAIL_CLOSED_PREFETCH_TIMEOUT, "hold previous safe state and do not transition")
+
+    def simulate_shutter_failure(self, mode: str = "stuck_open") -> bool:
+        self.shutter_state = mode
+        return self.begin_transition_blank()
+
+    def simulate_illumination_failure(self, mode: str = "fault") -> FailClosedDecision:
+        self.illumination_state = mode
+        self.view_gate_state.illumination_allowed = False
+        reason = FAIL_CLOSED_ILLUMINATION_FAILURE if mode == "fault" else FAIL_CLOSED_UNSAFE_TRANSITION
+        return self.fail_closed(reason, f"simulated illumination failure: {mode}")
+
+    def simulate_jam(self) -> FailClosedDecision:
+        self.simulated_feed_fault = "jam"
+        return self.mechanical_stop(FAIL_CLOSED_JAM, "stop transport and require service or manual clearing")
+
+    def simulate_double_feed(self) -> FailClosedDecision:
+        self.simulated_feed_fault = "double_feed"
+        return self.fail_closed(FAIL_CLOSED_DOUBLE_FEED, "reject feed event and rescan carrier path")
+
+    def simulate_misfeed(self) -> FailClosedDecision:
+        self.simulated_feed_fault = "misfeed"
+        return self.fail_closed(FAIL_CLOSED_MISFEED, "reject feed event and reset index transport")
+
+    def mechanical_stop(self, reason: str, recommended_action: str) -> FailClosedDecision:
+        decision = self.fail_closed(reason, recommended_action)
+        self.playback_state = STATE_MECHANICAL_STOP
+        self.safety_state.state = STATE_MECHANICAL_STOP
+        self._record_event("mechanical_stop", STATE_FAIL_CLOSED, STATE_MECHANICAL_STOP, reason)
+        return decision
+
+    def check_audio_sync(self, drift_ms: int, max_drift_ms: int = 80) -> PhysicalPlayerSafetyDecision:
+        self.audio_sync_state.drift_ms = drift_ms
+        self.audio_sync_state.within_limit = abs(drift_ms) <= max_drift_ms
+        if self.audio_sync_state.within_limit:
+            self.audio_sync_state.state = "resync_warning" if abs(drift_ms) else "in_sync"
+            decision = self._append_safety_decision(
+                decision=DECISION_ACCEPTED_WITH_WARNING if abs(drift_ms) else DECISION_ACCEPTED,
+                reason="audio_sync_minor_drift" if abs(drift_ms) else "",
+                severity=SEVERITY_WARNING if abs(drift_ms) else SEVERITY_INFO,
+                display_allowed=self.safety_state.display_allowed,
+                motion_allowed=self.safety_state.motion_allowed,
+                transition_allowed=self.safety_state.transition_allowed,
+                retry_allowed=True,
+                recommended_action="resync timing before next transition" if abs(drift_ms) else "continue",
+            )
+            self._record_event("audio_sync_check", self.playback_state, self.playback_state, str(drift_ms))
+            return decision
+        self.audio_sync_state.state = "limit_exceeded"
+        self.pause()
+        decision = self._append_safety_decision(
+            decision=DECISION_HOLD_PREVIOUS_SAFE_STATE,
+            reason=FAIL_CLOSED_AUDIO_SYNC_LIMIT,
+            severity=SEVERITY_RECOVERABLE,
+            display_allowed=self.safety_state.display_allowed,
+            motion_allowed=False,
+            transition_allowed=False,
+            hold_previous_safe_state_allowed=True,
+            recommended_action="pause and resync before allowing another transition",
+        )
+        self._record_event("audio_sync_limit", self.playback_state, self.playback_state, str(drift_ms))
+        return decision
 
     def tick(self, delta_ms: int) -> None:
         self.current_time_ms += max(0, int(delta_ms))
@@ -571,6 +847,16 @@ class AMCFPhysicalPlayerStateMachine:
         return False
 
     def fail_closed(self, reason: str, recommended_action: str) -> FailClosedDecision:
+        self._append_safety_decision(
+            decision=DECISION_REJECTED_FAIL_CLOSED,
+            reason=reason,
+            severity=SEVERITY_CRITICAL,
+            display_allowed=False,
+            motion_allowed=False,
+            transition_allowed=False,
+            recommended_action=recommended_action,
+            hold_previous_safe_state_allowed=bool(self.view_gate_state.visible and self.current_verification_state.display_allowed),
+        )
         decision = FailClosedDecision(
             timestamp_ms=self.current_time_ms,
             reason=reason,
@@ -608,6 +894,32 @@ class AMCFPhysicalPlayerStateMachine:
             "unsafe_acceptance_count": self.unsafe_acceptance_count,
         }
 
+    def audit_unsafe_acceptance(self) -> dict[str, Any]:
+        unsafe_events: list[dict[str, Any]] = []
+        invalid_reasons = set(FAIL_CLOSED_REASON_CATALOGUE)
+        for decision in self.safety_decisions:
+            if decision.unsafe_acceptance:
+                unsafe_events.append({"type": "decision_unsafe_acceptance", "decision": _to_plain(decision)})
+            if decision.display_allowed and decision.reason in invalid_reasons:
+                unsafe_events.append({"type": "display_allowed_for_invalid_reason", "decision": _to_plain(decision)})
+        for event in self.event_log:
+            detail = str(event.get("detail", ""))
+            display_event = event.get("event_type") in {
+                "enter_playback_ready",
+                "load_view_gate",
+                "lock_view_gate",
+                "switch_visible_section",
+            }
+            if display_event and event.get("display_allowed") and any(reason in detail for reason in invalid_reasons):
+                unsafe_events.append({"type": "event_display_allowed_for_invalid_reason", "event": event})
+        return {
+            "unsafe_acceptance_count": self.unsafe_acceptance_count + len(unsafe_events),
+            "unsafe_events": unsafe_events,
+            "checked_event_count": len(self.event_log),
+            "checked_section_count": len(self._playback_sections()),
+            "passed": (self.unsafe_acceptance_count + len(unsafe_events)) == 0,
+        }
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "player_profile": _to_plain(self.player_profile),
@@ -630,6 +942,8 @@ class AMCFPhysicalPlayerStateMachine:
             "safety_state": _to_plain(self.safety_state),
             "event_log": self.build_timeline(),
             "fail_closed_events": _to_plain(self.fail_closed_events),
+            "safety_decisions": _to_plain(self.safety_decisions),
             "unsafe_acceptance_count": self.unsafe_acceptance_count,
+            "unsafe_acceptance_audit": self.audit_unsafe_acceptance(),
             "summary": self.build_summary(),
         }
