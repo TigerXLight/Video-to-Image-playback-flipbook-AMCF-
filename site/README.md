@@ -8,5 +8,9 @@ Files:
 
 - `index.html`
 - `styles.css`
+- `.nojekyll`
+- `assets/amcf_mechanical_optical_physical_player_concept.svg`
 
 The workflow at `.github/workflows/pages.yml` publishes this folder with GitHub Pages official actions.
+
+The site embeds the current mechanical/optical physical-player concept diagram directly so the public Pages view has a visible physical-player reference. The diagram is concept/context only, not physical proof, not hardware validation, and not a manufactured prototype.

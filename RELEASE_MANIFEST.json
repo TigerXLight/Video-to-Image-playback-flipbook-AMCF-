@@ -70,6 +70,8 @@
     "site/index.html",
     "site/styles.css",
     "site/README.md",
+    "site/.nojekyll",
+    "site/assets/amcf_mechanical_optical_physical_player_concept.svg",
     ".github/workflows/pages.yml"
   ],
   "future_documented_only": [
@@ -81,6 +83,7 @@
   "github_pages_site": {
     "claim_boundary": "documentation/context only",
     "runtime_features_added": false,
+    "embedded_physical_player_concept_asset": "site/assets/amcf_mechanical_optical_physical_player_concept.svg",
     "site_root": "site/",
     "status": "included",
     "workflow": ".github/workflows/pages.yml"

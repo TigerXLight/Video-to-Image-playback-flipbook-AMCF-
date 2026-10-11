@@ -30,6 +30,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 34px 22px 56px; }
 .band, .grid article, .boundary, .links { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 24px; margin: 18px 0; }
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .boundary { background: var(--warn-bg); border-color: var(--warn-line); }
+.concept-board { margin: 22px 0 0; }
+.concept-board img { display: block; width: 100%; max-height: 680px; object-fit: contain; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.concept-board figcaption { margin-top: 10px; color: var(--muted); font-size: 14px; }
 .links { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .links h2 { width: 100%; }
 .links a { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: #f8fbfd; text-decoration: none; }

@@ -31,6 +31,8 @@ The package works now in software through virtual hardware abstractions. Future 
 
 Physical reader support means future devices that read or scan AMCF physical media back into AMCF digital state for validation, recovery, diagnostics, or export.
 
+Physical-output/printer preparation support means software generation of indexed AMCF carrier packages that could later inform print, page, cartridge, or other material-output experiments. The package models carrier sections and lanes in software now; it does not claim real printing, real printer integration, print calibration, hardware validation, or manufacturing readiness.
+
 Physical player support means future mechanical/optical devices that physically present AMCF media for direct viewing through controlled motion and a fixed view gate. A physical player may use indexed thin-section AMCF media, vertical-stack or indexed-section transport, illumination, optical viewing, projection, a window, speed regulation, brake/latch/pause, and reverse/seek/index where practical.
 
 The physical player is not the same thing as the software UI viewer. It is not merely a digital monitor, tablet, or screen appliance. A combined reader-player appliance is possible later, with shared media/transport plus separate reader/recovery and physical view/playback roles.
@@ -106,3 +108,5 @@ Static site files live in `site/`.
 The GitHub Pages workflow lives in `.github/workflows/pages.yml`.
 
 After uploading to GitHub, enable Pages using GitHub Actions if needed. The Pages site is documentation/context only. It does not change AMCF functionality and does not claim hardware validation, physical proof, final UI, manufacturing readiness, or a built prototype.
+
+The Pages landing page embeds the current mechanical/optical physical-player concept diagram from `site/assets/` and links back to repository docs and concept assets.
