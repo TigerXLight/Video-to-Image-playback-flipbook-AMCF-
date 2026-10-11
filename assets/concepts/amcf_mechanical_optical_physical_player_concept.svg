@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1280" viewBox="0 0 1800 1280" role="img" aria-labelledby="title desc">
-  <title id="title">AMCF Mechanical / Optical Physical Player - Indexed Thin-Section Concept</title>
-  <desc id="desc">A richer deterministic concept diagram based on the AMCF physical plan: indexed thin-page carrier, vertical section transport, scan/view gate, lane structure, actuator options, energy layers, optical presentation, and secondary reader recovery.</desc>
+  <title id="title">AMCF Dynamic Folded-Path A/B Mechanical / Optical Physical Player Concept</title>
+  <desc id="desc">A deterministic concept diagram based on the AMCF physical plan: compact tablet-like body, folded indexed thin-page carrier path, A/B visible and hidden staging gates, scan/view gate, lane structure, actuator options, energy layers, optical presentation, and secondary reader recovery.</desc>
   <defs>
     <style>
       text{font-family:Arial,Helvetica,sans-serif}
@@ -18,12 +18,12 @@
     <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4f46e5"/></marker>
   </defs>
   <rect class="bg" width="1800" height="1280"/>
-  <text x="44" y="58" class="h1 ink">AMCF MECHANICAL / OPTICAL PHYSICAL PLAYER</text>
-  <text x="44" y="92" class="h2 muted">Indexed thin-section carrier + fixed scan/view gate + optical presentation</text>
-  <text x="44" y="124" class="label muted">Physical plan direction: AMCF digital remains canonical; physical playback is a future carrier/player branch, simulated in software now.</text>
+  <text x="44" y="58" class="h1 ink">AMCF DYNAMIC FOLDED-PATH A/B PHYSICAL PLAYER</text>
+  <text x="44" y="92" class="h2 muted">Compact tablet-like body + folded indexed carrier path + optical presentation</text>
+  <text x="44" y="124" class="label muted">AMCF media -> hidden preload gate -> visible view gate -> shuttered illumination / optical path -> direct human viewing</text>
 
   <rect x="44" y="160" width="315" height="270" rx="10" class="panel"/>
-  <text x="66" y="198" class="h2 ink">1. Media cartridge</text>
+  <text x="66" y="198" class="h2 ink">1. Side-loaded section stack</text>
   <text x="66" y="225" class="small muted">Indexed thin-page / section stack</text>
   <g transform="translate(86 250)">
     <rect x="0" y="0" width="210" height="120" rx="8" class="media"/>
@@ -37,23 +37,23 @@
 
   <path d="M366 292 H458" class="arrow"/>
   <rect x="468" y="160" width="405" height="270" rx="10" class="panel"/>
-  <text x="492" y="198" class="h2 ink">2. Indexed vertical transport</text>
+  <text x="492" y="198" class="h2 ink">2. Folded A/B staged transport</text>
   <rect x="532" y="235" width="246" height="48" rx="7" class="media"/>
   <circle cx="560" cy="304" r="24" fill="#334155"/><circle cx="750" cy="304" r="24" fill="#334155"/>
   <path d="M655 350 V235" class="arrow"/>
-  <text x="492" y="382" class="small muted">Controlled section motion: pause, latch/brake, reverse, seek/index</text>
+  <text x="492" y="382" class="small muted">Track A visible/ready; Track B hidden preload/staging</text>
   <text x="492" y="405" class="tiny muted">Sensor feedback / index lock checks section position before presentation.</text>
-  <text x="492" y="428" class="tiny muted">Manual crank remains slow recovery mode, not primary fluid playback.</text>
+  <text x="492" y="428" class="tiny muted">Pause, latch/brake, reverse, seek/index; no fixed-FPS page motion.</text>
 
   <path d="M880 292 H965" class="arrow"/>
   <rect x="976" y="160" width="380" height="270" rx="10" class="panel"/>
-  <text x="1000" y="198" class="h2 ink">3. Fixed scan/view gate</text>
+  <text x="1000" y="198" class="h2 ink">3. Visible view gate + shutter</text>
   <rect x="1050" y="232" width="220" height="110" rx="9" class="machine"/>
   <rect x="1088" y="262" width="145" height="50" rx="3" class="slot"/>
   <rect x="1102" y="275" width="118" height="24" class="page"/>
   <line x1="1102" y1="282" x2="1220" y2="282" stroke="#0d819a" stroke-width="2"/>
   <line x1="1102" y1="291" x2="1220" y2="291" stroke="#be123c" stroke-width="2"/>
-  <text x="1000" y="380" class="small muted">Aligned page/section presented in a physical window</text>
+  <text x="1000" y="380" class="small muted">Current section held until AMCF update timestamp</text>
   <text x="1000" y="404" class="tiny muted">Shutter/dwell timing can lock to index marks; scan/recovery is secondary.</text>
 
   <path d="M1365 292 H1452" class="arrow"/>
@@ -68,7 +68,7 @@
   <rect x="1002" y="468" width="332" height="142" rx="10" class="light"/>
   <text x="1026" y="506" class="h2 ink">Illumination layer</text>
   <text x="1026" y="536" class="small muted">Backlight or front light for direct physical visibility</text>
-  <text x="1026" y="560" class="small muted">Exposure is modeled; no digital screen required.</text>
+  <text x="1026" y="560" class="small muted">Blanking hides A/B section switch; no digital screen required.</text>
   <path d="M1168 468 V348" class="arrow"/>
 
   <rect x="44" y="470" width="825" height="250" rx="10" class="panel"/>
@@ -101,26 +101,26 @@
   <text x="94" y="978" class="label ink">Constant-force / spring + governor: self-contained candidate</text>
 
   <rect x="628" y="760" width="520" height="260" rx="10" class="panel"/>
-  <text x="650" y="798" class="h2 ink">7. Energy and recovery layers</text>
+  <text x="650" y="798" class="h2 ink">7. Power, return, and recovery layers</text>
   <text x="650" y="836" class="label muted">Primary supply options</text>
   <text x="674" y="865" class="small muted">USB/external power, thin-film/flexible battery, supercapacitor, stored mechanical tension.</text>
-  <text x="650" y="910" class="label muted">Efficiency/recovery options</text>
+  <text x="650" y="910" class="label muted">Return/park/reverse and efficiency options</text>
   <text x="674" y="939" class="small muted">Electret, triboelectric, piezo charge recovery, capacitive recovery, regenerative braking.</text>
   <rect x="660" y="966" width="430" height="35" rx="6" class="no"/>
   <text x="678" y="989" class="small ink">Not infinite energy; recovery/buffering only.</text>
 
   <rect x="1192" y="760" width="564" height="260" rx="10" class="panel"/>
-  <text x="1214" y="798" class="h2 ink">8. Secondary reader / recovery lane</text>
+  <text x="1214" y="798" class="h2 ink">8. Reader / prefetch recovery lane</text>
   <rect x="1230" y="832" width="480" height="52" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
   <text x="1248" y="865" class="label muted">CIS / line-scan + LED + marker/hash validation</text>
-  <text x="1230" y="920" class="small muted">Reader path can reconstruct AMCF digital state or export recovered payloads.</text>
+  <text x="1230" y="920" class="small muted">Prefetch scans timing/index/hash lanes ahead of playback.</text>
   <text x="1230" y="948" class="small muted">It is not the physical viewing act and not hardware validation.</text>
   <path d="M1230 982 H1708" class="arrow2"/>
   <text x="1230" y="1008" class="tiny muted">diagnostics / scan recovery / colour calibration / checksum policy</text>
 
   <rect x="44" y="1062" width="805" height="140" rx="10" class="ok"/>
   <text x="66" y="1100" class="h2 ink">Software support that exists now</text>
-  <text x="66" y="1132" class="label muted">Source frames -> AMCF archive -> indexed carrier package -> virtual reader recovery/export -> mechanical/optical player simulator.</text>
+  <text x="66" y="1132" class="label muted">Source frames -> AMCF archive -> indexed carrier package -> reader prefetch/recovery -> folded A/B player simulator.</text>
   <text x="66" y="1162" class="small muted">This supports future reader, printer/physical-output preparation, and player behavior without manufactured hardware.</text>
 
   <rect x="895" y="1062" width="861" height="140" rx="10" class="warn"/>

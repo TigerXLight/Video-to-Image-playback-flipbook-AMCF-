@@ -33,9 +33,11 @@ Physical reader support means future devices that read or scan AMCF physical med
 
 Physical-output/printer preparation support means software generation of indexed AMCF carrier packages that could later inform print, page, cartridge, or other material-output experiments. The package models carrier sections and lanes in software now; it does not claim real printing, real printer integration, print calibration, hardware validation, or manufacturing readiness.
 
-Physical player support means future mechanical/optical devices that physically present AMCF media for direct viewing through controlled motion and a fixed view gate. A physical player may use indexed thin-section AMCF media, vertical-stack or indexed-section transport, illumination, optical viewing, projection, a window, speed regulation, brake/latch/pause, and reverse/seek/index where practical.
+Physical player support means future mechanical/optical devices that physically present AMCF media for direct viewing through controlled motion and a fixed view gate. The preferred future mechanism is a compact tablet-like handheld body with a folded internal media path, side-loaded indexed section cartridge, A/B staging gates or equivalent physical double-buffering, shutter/illumination blanking, prefetch/reader lanes, sensor feedback/index lock, brake/latch/pause, and reverse/seek/index where practical.
 
-The physical player is not the same thing as the software UI viewer. It is not merely a digital monitor, tablet, or screen appliance. A combined reader-player appliance is possible later, with shared media/transport plus separate reader/recovery and physical view/playback roles.
+The physical player is dynamic: it should move media according to the AMCF update schedule, hold visible states at the view gate, and preload the next required section so transitions can appear near-instant. It is not a fixed-FPS physical page machine and not a long linear roller path by default.
+
+The physical player is not the same thing as the software UI viewer. It is not merely a digital monitor, LCD/OLED tablet, or screen appliance. Digital electronics or a microcontroller may support motor control, timing, calibration, audio sync, and error handling, but visual playback remains physical/optical. A combined reader-player appliance is possible later, with shared media/transport plus separate reader/recovery and physical view/playback roles.
 
 The clean package provides software abstractions and docs now, not a manufactured device.
 
@@ -94,15 +96,15 @@ This is a virtual reader/recovery demo, not real scanner hardware validation. MP
 
 ## Mechanical / optical physical player simulator
 
-The package can simulate the future mechanical/optical physical-player path. It models indexed carrier sections moving through a fixed view gate, including illumination, alignment, playback timeline state, and controls for play, pause, step, reverse, and seek.
+The package can simulate the future mechanical/optical physical-player path. It models indexed carrier sections moving through a dynamic folded-path A/B staged transport with a fixed view gate, hidden staging gate, preload queue, transition blanking, illumination, alignment, playback timeline state, and controls for play, pause, step, reverse, and seek.
 
-This is not a digital-screen physical player. It is not real physical playback and not hardware validation. Real physical manufacture and testing remain optional future work.
+This is not a fixed-FPS physical page machine and not a digital-screen physical player. It is not real physical playback and not hardware validation. Real physical manufacture and testing remain optional future work.
 
 ## Concept assets and physical-player correction
 
 `assets/concepts/` contains current and legacy AMCF concept references. Old diagrams may be superseded and are retained for context only.
 
-The corrected mechanical/optical physical-player concept is the current physical-player reference. In this package, physical player means mechanical/optical playback through indexed media, a fixed view/playback gate, illumination, and an optical viewing path for direct human viewing.
+The corrected mechanical/optical physical-player concept is the current physical-player reference. In this package, physical player means dynamic mechanical/optical playback through indexed media, folded A/B staging, a fixed view/playback gate, illumination/shutter control, and an optical viewing path for direct human viewing.
 
 The physical player is not a digital-screen player, not the software UI viewer, and not the reader/scanner path. Concept assets do not claim hardware validation, physical proof, final UI, manufacturing readiness, or a built prototype.
 

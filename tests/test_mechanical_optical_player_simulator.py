@@ -110,8 +110,42 @@ class MechanicalOpticalPlayerSimulatorTests(unittest.TestCase):
         self.assertTrue(result["ok"])
         states = json.loads((self.sim_root / "view_gate_states.json").read_text(encoding="utf-8"))
         first = states[0]
-        for key in ("section_index", "alignment_error", "alignment_ok", "illumination_on", "visible_payload_reference"):
+        for key in (
+            "section_index",
+            "update_timestamp_ms",
+            "current_gate_section",
+            "next_staging_section",
+            "preload_queue",
+            "view_gate_state",
+            "hidden_gate_state",
+            "transition_blank_ms",
+            "reader_prefetch_ahead_ms",
+            "section_verified_before_display",
+            "reverse_buffer_depth",
+            "alignment_error",
+            "alignment_ok",
+            "illumination_on",
+            "visible_payload_reference",
+        ):
             self.assertIn(key, first)
+        self.assertEqual(first["current_gate_section"], 0)
+        self.assertEqual(first["next_staging_section"], 1)
+        self.assertEqual(first["view_gate_state"], "visible_locked")
+        self.assertEqual(first["hidden_gate_state"], "preloaded_verified")
+
+    def test_timeline_uses_dynamic_ab_staging_fields(self) -> None:
+        self.make_carrier()
+        simulate_mechanical_optical_playback(self.carrier_root, self.sim_root)
+        timeline = json.loads((self.sim_root / "player_timeline.json").read_text(encoding="utf-8"))
+        self.assertEqual(timeline["preferred_future_mechanism"], "dynamic_folded_path_ab_staged_indexed_section_player")
+        self.assertTrue(timeline["not_fixed_fps_page_machine"])
+        self.assertIn("folded indexed transport", timeline["physical_playback_path"])
+        self.assertEqual(timeline["transport_mode"], "dynamic_folded_path_ab_staged_indexed_transport")
+        self.assertEqual(len(timeline["dynamic_update_schedule_ms"]), 8)
+        self.assertGreater(timeline["transition_blank_ms"], 0)
+        self.assertGreater(timeline["reader_prefetch_ahead_ms"], 0)
+        self.assertGreater(timeline["reverse_buffer_depth"], 0)
+        self.assertTrue(timeline["fail_closed_on_unverified_next_section"])
 
     def test_validator_passes_valid_playback_timeline(self) -> None:
         self.make_carrier()
@@ -152,6 +186,15 @@ class MechanicalOpticalPlayerSimulatorTests(unittest.TestCase):
         self.assertTrue(player.load_carrier(self.carrier_root)["ok"])
         state = player.pause()
         self.assertEqual(state.decision, "rejected_fail_closed")
+        self.assertTrue(player.state.fail_closed)
+
+    def test_simulator_fail_closes_when_next_staging_section_is_unverified(self) -> None:
+        self.make_carrier()
+        player = MechanicalOpticalPlayerSimulator(MechanicalOpticalPlayerConfig(unverified_sections=[1]))
+        self.assertTrue(player.load_carrier(self.carrier_root)["ok"])
+        state = player.play()[0]
+        self.assertEqual(state.decision, "rejected_fail_closed")
+        self.assertIn("next_staging_section_unverified", state.issues)
         self.assertTrue(player.state.fail_closed)
 
     def test_no_physical_or_hardware_or_screen_claims_are_made(self) -> None:

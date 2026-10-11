@@ -13,4 +13,4 @@ Files:
 
 The workflow at `.github/workflows/pages.yml` publishes this folder with GitHub Pages official actions.
 
-The site embeds the current mechanical/optical physical-player concept diagram directly so the public Pages view has a visible physical-player reference. The diagram is concept/context only, not physical proof, not hardware validation, and not a manufactured prototype.
+The site embeds the current mechanical/optical physical-player concept diagram directly so the public Pages view has a visible physical-player reference. The current preferred framing is a dynamic folded-path A/B staged indexed-section player, not a fixed-FPS page machine, not a long straight roller path, and not a normal digital-screen player. The diagram is concept/context only, not physical proof, not hardware validation, and not a manufactured prototype.

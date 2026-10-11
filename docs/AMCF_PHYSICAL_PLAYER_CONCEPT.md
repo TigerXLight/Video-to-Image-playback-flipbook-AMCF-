@@ -4,6 +4,8 @@
 
 The AMCF physical player is a future mechanical/optical playback device that uses controlled physical transport of AMCF media through a fixed view gate, with illumination or optical presentation, so the AMCF sequence can be viewed physically without requiring a digital display.
 
+The preferred future mechanism is a dynamic folded-path A/B staged indexed-section player: a compact tablet-like handheld body with a folded internal media path, side-loaded cartridge/card/section stack, a visible view gate, a hidden preload/staging gate, shutter/illumination blanking, and reader/prefetch lanes for timing/index/hash checks.
+
 ## 2. What it is not
 
 - It is not the AMCF Player UI viewer.
@@ -13,19 +15,23 @@ The AMCF physical player is a future mechanical/optical playback device that use
 - It is not a manufactured prototype yet.
 - It is not a left-to-right flipbook by default.
 - It is not manual-crank-first for primary fluid playback.
+- It is not a fixed-FPS physical page machine.
+- It is not a long straight roller path by default.
 
 ## 3. Physical playback path
 
 ```text
 AMCF digital
 -> prepared AMCF physical media
--> indexed physical transport
+-> folded indexed physical transport with A/B staging
 -> fixed physical view gate
 -> illumination / optical presentation
 -> direct human viewing
 ```
 
 The intended carrier language is vertical-stack / indexed section physical-medium concept. The default carrier assumption is indexed thin-section AMCF physical media, not a continuous ribbon-first or film-first design.
+
+Physical AMCF playback should remain dynamic like digital AMCF. The player should move media according to the AMCF update schedule, hold visible states at the view gate, preload the next required section in a hidden staging gate, blank the optical path during the section switch, and fail closed if the next section cannot be verified in time.
 
 ## 4. Reader vs player
 
@@ -55,11 +61,20 @@ The clean package currently implements software and virtual hardware support. It
 Future work may explore:
 
 - indexed thin-section media preparation
-- vertical-stack / indexed-section transport
+- compact tablet-like folded internal media path
+- three-pass folded path: input/preload, active view-gate, and return/park/reverse
+- two-track A/B shuttle with visible/ready Track A and hidden preload/staging Track B
+- indexed section stack, individual page/card shuttle, or linked indexed carrier
+- magnetic, electrostatic, or mechanical guide tracks with stop gates
 - fixed physical view gate geometry
 - illumination/backlight/front-light options
+- shutter/dwell timing and optical blanking during transitions
 - optical window or projection path
-- speed governor or regulated transport
+- dynamic update schedule rather than fixed-FPS page motion
+- motor/encoder feed, piezo/electrostatic inchworm feed, or constant-force spring with governor/brake
+- reader/prefetch lane that scans timing/index/hash lanes ahead of playback
+- sensor feedback and index lock
+- fail-closed behavior if the next staged section is unverified
 - brake/latch/pause
 - reverse/seek/index where practical
 - optional reader/recovery lane

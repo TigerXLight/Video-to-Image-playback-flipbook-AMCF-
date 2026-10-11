@@ -29,15 +29,17 @@ The physical reader/recovery path is scan oriented. It reads AMCF physical media
 ## Path D - Future physical mechanical/optical playback
 
 ```text
-AMCF physical media -> indexed transport -> fixed physical view gate -> illumination/optical presentation -> direct human viewing without digital screen
+AMCF physical media -> folded indexed transport -> A/B staging gates -> fixed physical view gate -> shuttered illumination/optical presentation -> direct human viewing without digital screen
 ```
 
-This is the corrected physical-player path. Playback is physical/mechanical/optical and should not be collapsed into a software UI viewer, tablet, monitor, or normal digital display path.
+This is the corrected physical-player path. Playback is physical/mechanical/optical and should not be collapsed into a software UI viewer, LCD/OLED tablet, monitor, or normal digital display path.
+
+The preferred future physical mechanism is dynamic rather than fixed-FPS page playback. It should hold the current section at the visible gate, preload the next required section in a hidden A/B staging gate, blank the optical path during the transition, and fail closed if the next section is not verified in time.
 
 ## Path E - Hybrid reader-player appliance
 
 ```text
-AMCF physical media -> shared transport -> physical view gate for direct viewing + reader lane for optional recovery/diagnostics
+AMCF physical media -> shared folded transport -> physical view gate for direct viewing + reader/prefetch lane for optional recovery/diagnostics
 ```
 
 A future appliance may combine physical playback and reader/recovery, but the roles remain separate.
