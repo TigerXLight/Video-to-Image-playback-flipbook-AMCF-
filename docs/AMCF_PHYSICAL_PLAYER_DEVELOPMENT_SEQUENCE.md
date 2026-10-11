@@ -40,6 +40,24 @@ Provides:
 
 This stage does not mark physical hardware as complete and does not claim hardware validation.
 
+## Stage 4
+
+`AMCF_PHYSICAL_PLAYER_REVERSE_SEEK_V1`
+
+Implemented in this run.
+
+Provides:
+
+- limited reverse buffer
+- safe step-back behaviour
+- local-buffer seek
+- arbitrary seek denial
+- reverse/seek timeline reporting
+- fail-closed integration
+- tests for reverse buffer records, depth, staging, transition blanking, local seek, invalid seek, and unsafe acceptance
+
+This stage does not mark physical reverse hardware complete and does not claim arbitrary physical seek hardware.
+
 ## Later Stages
 
 Later work may add richer physical-player model bundles, PC recognition/control simulation, hardware adapter boundaries, and end-to-end Physical I/O simulation. Those later stages must preserve the claim boundary: no hardware validation is claimed until real hardware tests exist.

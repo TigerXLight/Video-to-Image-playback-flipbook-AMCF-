@@ -82,6 +82,34 @@ SEVERITY_RECOVERABLE = "recoverable"
 SEVERITY_CRITICAL = "critical"
 SEVERITY_MECHANICAL_STOP = "mechanical_stop"
 
+REVERSE_NOT_REQUESTED = "reverse_not_requested"
+REVERSE_AVAILABLE = "reverse_available"
+REVERSE_BUFFER_EMPTY = "reverse_buffer_empty"
+REVERSE_TARGET_NOT_FOUND = "reverse_target_not_found"
+REVERSE_TARGET_UNVERIFIED = "reverse_target_unverified"
+REVERSE_STAGED = "reverse_staged"
+REVERSE_TRANSITION_BLANK = "reverse_transition_blank"
+REVERSE_SWITCHED = "reverse_switched"
+REVERSE_DENIED = "reverse_denied"
+REVERSE_FAIL_CLOSED = "reverse_fail_closed"
+
+SEEK_MODE_NONE = "no_seek"
+SEEK_MODE_LOCAL_BUFFER = "local_buffer_seek"
+SEEK_MODE_PREFETCH_QUEUE = "prefetch_queue_seek"
+SEEK_MODE_ARBITRARY_REQUESTED = "arbitrary_seek_requested"
+SEEK_MODE_REINDEX_REQUIRED = "reindex_required"
+SEEK_MODE_UNSUPPORTED = "unsupported"
+
+SEEK_NOT_REQUESTED = "seek_not_requested"
+SEEK_AVAILABLE = "seek_available"
+SEEK_RESOLVED_LOCAL_BUFFER = "seek_resolved_local_buffer"
+SEEK_RESOLVED_PREFETCH_QUEUE = "seek_resolved_prefetch_queue"
+SEEK_DENIED_NOT_IN_LOCAL_BUFFER = "seek_denied_not_in_local_buffer"
+SEEK_DENIED_ARBITRARY_NOT_SUPPORTED = "seek_denied_arbitrary_not_supported"
+SEEK_DENIED_UNVERIFIED_TARGET = "seek_denied_unverified_target"
+SEEK_FAIL_CLOSED = "seek_fail_closed"
+SEEK_DENIED_MISSING_TARGET = "missing_seek_target"
+
 
 @dataclass
 class PlayerProfile:
@@ -210,18 +238,45 @@ class ReaderPrefetchState:
 
 
 @dataclass
+class ReverseBufferRecord:
+    section_id: str
+    section_index: int
+    timestamp_start_ms: int
+    dwell_ms: int
+    verification_decision: str
+    display_allowed: bool
+    gate_locked_when_displayed: bool
+    parked_at_ms: int
+    safe_for_reverse: bool
+
+
+@dataclass
 class ReverseBufferState:
     enabled: bool = True
     depth: int = 3
     section_ids: list[str] = field(default_factory=list)
+    section_records: list[ReverseBufferRecord] = field(default_factory=list)
+    current_index: int = -1
+    reverse_available: bool = False
+    requested_reverse_section_id: str | None = None
+    reverse_denial_reason: str = ""
+    last_reverse_timestamp_ms: int | None = None
+    reverse_transition_allowed: bool = False
+    reverse_fail_closed_reason: str = ""
 
 
 @dataclass
 class SeekRequestState:
     requested_timestamp_ms: int | None = None
     requested_section_id: str | None = None
+    seek_mode: str = SEEK_MODE_NONE
     seek_available: bool = False
+    seek_status: str = SEEK_NOT_REQUESTED
     denial_reason: str = ""
+    resolved_section_id: str | None = None
+    resolved_from_buffer: bool = False
+    seek_transition_allowed: bool = False
+    seek_fail_closed_reason: str = ""
 
 
 @dataclass
@@ -424,7 +479,7 @@ class AMCFPhysicalPlayerStateMachine:
         if cartridge is not None:
             self.insert_cartridge(cartridge)
 
-    def _record_event(self, event_type: str, from_state: str, to_state: str, detail: str = "") -> None:
+    def _record_event(self, event_type: str, from_state: str, to_state: str, detail: str = "", **extra: Any) -> None:
         self.event_log.append(
             {
                 "timestamp_ms": self.current_time_ms,
@@ -433,6 +488,12 @@ class AMCFPhysicalPlayerStateMachine:
                 "to_state": to_state,
                 "current_section_id": self.current_section_id,
                 "next_section_id": self.next_section_id,
+                "requested_section_id": extra.get("requested_section_id"),
+                "requested_timestamp_ms": extra.get("requested_timestamp_ms"),
+                "resolved_section_id": extra.get("resolved_section_id"),
+                "seek_mode": extra.get("seek_mode", self.seek_request_state.seek_mode),
+                "reverse_status": extra.get("reverse_status", REVERSE_NOT_REQUESTED),
+                "seek_status": extra.get("seek_status", self.seek_request_state.seek_status),
                 "detail": detail,
                 "safety_state": self.safety_state.state,
                 "display_allowed": self.safety_state.display_allowed,
@@ -449,6 +510,53 @@ class AMCFPhysicalPlayerStateMachine:
 
     def _playback_sections(self) -> list[PhysicalPlayerSection]:
         return self.cartridge.playback_sections() if self.cartridge else []
+
+    def _next_section_after(self, section_id: str | None) -> PhysicalPlayerSection | None:
+        sections = self._playback_sections()
+        current_index = next((index for index, section in enumerate(sections) if section.section_id == section_id), -1)
+        if current_index < 0 or current_index + 1 >= len(sections):
+            return None
+        return sections[current_index + 1]
+
+    def _reverse_record_for(self, section_id: str | None) -> ReverseBufferRecord | None:
+        if section_id is None:
+            return None
+        for record in reversed(self.reverse_buffer_state.section_records):
+            if record.section_id == section_id:
+                return record
+        return None
+
+    def _add_reverse_record(self, section_id: str) -> None:
+        if not self.reverse_buffer_state.enabled:
+            return
+        section = self._section_by_id(section_id)
+        verification = verify_physical_section(section, section_id)
+        safe = bool(section and verification.display_allowed and self.view_gate_state.locked)
+        if not safe:
+            return
+        existing = [record for record in self.reverse_buffer_state.section_records if record.section_id != section_id]
+        record = ReverseBufferRecord(
+            section_id=section_id,
+            section_index=section.section_index,
+            timestamp_start_ms=section.update_timestamp_ms,
+            dwell_ms=120,
+            verification_decision=verification.decision,
+            display_allowed=verification.display_allowed,
+            gate_locked_when_displayed=True,
+            parked_at_ms=self.current_time_ms,
+            safe_for_reverse=True,
+        )
+        existing.append(record)
+        self.reverse_buffer_state.section_records = existing[-self.reverse_buffer_state.depth :]
+        self.reverse_buffer_state.section_ids = [item.section_id for item in self.reverse_buffer_state.section_records]
+        self.reverse_buffer_state.current_index = len(self.reverse_buffer_state.section_records) - 1
+        self.reverse_buffer_state.reverse_available = bool(self.reverse_buffer_state.section_records)
+
+    def _set_reverse_denied(self, reason: str) -> None:
+        self.reverse_buffer_state.reverse_available = False
+        self.reverse_buffer_state.reverse_denial_reason = reason
+        self.reverse_buffer_state.reverse_transition_allowed = False
+        self._record_event("reverse_denied", self.playback_state, self.playback_state, reason, reverse_status=REVERSE_DENIED)
 
     def _append_safety_decision(
         self,
@@ -587,16 +695,16 @@ class AMCFPhysicalPlayerStateMachine:
         return True
 
     def prefetch_next(self) -> bool:
-        sections = self._playback_sections()
         if not self.current_section_id:
             self.fail_closed(FAIL_CLOSED_WRONG_SECTION, "current section missing before next prefetch")
             return False
-        current_index = next((index for index, section in enumerate(sections) if section.section_id == self.current_section_id), -1)
-        if current_index < 0 or current_index + 1 >= len(sections):
+        section = self._next_section_after(self.current_section_id)
+        if section is None:
             self.next_section_id = None
             self._set_state(STATE_PLAYBACK_COMPLETE, "prefetch_next_complete", "no next section")
             return False
-        section = sections[current_index + 1]
+        sections = self._playback_sections()
+        current_index = next((index for index, item in enumerate(sections) if item.section_id == self.current_section_id), -1)
         self.next_section_id = section.section_id
         self.reader_prefetch_state.expected_section_id = section.section_id
         self.reader_prefetch_state.prefetched_section_id = section.section_id
@@ -695,8 +803,7 @@ class AMCFPhysicalPlayerStateMachine:
 
     def park_old_section(self) -> bool:
         if self.old_section_id and self.reverse_buffer_state.enabled:
-            self.reverse_buffer_state.section_ids.append(self.old_section_id)
-            self.reverse_buffer_state.section_ids = self.reverse_buffer_state.section_ids[-self.reverse_buffer_state.depth :]
+            self._add_reverse_record(self.old_section_id)
         self.old_section_id = None
         self.ab_gate_state.old_section_id = None
         self.ab_gate_state.blanking_active = False
@@ -815,36 +922,178 @@ class AMCFPhysicalPlayerStateMachine:
         )
 
     def step_reverse(self) -> bool:
-        if not self.reverse_buffer_state.enabled or not self.reverse_buffer_state.section_ids:
-            self._record_event("step_reverse_denied", self.playback_state, self.playback_state, "reverse buffer unavailable")
+        self._record_event("reverse_requested", self.playback_state, self.playback_state, "step_reverse", reverse_status=REVERSE_NOT_REQUESTED)
+        if not self.reverse_buffer_state.enabled:
+            self._set_reverse_denied("reverse_disabled")
             return False
-        previous_section_id = self.reverse_buffer_state.section_ids.pop()
+        if not self.reverse_buffer_state.section_records:
+            self._set_reverse_denied(REVERSE_BUFFER_EMPTY)
+            return False
+        record = self.reverse_buffer_state.section_records.pop()
+        previous_section_id = record.section_id
+        self.reverse_buffer_state.section_ids = [item.section_id for item in self.reverse_buffer_state.section_records]
+        self.reverse_buffer_state.requested_reverse_section_id = previous_section_id
+        self.reverse_buffer_state.last_reverse_timestamp_ms = self.current_time_ms
+        self.reverse_buffer_state.reverse_available = bool(self.reverse_buffer_state.section_records)
+        self._record_event(
+            "reverse_target_resolved",
+            self.playback_state,
+            self.playback_state,
+            previous_section_id,
+            requested_section_id=previous_section_id,
+            resolved_section_id=previous_section_id,
+            reverse_status=REVERSE_AVAILABLE,
+        )
+        if not record.safe_for_reverse:
+            self.reverse_buffer_state.reverse_fail_closed_reason = FAIL_CLOSED_UNVERIFIED_SECTION
+            self.fail_closed(FAIL_CLOSED_UNVERIFIED_SECTION, "reverse target was not parked as a safe target")
+            return False
         section = self._section_by_id(previous_section_id)
-        verification = verify_physical_section(section)
+        verification = verify_physical_section(section, previous_section_id)
         if not verification.display_allowed:
+            self.reverse_buffer_state.reverse_fail_closed_reason = verification.reason or FAIL_CLOSED_UNVERIFIED_SECTION
             self.fail_closed(verification.reason or FAIL_CLOSED_UNVERIFIED_SECTION, "do not reverse to unverified section")
             return False
         self.next_section_id = previous_section_id
         self.next_verification_state = verification
         if not self.stage_next():
             return False
-        return self.begin_transition_blank() and self.switch_visible_section() and self.park_old_section()
+        self.reverse_buffer_state.reverse_transition_allowed = True
+        self._record_event(
+            "reverse_staged",
+            self.playback_state,
+            self.playback_state,
+            previous_section_id,
+            requested_section_id=previous_section_id,
+            resolved_section_id=previous_section_id,
+            reverse_status=REVERSE_STAGED,
+        )
+        if not self.begin_transition_blank():
+            self.reverse_buffer_state.reverse_fail_closed_reason = self.fail_closed_events[-1].reason if self.fail_closed_events else FAIL_CLOSED_UNSAFE_TRANSITION
+            return False
+        self._record_event("reverse_transition_blank", self.playback_state, self.playback_state, previous_section_id, reverse_status=REVERSE_TRANSITION_BLANK)
+        if not self.switch_visible_section():
+            self.reverse_buffer_state.reverse_fail_closed_reason = self.fail_closed_events[-1].reason if self.fail_closed_events else FAIL_CLOSED_UNVERIFIED_SECTION
+            return False
+        self._record_event("reverse_switched", self.playback_state, self.playback_state, previous_section_id, reverse_status=REVERSE_SWITCHED)
+        if not self.park_old_section():
+            return False
+        self._record_event("reverse_complete", self.playback_state, self.playback_state, previous_section_id, reverse_status=REVERSE_SWITCHED)
+        return True
 
     def request_seek(self, timestamp_ms: int | None = None, section_id: str | None = None) -> bool:
+        self._record_event("seek_requested", self.playback_state, self.playback_state, "seek", requested_section_id=section_id, requested_timestamp_ms=timestamp_ms)
+        self.resolve_seek_target(timestamp_ms=timestamp_ms, section_id=section_id)
+        if not self.seek_request_state.seek_available:
+            self._record_event(
+                "seek_denied",
+                self.playback_state,
+                self.playback_state,
+                self.seek_request_state.denial_reason,
+                requested_section_id=self.seek_request_state.requested_section_id,
+                requested_timestamp_ms=self.seek_request_state.requested_timestamp_ms,
+                resolved_section_id=self.seek_request_state.resolved_section_id,
+                seek_mode=self.seek_request_state.seek_mode,
+                seek_status=self.seek_request_state.seek_status,
+            )
+            return False
+        return self.execute_seek()
+
+    def resolve_seek_target(self, timestamp_ms: int | None = None, section_id: str | None = None) -> SeekRequestState:
         requested_section_id = section_id
-        if requested_section_id is None and timestamp_ms is not None and self.cartridge is not None:
+        if requested_section_id is None and timestamp_ms is not None:
             for section in self._playback_sections():
                 if section.update_timestamp_ms == timestamp_ms:
                     requested_section_id = section.section_id
                     break
-        local = set(self.reverse_buffer_state.section_ids) | set(self.reader_prefetch_state.queue)
-        if requested_section_id in local:
-            self.seek_request_state = SeekRequestState(timestamp_ms, requested_section_id, True, "")
-            self._record_event("seek_allowed_local_buffer", self.playback_state, self.playback_state, requested_section_id or "")
-            return True
-        self.seek_request_state = SeekRequestState(timestamp_ms, requested_section_id, False, "unsupported_or_not_in_local_buffer")
-        self._record_event("seek_denied", self.playback_state, self.playback_state, self.seek_request_state.denial_reason)
-        return False
+        if requested_section_id is None:
+            self.seek_request_state = SeekRequestState(timestamp_ms, section_id, SEEK_MODE_NONE, False, SEEK_NOT_REQUESTED, SEEK_DENIED_MISSING_TARGET)
+            return self.seek_request_state
+        reverse_ids = set(self.reverse_buffer_state.section_ids)
+        prefetch_ids = set(self.reader_prefetch_state.queue)
+        if requested_section_id in reverse_ids:
+            self.seek_request_state = SeekRequestState(
+                timestamp_ms,
+                requested_section_id,
+                SEEK_MODE_LOCAL_BUFFER,
+                True,
+                SEEK_RESOLVED_LOCAL_BUFFER,
+                "",
+                requested_section_id,
+                True,
+                True,
+            )
+            self._record_event("seek_target_resolved", self.playback_state, self.playback_state, requested_section_id, resolved_section_id=requested_section_id, seek_mode=SEEK_MODE_LOCAL_BUFFER, seek_status=SEEK_RESOLVED_LOCAL_BUFFER)
+            return self.seek_request_state
+        if requested_section_id in prefetch_ids:
+            self.seek_request_state = SeekRequestState(
+                timestamp_ms,
+                requested_section_id,
+                SEEK_MODE_PREFETCH_QUEUE,
+                True,
+                SEEK_RESOLVED_PREFETCH_QUEUE,
+                "",
+                requested_section_id,
+                True,
+                True,
+            )
+            self._record_event("seek_target_resolved", self.playback_state, self.playback_state, requested_section_id, resolved_section_id=requested_section_id, seek_mode=SEEK_MODE_PREFETCH_QUEUE, seek_status=SEEK_RESOLVED_PREFETCH_QUEUE)
+            return self.seek_request_state
+        if self._section_by_id(requested_section_id) is not None:
+            self.seek_request_state = SeekRequestState(
+                timestamp_ms,
+                requested_section_id,
+                SEEK_MODE_ARBITRARY_REQUESTED,
+                False,
+                SEEK_DENIED_ARBITRARY_NOT_SUPPORTED,
+                SEEK_DENIED_ARBITRARY_NOT_SUPPORTED,
+                None,
+                False,
+                False,
+            )
+            return self.seek_request_state
+        self.seek_request_state = SeekRequestState(
+            timestamp_ms,
+            requested_section_id,
+            SEEK_MODE_UNSUPPORTED,
+            False,
+            SEEK_DENIED_NOT_IN_LOCAL_BUFFER,
+            "unsupported_or_not_in_local_buffer",
+            None,
+            False,
+            False,
+        )
+        return self.seek_request_state
+
+    def execute_seek(self) -> bool:
+        target_id = self.seek_request_state.resolved_section_id
+        section = self._section_by_id(target_id)
+        verification = verify_physical_section(section, target_id)
+        self.next_section_id = target_id
+        self.next_verification_state = verification
+        if not verification.display_allowed:
+            self.seek_request_state.seek_status = SEEK_DENIED_UNVERIFIED_TARGET
+            self.seek_request_state.seek_fail_closed_reason = verification.reason or FAIL_CLOSED_UNVERIFIED_SECTION
+            self.fail_closed(verification.reason or FAIL_CLOSED_UNVERIFIED_SECTION, "do not seek to unverified target")
+            return False
+        if not self.stage_next():
+            self.seek_request_state.seek_status = SEEK_FAIL_CLOSED
+            return False
+        self._record_event("seek_staged", self.playback_state, self.playback_state, target_id or "", resolved_section_id=target_id, seek_mode=self.seek_request_state.seek_mode, seek_status=SEEK_AVAILABLE)
+        if not self.begin_transition_blank():
+            self.seek_request_state.seek_status = SEEK_FAIL_CLOSED
+            self.seek_request_state.seek_fail_closed_reason = self.fail_closed_events[-1].reason if self.fail_closed_events else FAIL_CLOSED_UNSAFE_TRANSITION
+            return False
+        self._record_event("seek_transition_blank", self.playback_state, self.playback_state, target_id or "", resolved_section_id=target_id, seek_mode=self.seek_request_state.seek_mode, seek_status=SEEK_AVAILABLE)
+        if not self.switch_visible_section():
+            self.seek_request_state.seek_status = SEEK_FAIL_CLOSED
+            self.seek_request_state.seek_fail_closed_reason = self.fail_closed_events[-1].reason if self.fail_closed_events else FAIL_CLOSED_UNVERIFIED_SECTION
+            return False
+        self._record_event("seek_switched", self.playback_state, self.playback_state, target_id or "", resolved_section_id=target_id, seek_mode=self.seek_request_state.seek_mode, seek_status=self.seek_request_state.seek_status)
+        if not self.park_old_section():
+            return False
+        self._record_event("seek_complete", self.playback_state, self.playback_state, target_id or "", resolved_section_id=target_id, seek_mode=self.seek_request_state.seek_mode, seek_status=self.seek_request_state.seek_status)
+        return True
 
     def fail_closed(self, reason: str, recommended_action: str) -> FailClosedDecision:
         self._append_safety_decision(
