@@ -31,6 +31,8 @@ The physical path does not replace AMCF logic. A future physical player would ph
 
 ## Physical reader and mechanical/optical physical player support
 
+Stage 1 Physical I/O Architecture adds a shared `AMCFPhysicalManifest` foundation for future printer output, reader recovery, and player control/recognition paths. It is software architecture and simulation support only: printer paths create/export carrier packages, reader paths recover/verify carrier packages back into digital AMCF, and player paths support future physical/optical execution of the same AMCF schedule.
+
 Physical reader support means future devices that read or scan AMCF physical media back into AMCF digital state for validation, recovery, diagnostics, or export.
 
 Physical-output/printer preparation support means software generation of indexed AMCF carrier packages that could later inform print, page, cartridge, or other material-output experiments. The package models carrier sections and lanes in software now; it does not claim real printing, real printer integration, print calibration, hardware validation, or manufacturing readiness.
