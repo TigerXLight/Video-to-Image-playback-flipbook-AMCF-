@@ -1,0 +1,164 @@
+{
+  "amcf_to_physical_carrier_demo": {
+    "actual_physical_printing_claimed": false,
+    "hardware_validation_claimed": false,
+    "lanes": [
+      "timing_index_lane",
+      "registration_lane",
+      "payload_lane",
+      "colour_registry_lane",
+      "metadata_lane",
+      "hash_checksum_lane"
+    ],
+    "output_kind": "software-generated indexed physical carrier package",
+    "physical_proof_claimed": false,
+    "status": "included"
+  },
+  "claim_boundaries": {
+    "final_ui_claimed": false,
+    "hardware_validation_claimed": false,
+    "physical_level5_claimed": false,
+    "physical_player_proof_claimed": false,
+    "physical_prototype_built": false,
+    "real_hardware_required": false
+  },
+  "concept_assets": [
+    "assets/concepts/amcf_mechanical_optical_physical_player_concept.svg",
+    "assets/concepts/amcf_mechanical_optical_physical_player_concept.html",
+    "assets/concepts/README.md"
+  ],
+  "created": "2026-10-10T19:18:47",
+  "deep_tool_repositories_bundled": false,
+  "files": [
+    "src/amcf_digital_encoder.py",
+    "src/amcf_digital_validator.py",
+    "demo/generate_sample_source_frames.py",
+    "demo/run_source_frames_to_amcf_digital_demo.py",
+    "demo/RUN_SOURCE_FRAMES_TO_AMCF_DIGITAL_DEMO.cmd",
+    "tests/test_source_frames_to_amcf_digital.py",
+    "examples/source_frames/README.md",
+    "src/amcf_physical_carrier.py",
+    "demo/run_amcf_to_physical_carrier_demo.py",
+    "demo/RUN_AMCF_TO_PHYSICAL_CARRIER_DEMO.cmd",
+    "tests/test_amcf_to_physical_carrier.py",
+    "docs/AMCF_PHYSICAL_CARRIER_OUTPUT_PACKAGE.md",
+    "src/amcf_virtual_carrier_reader.py",
+    "demo/run_virtual_reader_recovery_export_demo.py",
+    "demo/RUN_VIRTUAL_READER_RECOVERY_EXPORT_DEMO.cmd",
+    "tests/test_virtual_reader_recovery_export.py",
+    "docs/AMCF_VIRTUAL_READER_RECOVERY_EXPORT.md",
+    "src/amcf_mechanical_optical_player.py",
+    "demo/run_mechanical_optical_player_simulator_demo.py",
+    "demo/RUN_MECHANICAL_OPTICAL_PLAYER_SIMULATOR_DEMO.cmd",
+    "tests/test_mechanical_optical_player_simulator.py",
+    "docs/AMCF_MECHANICAL_OPTICAL_PLAYER_SIMULATOR.md",
+    "assets/concepts/amcf_mechanical_optical_physical_player_concept.svg",
+    "assets/concepts/amcf_mechanical_optical_physical_player_concept.html",
+    "assets/concepts/README.md",
+    "LICENSE_MAP.md",
+    "PUBLICATION_STATUS.md",
+    "THIRD_PARTY_NOTICES.md",
+    "assets/concepts/AMCF_MECHANICAL_OPTICAL_PHYSICAL_PLAYER_CONCEPT.md",
+    "assets/README.md",
+    "assets/concepts/existing/AMCF Reader Engineering Concept Board.png",
+    "assets/concepts/existing/AMCF_PLAYER_UI_PLAYBACK_INTERFACE_CONCEPT.png",
+    "assets/concepts/existing/OLD AMCF Complete System Architecture-2.png",
+    "assets/concepts/existing/OLD AMCF End-to-End Digital Architecture-1.png",
+    "assets/concepts/existing/AMCF Physical Reader Concept Board.png",
+    "assets/concepts/existing/README.md",
+    "LICENSE_DECISION_REQUIRED.md",
+    "site/index.html",
+    "site/styles.css",
+    "site/README.md",
+    ".github/workflows/pages.yml"
+  ],
+  "future_documented_only": [
+    "physical reader/recovery",
+    "AMCF Mechanical / Optical Physical Player",
+    "hybrid reader-player appliance"
+  ],
+  "generated_output_policy": "demo outputs regenerate locally and are ignored by default",
+  "github_pages_site": {
+    "claim_boundary": "documentation/context only",
+    "runtime_features_added": false,
+    "site_root": "site/",
+    "status": "included",
+    "workflow": ".github/workflows/pages.yml"
+  },
+  "implemented_now": [
+    "AMCF software runtime support",
+    "virtual cartridge/reader/scan-gate support",
+    "player handoff state",
+    "static Player UI state viewer stub",
+    "standard-library demo and tests"
+  ],
+  "included_docs": [
+    "docs/AMCF_CANONICAL_CONCEPT.md",
+    "docs/AMCF_PHYSICAL_MEDIUM_BOUNDARY.md",
+    "docs/AMCF_SOFTWARE_AND_PHYSICAL_SUPPORT_BOUNDARY.md",
+    "docs/AMCF_HARDWARE_SOFTWARE_PATHS.md",
+    "docs/AMCF_PHYSICAL_PLAYER_CONCEPT.md",
+    "docs/PHYSICAL_PLAYER_VISUAL_REFERENCE_NOTE.md",
+    "docs/SOFTWARE_FIRST_HARDWARE_SUPPORT.md",
+    "docs/PLAYER_UI_VIEWER_STUB.md",
+    "docs/OPTIONAL_DEEP_TOOL_ADAPTERS.md",
+    "CLAIM_BOUNDARIES.md",
+    "LICENSE_DECISION_REQUIRED.md",
+    "DEPENDENCIES_AND_PROVENANCE.md"
+  ],
+  "included_main_files": [
+    "src/amcf_vnext.py",
+    "src/amcf_virtual_hardware.py",
+    "cmd/RUN_AMCF_VNEXT.cmd"
+  ],
+  "included_viewer": "viewer/amcf_player_ui_state_viewer.html",
+  "mechanical_optical_player_simulator": {
+    "digital_screen_physical_player_claimed": false,
+    "hardware_validation_claimed": false,
+    "output_kind": "software-simulated mechanical/optical playback timeline",
+    "physical_proof_claimed": false,
+    "real_physical_playback_claimed": false,
+    "status": "included"
+  },
+  "model_checkpoints_bundled": false,
+  "package": "AMCF_GITHUB_CLEAN_PACKAGE",
+  "public_context_refresh": {
+    "adds_context_assets": true,
+    "adds_licence_map": true,
+    "adds_runtime_features": false,
+    "status": "included",
+    "strict_osi_open_source_claimed_for_whole_repo": false
+  },
+  "public_upload_asset_refresh": {
+    "corrected_physical_player_asset": "assets/concepts/amcf_mechanical_optical_physical_player_concept.svg",
+    "imported_assets_count": 5,
+    "mixed_licence_source_available_notice": true,
+    "runtime_features_added": false,
+    "status": "included"
+  },
+  "publication_status_files": [
+    "LICENSE_DECISION_REQUIRED.md",
+    "LICENSE_MAP.md",
+    "PUBLICATION_STATUS.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "refresh": "physical analog player docs correction",
+  "source_clean_package": "AMCF_GITHUB_CLEAN_PACKAGE_PREP/20261010_184058",
+  "source_frames_to_amcf_smoke_demo": {
+    "arbitrary_real_video_support_claimed": false,
+    "archive_extension": ".amcf.zip",
+    "hardware_validation_claimed": false,
+    "input": "generated deterministic PPM source frames",
+    "physical_proof_claimed": false,
+    "status": "included"
+  },
+  "virtual_reader_recovery_export_demo": {
+    "actual_physical_scanning_claimed": false,
+    "hardware_validation_claimed": false,
+    "mp4_video_container_export_claimed": false,
+    "output_kind": "recovered AMCF state and recovered PPM frame payloads",
+    "physical_proof_claimed": false,
+    "real_scanner_claimed": false,
+    "status": "included"
+  }
+}

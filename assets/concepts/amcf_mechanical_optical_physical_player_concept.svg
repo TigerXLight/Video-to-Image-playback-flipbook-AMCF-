@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc">
+  <title id="title">AMCF Physical Player - Mechanical / Optical Analog Playback Concept</title>
+  <desc id="desc">A deterministic concept diagram showing AMCF indexed media, section transport, fixed view gate, illumination, optical path, direct human viewing, secondary reader recovery lane, and claim boundaries.</desc>
+  <defs>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif}
+      .bg{fill:#f5f8fb}.ink{fill:#122033}.muted{fill:#4b5e73}.panel{fill:white;stroke:#b9c6d3;stroke-width:2}
+      .machine{fill:#26313e;stroke:#111827;stroke-width:3}.slot{fill:#0b1420;stroke:#60c7ff;stroke-width:3}
+      .media{fill:#e7fbff;stroke:#0f8aa8;stroke-width:2}.section{fill:#fdfefe;stroke:#0f8aa8;stroke-width:1.5}
+      .light{fill:#fff0a6;stroke:#b7791f;stroke-width:2}.optics{fill:#e8f2ff;stroke:#34699a;stroke-width:2}.safe{fill:#ecfdf5;stroke:#15803d;stroke-width:2}.warn{fill:#fff7ed;stroke:#c2410c;stroke-width:2}
+      .arrow{stroke:#09677f;stroke-width:5;fill:none;marker-end:url(#arrow)}.thin{stroke:#53677a;stroke-width:2;fill:none}
+      .h1{font-size:38px;font-weight:700}.h2{font-size:23px;font-weight:700}.label{font-size:17px}.small{font-size:14px}.tiny{font-size:12px}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#09677f"/></marker>
+  </defs>
+  <rect class="bg" width="1600" height="960"/>
+  <text x="42" y="58" class="h1 ink">AMCF PHYSICAL PLAYER</text>
+  <text x="42" y="92" class="h2 muted">Mechanical / Optical Analog Playback Concept</text>
+  <text x="42" y="122" class="label muted">AMCF physical media -> indexed transport -> fixed view/playback gate -> illumination / optical viewing path -> direct human viewing</text>
+
+  <rect x="44" y="160" width="290" height="220" rx="10" class="panel"/>
+  <text x="66" y="198" class="h2 ink">1. Indexed media</text>
+  <rect x="72" y="232" width="220" height="86" rx="7" class="media"/>
+  <line x1="105" y1="246" x2="105" y2="305" class="thin"/><line x1="140" y1="246" x2="140" y2="305" class="thin"/><line x1="175" y1="246" x2="175" y2="305" class="thin"/><line x1="210" y1="246" x2="210" y2="305" class="thin"/><line x1="245" y1="246" x2="245" y2="305" class="thin"/>
+  <text x="72" y="344" class="small muted">Cartridge / indexed section stack</text>
+  <text x="72" y="365" class="tiny muted">Not continuous film/ribbon default.</text>
+
+  <path d="M340 270 H455" class="arrow"/>
+  <rect x="462" y="160" width="330" height="220" rx="10" class="panel"/>
+  <text x="486" y="198" class="h2 ink">2. Section transport</text>
+  <rect x="510" y="248" width="230" height="32" rx="6" fill="#dff6ff" stroke="#0f8aa8" stroke-width="2"/>
+  <circle cx="545" cy="291" r="22" fill="#334155"/><circle cx="705" cy="291" r="22" fill="#334155"/>
+  <path d="M520 232 H725" class="arrow"/>
+  <text x="506" y="332" class="small muted">Regulated indexed motion: step, pause, reverse, seek</text>
+  <text x="506" y="354" class="tiny muted">No left-to-right flipbook default.</text>
+
+  <path d="M800 270 H915" class="arrow"/>
+  <rect x="922" y="160" width="310" height="220" rx="10" class="panel"/>
+  <text x="946" y="198" class="h2 ink">3. Fixed view/playback gate</text>
+  <rect x="980" y="238" width="192" height="96" rx="8" class="machine"/>
+  <rect x="1012" y="264" width="128" height="44" rx="3" class="slot"/>
+  <rect x="1022" y="273" width="108" height="26" class="section"/>
+  <text x="966" y="356" class="small muted">Aligned section is physically presented</text>
+
+  <rect x="952" y="420" width="250" height="120" rx="10" class="light"/>
+  <text x="978" y="456" class="h2 ink">4. Illumination</text>
+  <text x="978" y="486" class="small muted">Backlight / front light</text>
+  <text x="978" y="509" class="small muted">for physical visibility</text>
+  <path d="M1078 420 V344" class="arrow"/>
+
+  <path d="M1238 270 H1330" class="arrow"/>
+  <rect x="1338" y="160" width="220" height="220" rx="10" class="panel"/>
+  <text x="1360" y="198" class="h2 ink">5-6. Optics + viewing</text>
+  <polygon points="1380,250 1438,228 1438,312" class="optics"/>
+  <circle cx="1498" cy="276" r="34" class="light"/>
+  <path d="M1460 325 Q1498 300 1538 325 Q1498 350 1460 325Z" fill="#eef6ff" stroke="#334155" stroke-width="3"/>
+  <circle cx="1498" cy="325" r="10" fill="#122033"/>
+  <text x="1360" y="356" class="small muted">Viewing aperture / lens / prism</text>
+
+  <rect x="44" y="440" width="560" height="210" rx="10" class="panel"/>
+  <text x="66" y="478" class="h2 ink">7. Optional reader / recovery lane</text>
+  <rect x="80" y="508" width="470" height="40" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+  <text x="96" y="534" class="label muted">Secondary scan/recovery path for diagnostics or digital export</text>
+  <text x="80" y="582" class="small muted">This lane is separate from the physical viewing act.</text>
+  <text x="80" y="606" class="small muted">The main physical player is not scanner-first and not the software UI viewer.</text>
+
+  <rect x="660" y="585" width="530" height="90" rx="10" class="safe"/>
+  <text x="684" y="622" class="h2 ink">8. Controls</text>
+  <text x="684" y="654" class="label muted">Play | Pause | Step | Reverse | Seek</text>
+  <path d="M780 585 C760 510 740 430 690 350" class="thin"/>
+
+  <rect x="44" y="720" width="1514" height="150" rx="10" class="warn"/>
+  <text x="66" y="758" class="h2 ink">9. Claim boundary strip</text>
+  <text x="66" y="793" class="label muted">Mechanical/optical playback. No digital screen required. Not the software UI viewer. Not the reader/scanner path.</text>
+  <text x="66" y="825" class="label muted">Concept only. Not physical proof. Not hardware validation. Future manufactured device.</text>
+  <text x="66" y="856" class="small muted">Generated locally as deterministic SVG/HTML for AMCF public repository context.</text>
+</svg>

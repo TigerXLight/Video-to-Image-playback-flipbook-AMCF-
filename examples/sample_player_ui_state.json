@@ -1,0 +1,461 @@
+{
+  "accepted_count": 6,
+  "alpha_object_mask_status": [
+    "valid_mask",
+    "valid_mask",
+    "transparent_no_op",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask"
+  ],
+  "boundary_note": "Viewer stub only - not final UI, not physical proof, not hardware validation.",
+  "cartridge_status": {
+    "cartridge_id": "AMCF-VIRTUAL-CART-0001",
+    "inserted": true,
+    "section_count": 8
+  },
+  "claim_boundary": "Concept/state stub only; not final UI, not physical validation, not playback proof.",
+  "colour_calibration_status": "degraded_flag_present",
+  "component_payload_list": [
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 0,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 1,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "transparent_no_op",
+      "component_id": "noop-002",
+      "component_payload_state": "transparent_no_op",
+      "object_label": "transparent no-op",
+      "payload_state": "transparent_no_op",
+      "residual_tile_payload_status": "transparent_no_op",
+      "section_index": 2,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 3,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 4,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 4,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 5,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 5,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 6,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 6,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 7,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "counts": {
+    "accepted": 6,
+    "degraded": 1,
+    "rejected": 2,
+    "rescanned": 3,
+    "unsafe_acceptance": 0
+  },
+  "current_section": 2,
+  "degraded_count": 1,
+  "degraded_output_flags": [],
+  "fail_closed_status": "enabled",
+  "hash_checksum_status": "fail_closed_for_mismatch",
+  "hash_checksum_validation": true,
+  "marker_index_lock": "locked_or_fail_closed",
+  "playback_device_status": {
+    "current_section": 2,
+    "device_id": "AMCF-SOFTWARE-PLAYER-001",
+    "device_type": "software_playback",
+    "playing": false,
+    "reconstructed_playback_status": "playing_reconstructed_amcf"
+  },
+  "reader_status": {
+    "cartridge_inserted": true,
+    "current_section": 7,
+    "mode": "virtual_software_reader",
+    "reader_id": "AMCF-VIRTUAL-READER-001",
+    "rescan_requests": 3
+  },
+  "reconstructed_playback_status": "playing_reconstructed_amcf",
+  "rejected_count": 2,
+  "rejected_section_flags": [],
+  "rescanned_count": 3,
+  "residual_tile_payload_summary": [
+    "valid",
+    "valid",
+    "transparent_no_op",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid"
+  ],
+  "scan_lock": "virtual_scan_gate_validated",
+  "timeline_sections": [
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 0
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 1
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 2
+    },
+    {
+      "decision": "accepted_with_degraded_colour",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 3
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 0,
+      "section_index": 4
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 1,
+      "section_index": 4
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 0,
+      "section_index": 5
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 1,
+      "section_index": 5
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "transient_reader_rescan_needed",
+      "rescan_attempt": 0,
+      "section_index": 6
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 1,
+      "section_index": 6
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 7
+    }
+  ],
+  "transform_metadata_summary": [
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "unsafe_acceptance_count": 0,
+  "validation_log_rows": [
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 0,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 1,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 2,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted_with_degraded_colour",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 3,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 0,
+      "section_index": 4,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 1,
+      "section_index": 4,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 0,
+      "section_index": 5,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 1,
+      "section_index": 5,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "transient_reader_rescan_needed",
+      "rescan_attempt": 0,
+      "section_index": 6,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 1,
+      "section_index": 6,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 7,
+      "unsafe_acceptance": false
+    }
+  ],
+  "validation_status": {
+    "colour_calibration_status": "degraded_flag_present",
+    "fail_closed_status": "enabled",
+    "hash_checksum_status": "fail_closed_for_mismatch",
+    "marker_index_lock": "locked_or_fail_closed",
+    "scan_lock": "virtual_scan_gate_validated"
+  },
+  "viewer_schema": "amcf-player-ui-state-viewer-v1"
+}

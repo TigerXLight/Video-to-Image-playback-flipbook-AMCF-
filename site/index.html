@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AMCF Research Package</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav>
+      <strong>AMCF</strong>
+      <a href="#software-path">Software path</a>
+      <a href="#physical-path">Physical path</a>
+      <a href="#claims">Boundaries</a>
+      <a href="#links">Docs</a>
+    </nav>
+    <section>
+      <p class="eyebrow">Mixed-licence, source-available AMCF research repository</p>
+      <h1>Software-first AMCF runtime with virtual physical-media support.</h1>
+      <p class="lead">AMCF demonstrates a standard-library software path from generated source frames to AMCF digital archives, indexed physical-carrier packages, virtual reader recovery/export, and a mechanical/optical physical-player simulator.</p>
+      <div class="actions">
+        <a class="button" href="../README.md">Read the README</a>
+        <a class="button secondary" href="../QUICKSTART.md">Run the demos</a>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section id="overview" class="band">
+      <h2>AMCF overview</h2>
+      <p>AMCF is a software-first research package for representing video-like source material as indexed AMCF digital state, validating that state, preparing physical-carrier-style output, and simulating future reader/player paths without requiring manufactured hardware.</p>
+    </section>
+
+    <section id="software-path" class="grid">
+      <article>
+        <h2>Functional software path</h2>
+        <ol>
+          <li>Generated source frames become an AMCF digital archive.</li>
+          <li>The archive is validated with manifests, payloads, and hashes.</li>
+          <li>AMCF digital state can be handed to software playback/viewer state.</li>
+        </ol>
+      </article>
+      <article>
+        <h2>Demos and tests</h2>
+        <p>The package includes demos for source-frame encoding, physical-carrier package generation, virtual reader recovery/export, virtual hardware support, and mechanical/optical player simulation. The tests cover archive integrity, fail-closed validation, carrier lanes, recovery, and simulator controls.</p>
+      </article>
+    </section>
+
+    <section id="physical-path" class="grid">
+      <article>
+        <h2>Physical carrier and reader/recovery path</h2>
+        <p>AMCF digital archives can generate software carrier packages with indexed sections, timing/index, registration, payload, colour registry, metadata, and hash/checksum lanes. The virtual reader path reads those generated carrier sections, validates them, and exports recovered frame payloads.</p>
+      </article>
+      <article>
+        <h2>Mechanical/optical physical-player simulator</h2>
+        <p>The simulator models indexed sections moving through a fixed view/playback gate with illumination, alignment, play, pause, step, reverse, and seek controls. It is a software simulation of a future mechanical/optical player, not real physical playback.</p>
+      </article>
+    </section>
+
+    <section id="assets" class="band">
+      <h2>Concept assets</h2>
+      <p>The repository includes current and legacy concept references under <a href="../assets/concepts/">assets/concepts/</a>. The corrected physical-player concept defines the current physical playback direction: indexed media, fixed view/playback gate, illumination, optical path, and direct human viewing. Older diagrams are retained as context and may be superseded.</p>
+    </section>
+
+    <section id="claims" class="boundary">
+      <h2>Claim boundaries</h2>
+      <p>This site and repository do not claim strict OSI open source for the whole repo, arbitrary real video ingestion, MP4 export, real physical printing, real scanner hardware, actual physical scanning, real physical playback, hardware validation, physical proof, final UI, or a manufactured prototype.</p>
+    </section>
+
+    <section id="licence" class="band">
+      <h2>Mixed-licence/source-available notice</h2>
+      <p>Mixed-licence, source-available AMCF research repository.</p>
+      <p>Project-owned code, documentation, generated assets, and any third-party materials are governed by the licence notices that apply to their specific paths/files. Do not assume one licence applies to every file unless explicitly stated.</p>
+    </section>
+
+    <section id="links" class="links">
+      <h2>Repository docs</h2>
+      <a href="../README.md">README</a>
+      <a href="../QUICKSTART.md">QUICKSTART</a>
+      <a href="../docs/">Docs folder</a>
+      <a href="../assets/concepts/">Concept assets</a>
+      <a href="../LICENSE_MAP.md">License map</a>
+      <a href="../PUBLICATION_STATUS.md">Publication status</a>
+      <a href="../THIRD_PARTY_NOTICES.md">Third-party notices</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>Static GitHub Pages site. Documentation/context only; AMCF runtime functionality lives in the repository package.</p>
+  </footer>
+</body>
+</html>

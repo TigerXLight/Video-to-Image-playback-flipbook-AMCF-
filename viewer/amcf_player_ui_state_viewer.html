@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AMCF Player UI State Viewer Stub</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(#eef4f7,#101820);
+  --panel: light-dark(#ffffff,#15222c);
+  --panel2: light-dark(#f7fbfd,#1d2d39);
+  --text: light-dark(#10202b,#e9f2f6);
+  --muted: light-dark(#506675,#a4b5bf);
+  --border: light-dark(#bfd0d8,#2b4250);
+  --accent: #22a7d8;
+  --ok: #2fc66d;
+  --warn: #e5b72d;
+  --bad: #ef4d56;
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family: Arial, Helvetica, sans-serif; }
+header { padding:16px 20px; border-bottom:1px solid var(--border); background:var(--panel); }
+h1 { margin:0; font-size:24px; }
+.boundary { margin-top:8px; padding:8px 10px; background:light-dark(#fff4dc,#3a2c14); border:1px solid var(--border); border-radius:6px; font-weight:700; }
+.grid { display:grid; grid-template-columns: 1.2fr .9fr; gap:14px; padding:14px; }
+.panel { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px; }
+.wide { grid-column:1/-1; }
+h2 { margin:0 0 10px; font-size:18px; }
+.video { aspect-ratio: 16/7; border:1px solid var(--border); border-radius:6px; background:linear-gradient(180deg, light-dark(#d7ecff,#20374a), light-dark(#cfe8c6,#26392c)); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; }
+.metrics { display:grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap:8px; }
+.metric { background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:8px; }
+.metric b { display:block; font-size:22px; }
+.timeline { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; }
+.section { min-width:96px; border:1px solid var(--border); border-radius:6px; padding:6px; background:var(--panel2); }
+.accepted { border-color:var(--ok); }
+.accepted_with_degraded_colour,.rescan_required { border-color:var(--warn); }
+.rejected_fail_closed { border-color:var(--bad); }
+table { width:100%; border-collapse:collapse; }
+th,td { border-bottom:1px solid var(--border); padding:6px; text-align:left; vertical-align:top; }
+th { color:var(--muted); font-weight:700; }
+code { color:var(--accent); }
+@media (max-width: 980px) { .grid { grid-template-columns: 1fr; } .metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>AMCF Player UI State Viewer Stub</h1>
+  <div class="boundary">Viewer stub only — not final UI, not physical proof, not hardware validation.</div>
+</header>
+<main class="grid">
+  <section class="panel">
+    <h2>Reconstructed Playback</h2>
+    <div class="video" id="playback">Reconstructed Playback</div>
+    <p>Status: <code id="playbackStatus"></code> · Current section: <code id="currentSection"></code></p>
+  </section>
+  <section class="panel">
+    <h2>Reader / Cartridge Status</h2>
+    <div id="readerStatus"></div>
+  </section>
+  <section class="panel wide">
+    <h2>Validation Status</h2>
+    <div class="metrics" id="metrics"></div>
+  </section>
+  <section class="panel wide">
+    <h2>AMCF Section Timeline</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+  <section class="panel">
+    <h2>Component Payloads</h2>
+    <div id="components"></div>
+  </section>
+  <section class="panel">
+    <h2>Alpha / Object Mask</h2>
+    <div id="alphaMask"></div>
+  </section>
+  <section class="panel">
+    <h2>Transform Metadata</h2>
+    <div id="transformMeta"></div>
+  </section>
+  <section class="panel">
+    <h2>Residual / Tile Payload</h2>
+    <div id="residualTile"></div>
+  </section>
+  <section class="panel wide">
+    <h2>Validation Log</h2>
+    <div id="validationLog"></div>
+  </section>
+  <section class="panel wide">
+    <h2>Fail-Closed Decisions</h2>
+    <div id="failClosed"></div>
+  </section>
+</main>
+<script id="amcf-state" type="application/json">{
+  "accepted_count": 6,
+  "alpha_object_mask_status": [
+    "valid_mask",
+    "valid_mask",
+    "transparent_no_op",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask",
+    "valid_mask"
+  ],
+  "boundary_note": "Viewer stub only - not final UI, not physical proof, not hardware validation.",
+  "cartridge_status": {
+    "cartridge_id": "AMCF-VIRTUAL-CART-0001",
+    "inserted": true,
+    "section_count": 8
+  },
+  "claim_boundary": "Concept/state stub only; not final UI, not physical validation, not playback proof.",
+  "colour_calibration_status": "degraded_flag_present",
+  "component_payload_list": [
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 0,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 1,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "transparent_no_op",
+      "component_id": "noop-002",
+      "component_payload_state": "transparent_no_op",
+      "object_label": "transparent no-op",
+      "payload_state": "transparent_no_op",
+      "residual_tile_payload_status": "transparent_no_op",
+      "section_index": 2,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 3,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 4,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 4,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 5,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 5,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 6,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 6,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "alpha_object_mask_status": "valid_mask",
+      "component_id": "tree-001",
+      "component_payload_state": "present",
+      "object_label": "tree object",
+      "payload_state": "component_payload",
+      "residual_tile_payload_status": "valid",
+      "section_index": 7,
+      "transform_metadata": {
+        "rotation": 0.0,
+        "scale": 1.0,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "counts": {
+    "accepted": 6,
+    "degraded": 1,
+    "rejected": 2,
+    "rescanned": 3,
+    "unsafe_acceptance": 0
+  },
+  "current_section": 2,
+  "degraded_count": 1,
+  "degraded_output_flags": [],
+  "fail_closed_status": "enabled",
+  "hash_checksum_status": "fail_closed_for_mismatch",
+  "hash_checksum_validation": true,
+  "marker_index_lock": "locked_or_fail_closed",
+  "playback_device_status": {
+    "current_section": 2,
+    "device_id": "AMCF-SOFTWARE-PLAYER-001",
+    "device_type": "software_playback",
+    "playing": false,
+    "reconstructed_playback_status": "playing_reconstructed_amcf"
+  },
+  "reader_status": {
+    "cartridge_inserted": true,
+    "current_section": 7,
+    "mode": "virtual_software_reader",
+    "reader_id": "AMCF-VIRTUAL-READER-001",
+    "rescan_requests": 3
+  },
+  "reconstructed_playback_status": "playing_reconstructed_amcf",
+  "rejected_count": 2,
+  "rejected_section_flags": [],
+  "rescanned_count": 3,
+  "residual_tile_payload_summary": [
+    "valid",
+    "valid",
+    "transparent_no_op",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid",
+    "valid"
+  ],
+  "scan_lock": "virtual_scan_gate_validated",
+  "timeline_sections": [
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 0
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 1
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 2
+    },
+    {
+      "decision": "accepted_with_degraded_colour",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 3
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 0,
+      "section_index": 4
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 1,
+      "section_index": 4
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 0,
+      "section_index": 5
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 1,
+      "section_index": 5
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "transient_reader_rescan_needed",
+      "rescan_attempt": 0,
+      "section_index": 6
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 1,
+      "section_index": 6
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 7
+    }
+  ],
+  "transform_metadata_summary": [
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "rotation": 0.0,
+      "scale": 1.0,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "unsafe_acceptance_count": 0,
+  "validation_log_rows": [
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 0,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 1,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 2,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted_with_degraded_colour",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 3,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 0,
+      "section_index": 4,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "hash_checksum_mismatch",
+      "rescan_attempt": 1,
+      "section_index": 4,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 0,
+      "section_index": 5,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rejected_fail_closed",
+      "issues": "timing_index_marker_invalid_or_missing",
+      "rescan_attempt": 1,
+      "section_index": 5,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "rescan_required",
+      "issues": "transient_reader_rescan_needed",
+      "rescan_attempt": 0,
+      "section_index": 6,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 1,
+      "section_index": 6,
+      "unsafe_acceptance": false
+    },
+    {
+      "decision": "accepted",
+      "issues": "",
+      "rescan_attempt": 0,
+      "section_index": 7,
+      "unsafe_acceptance": false
+    }
+  ],
+  "validation_status": {
+    "colour_calibration_status": "degraded_flag_present",
+    "fail_closed_status": "enabled",
+    "hash_checksum_status": "fail_closed_for_mismatch",
+    "marker_index_lock": "locked_or_fail_closed",
+    "scan_lock": "virtual_scan_gate_validated"
+  },
+  "viewer_schema": "amcf-player-ui-state-viewer-v1"
+}</script>
+<script>
+const state = JSON.parse(document.getElementById('amcf-state').textContent);
+const esc = (v) => String(v ?? '').replace(/[&<>]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]));
+document.getElementById('playbackStatus').textContent = state.reconstructed_playback_status;
+document.getElementById('currentSection').textContent = state.current_section;
+document.getElementById('readerStatus').innerHTML = `<p><b>Reader:</b> ${esc(state.reader_status?.reader_id)}<br><b>Cartridge:</b> ${esc(state.cartridge_status?.cartridge_id)}<br><b>Marker / Index Lock:</b> ${esc(state.marker_index_lock)}<br><b>Scan Lock:</b> ${esc(state.scan_lock)}<br><b>Colour Calibration:</b> ${esc(state.colour_calibration_status)}<br><b>Hash / Checksum Status:</b> ${esc(state.hash_checksum_status)}<br><b>Fail-Closed Status:</b> ${esc(state.fail_closed_status)}</p>`;
+document.getElementById('metrics').innerHTML = [
+  ['Accepted', state.accepted_count], ['Rescanned', state.rescanned_count], ['Rejected', state.rejected_count], ['Degraded', state.degraded_count], ['Unsafe Acceptance', state.unsafe_acceptance_count]
+].map(([label,value]) => `<div class="metric"><span>${label}</span><b>${esc(value)}</b></div>`).join('');
+document.getElementById('timeline').innerHTML = state.timeline_sections.map(s => `<div class="section ${esc(s.decision)}"><b>#${esc(s.section_index)}</b><br>${esc(s.decision)}<br><small>attempt ${esc(s.rescan_attempt)}</small></div>`).join('');
+const componentRows = state.component_payload_list.map(c => `<tr><td>${esc(c.section_index)}</td><td>${esc(c.object_label)}</td><td>${esc(c.payload_state)}</td><td>${esc(c.component_payload_state)}</td></tr>`).join('');
+document.getElementById('components').innerHTML = `<table><thead><tr><th>Section</th><th>Object</th><th>Payload</th><th>State</th></tr></thead><tbody>${componentRows}</tbody></table>`;
+document.getElementById('alphaMask').innerHTML = `<ul>${state.alpha_object_mask_status.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+document.getElementById('transformMeta').innerHTML = `<pre>${esc(JSON.stringify(state.transform_metadata_summary, null, 2))}</pre>`;
+document.getElementById('residualTile').innerHTML = `<ul>${state.residual_tile_payload_summary.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+const logRows = state.validation_log_rows.map(row => `<tr><td>${esc(row.section_index)}</td><td>${esc(row.rescan_attempt)}</td><td>${esc(row.decision)}</td><td>${esc(row.issues)}</td><td>${esc(row.unsafe_acceptance)}</td></tr>`).join('');
+document.getElementById('validationLog').innerHTML = `<table><thead><tr><th>Section</th><th>Attempt</th><th>Decision</th><th>Issues</th><th>Unsafe</th></tr></thead><tbody>${logRows}</tbody></table>`;
+const rejected = state.validation_log_rows.filter(row => row.decision === 'rejected_fail_closed');
+document.getElementById('failClosed').innerHTML = `<p>Rejected fail-closed sections: <b>${rejected.length}</b>. Unsafe acceptance count: <b>${esc(state.unsafe_acceptance_count)}</b>. Unsafe acceptance policy: zero tolerated.</p>`;
+</script>
+</body>
+</html>

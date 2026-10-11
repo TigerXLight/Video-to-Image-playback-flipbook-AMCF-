@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+  --ink: #142235;
+  --muted: #516174;
+  --line: #c8d3df;
+  --paper: #ffffff;
+  --soft: #f4f8fb;
+  --accent: #0a6f85;
+  --accent-dark: #084d5d;
+  --warn-bg: #fff7ed;
+  --warn-line: #c2410c;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: var(--ink); background: var(--soft); line-height: 1.55; }
+a { color: var(--accent-dark); }
+nav { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; padding: 18px 28px; border-bottom: 1px solid rgba(255,255,255,.28); }
+nav strong { margin-right: auto; font-size: 22px; letter-spacing: .04em; }
+nav a { color: white; text-decoration: none; font-size: 14px; }
+.hero { color: white; background: linear-gradient(135deg, #132333 0%, #0a586a 70%, #0d788a 100%); }
+.hero section { max-width: 1100px; padding: 78px 28px 94px; margin: 0 auto; }
+.eyebrow { text-transform: uppercase; letter-spacing: .08em; font-size: 13px; opacity: .86; }
+h1 { font-size: clamp(36px, 5vw, 66px); line-height: 1.02; max-width: 980px; margin: 12px 0 20px; }
+h2 { margin: 0 0 14px; font-size: 26px; }
+.lead { max-width: 860px; font-size: 20px; color: rgba(255,255,255,.88); }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.button { display: inline-block; padding: 11px 15px; border-radius: 6px; background: white; color: var(--accent-dark); text-decoration: none; font-weight: 700; }
+.button.secondary { background: transparent; color: white; border: 1px solid rgba(255,255,255,.58); }
+main { max-width: 1180px; margin: 0 auto; padding: 34px 22px 56px; }
+.band, .grid article, .boundary, .links { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 24px; margin: 18px 0; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.boundary { background: var(--warn-bg); border-color: var(--warn-line); }
+.links { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.links h2 { width: 100%; }
+.links a { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: #f8fbfd; text-decoration: none; }
+footer { text-align: center; color: var(--muted); padding: 26px; border-top: 1px solid var(--line); }
+@media (max-width: 760px) {
+  nav strong { width: 100%; }
+  .grid { grid-template-columns: 1fr; }
+  .hero section { padding-top: 48px; padding-bottom: 64px; }
+}

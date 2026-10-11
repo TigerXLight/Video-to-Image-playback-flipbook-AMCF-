@@ -1,0 +1,499 @@
+{
+  "cartridge_id": "AMCF-VIRTUAL-CART-0001",
+  "description": "Synthetic virtual AMCF cartridge for reader/player abstraction tests.",
+  "schema_version": "amcf-virtual-hardware-v1",
+  "section_count": 8,
+  "sections": [
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "92c7c583397cde91bd33e95bbb753e42f7f03c152e07624016e1fe6781091be3",
+        "observed": "92c7c583397cde91bd33e95bbb753e42f7f03c152e07624016e1fe6781091be3",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 0.0,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 0,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/0",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 0,
+        "timing_tick": 0,
+        "valid": true
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "1110387e796d24c6407a8931b24abbbc62bdd65f51a47601577da396ffd2434e",
+        "observed": "1110387e796d24c6407a8931b24abbbc62bdd65f51a47601577da396ffd2434e",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 41.708,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 1,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/1",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 1,
+        "timing_tick": 1000,
+        "valid": true
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "transparent_no_op",
+        "present": false,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": null,
+        "object_label": null,
+        "present": false,
+        "state": "transparent_no_op"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "7c92607d45eba24f74da02edd9c32b314e844d2104422ae417d6e9a7bc185fd1",
+        "observed": "7c92607d45eba24f74da02edd9c32b314e844d2104422ae417d6e9a7bc185fd1",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 83.416,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 2,
+      "section_payload": {
+        "bbox": null,
+        "component_id": "noop-002",
+        "data_ref": null,
+        "object_label": "transparent no-op",
+        "payload_state": "transparent_no_op"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 2,
+        "timing_tick": 2000,
+        "valid": true
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": true,
+        "delta_e_proxy": 9.5,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "7cb0f96a8daf314653627edfa933897a3203c3c589123977168d5fa37905aac7",
+        "observed": "7cb0f96a8daf314653627edfa933897a3203c3c589123977168d5fa37905aac7",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 125.124,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 3,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/3",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 3,
+        "timing_tick": 3000,
+        "valid": true
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "72965731e48df02aac78de79091132842b94d7dd8884d6d0e924079913ef1a5f",
+        "observed": "mismatch-72965731e48df02a",
+        "valid": false
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 166.832,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 4,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/4",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 4,
+        "timing_tick": 4000,
+        "valid": true
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "10bcf4f9dc3b559ffcf98c8ccb18bfcc42f01a0d7724804c93b49c197dfe5b7d",
+        "observed": "10bcf4f9dc3b559ffcf98c8ccb18bfcc42f01a0d7724804c93b49c197dfe5b7d",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 208.54,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 5,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/5",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": false,
+        "section_index": 5,
+        "timing_tick": 5000,
+        "valid": false
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "ef3c76b68732e2af31d292b8b3a569184310fc23a23e6835bc53611acb2ab514",
+        "observed": "ef3c76b68732e2af31d292b8b3a569184310fc23a23e6835bc53611acb2ab514",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 250.248,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": true
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 6,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/6",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 6,
+        "timing_tick": 6000,
+        "valid": true
+      }
+    },
+    {
+      "alpha_object_mask_lane": {
+        "mask_state": "valid_mask",
+        "present": true,
+        "valid": true
+      },
+      "colour_registry_lane": {
+        "degraded": false,
+        "delta_e_proxy": 1.2,
+        "profile": "AMCF-Rec709-virtual",
+        "valid": true
+      },
+      "component_payload_lane": {
+        "component_id": "tree-001",
+        "object_label": "tree object",
+        "present": true,
+        "state": "present"
+      },
+      "hash_checksum_lane": {
+        "algorithm": "sha256",
+        "expected": "7d36132ac5075e0e40d9253d7e76b2eb927997538569c6a056e311d3ab206c52",
+        "observed": "7d36132ac5075e0e40d9253d7e76b2eb927997538569c6a056e311d3ab206c52",
+        "valid": true
+      },
+      "metadata_transform_lane": {
+        "timestamp_ms": 291.956,
+        "transform": {
+          "rotation": 0.0,
+          "scale": 1.0,
+          "x": 0,
+          "y": 0
+        },
+        "valid": true
+      },
+      "read_hint": {
+        "rescan_needed_once": false
+      },
+      "registration_lane": {
+        "corner_markers_present": true,
+        "skew_px": 0.0,
+        "valid": true
+      },
+      "section_index": 7,
+      "section_payload": {
+        "bbox": [
+          220,
+          120,
+          620,
+          720
+        ],
+        "component_id": "tree-001",
+        "data_ref": "synthetic://component/tree-001/section/7",
+        "object_label": "tree object",
+        "payload_state": "component_payload"
+      },
+      "timing_index_lane": {
+        "marker_present": true,
+        "section_index": 7,
+        "timing_tick": 7000,
+        "valid": true
+      }
+    }
+  ]
+}
