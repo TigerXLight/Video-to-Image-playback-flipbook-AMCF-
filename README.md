@@ -59,9 +59,14 @@ Physical reader/player concepts are future-facing support targets. The physical-
 
 ## Licence / publication status
 
-No final licence has been selected. Public GitHub upload should choose and document a licence or publication status first. Private GitHub upload can proceed with no licence only if intentionally private/no-license.
+Publication status:
+This repository is published as a mixed-licence, source-available AMCF research repository.
 
-Until licence and commercial-use status are finalised, avoid describing the package as strict open source.
+Project-owned code, documentation, generated assets, and any third-party materials are governed by the licence notices that apply to their specific paths/files. Do not assume one licence applies to every file unless explicitly stated.
+
+A final single legal licence has not been selected for all project-owned material. See `LICENSE_MAP.md`, `PUBLICATION_STATUS.md`, and `THIRD_PARTY_NOTICES.md`.
+
+Do not describe the whole repository as strict OSI open source.
 
 ## Quickstart
 

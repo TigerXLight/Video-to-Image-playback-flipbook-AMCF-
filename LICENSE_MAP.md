@@ -1,8 +1,10 @@
 # License Map
 
-This repository is currently prepared as a mixed-licence AMCF research repository.
+This repository is published as a mixed-licence, source-available AMCF research repository.
 
-Project-owned code, documentation, generated assets, and any third-party materials must follow the licence notices that apply to their specific paths/files. Do not assume one licence applies to every file unless explicitly stated.
+Project-owned code, documentation, generated assets, and any third-party materials are governed by the licence notices that apply to their specific paths/files. Do not assume one licence applies to every file unless explicitly stated.
+
+A final single legal licence has not been selected for all project-owned material.
 
 ## Path status
 

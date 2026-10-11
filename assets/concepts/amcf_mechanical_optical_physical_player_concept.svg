@@ -41,8 +41,9 @@
   <rect x="532" y="235" width="246" height="48" rx="7" class="media"/>
   <circle cx="560" cy="304" r="24" fill="#334155"/><circle cx="750" cy="304" r="24" fill="#334155"/>
   <path d="M655 350 V235" class="arrow"/>
-  <text x="492" y="382" class="small muted">Controlled section motion: pause, restart, reverse, seek/index</text>
-  <text x="492" y="405" class="tiny muted">Manual crank remains slow recovery mode, not primary fluid playback.</text>
+  <text x="492" y="382" class="small muted">Controlled section motion: pause, latch/brake, reverse, seek/index</text>
+  <text x="492" y="405" class="tiny muted">Sensor feedback / index lock checks section position before presentation.</text>
+  <text x="492" y="428" class="tiny muted">Manual crank remains slow recovery mode, not primary fluid playback.</text>
 
   <path d="M880 292 H965" class="arrow"/>
   <rect x="976" y="160" width="380" height="270" rx="10" class="panel"/>
@@ -53,7 +54,7 @@
   <line x1="1102" y1="282" x2="1220" y2="282" stroke="#0d819a" stroke-width="2"/>
   <line x1="1102" y1="291" x2="1220" y2="291" stroke="#be123c" stroke-width="2"/>
   <text x="1000" y="380" class="small muted">Aligned page/section presented in a physical window</text>
-  <text x="1000" y="404" class="tiny muted">Same gate family can support asynchronous scan/recovery.</text>
+  <text x="1000" y="404" class="tiny muted">Shutter/dwell timing can lock to index marks; scan/recovery is secondary.</text>
 
   <path d="M1365 292 H1452" class="arrow"/>
   <rect x="1462" y="160" width="294" height="270" rx="10" class="panel"/>
