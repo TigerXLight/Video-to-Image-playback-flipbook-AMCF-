@@ -4,6 +4,8 @@ AMCF means Adaptive Multi-Rate Component Flipbook.
 
 The core idea is not that AMCF must be a literal paper flipbook. The core idea is that video can be represented as image-motion playback: a source video is converted into an AMCF archive made of visual components, component updates, timing, masks, placement, audio, indexes, and reconstruction rules. Playback is then produced by synchronising and compositing those image/component states so the viewer receives the same motion result as the original video.
 
+Digital AMCF is the canonical AMCF representation, scheduler, and validation model. Physical AMCF is the material embodiment of the same AMCF timing/update structure, not a separate unrelated invention. A physical reader path recovers or verifies physical AMCF back into digital AMCF. A physical player path physically/optically presents AMCF media according to the same dynamic update schedule that is defined, tested, and validated digitally.
+
 In simple terms:
 
 ```text
@@ -100,4 +102,6 @@ Exact pixel identity is not guaranteed when lossy compression is used. Quality m
 
 Physical construction is a later branch. AMCF is the digital process/view of the same principle: video represented as image/component motion rather than normal monolithic video frames.
 
-A physical AMCF device would be a material carrier and reader for the AMCF sequence. It might use a vertical stack, continuous film-track ribbon, optical timing marks, color registry, and a scanner or line sensor. The best physical mechanism is not yet fixed and should be tested separately from the digital AMCF proof.
+A physical AMCF device would be a material carrier, reader, or player for the AMCF sequence. It would not replace the AMCF logic; it would physically execute, recover, or verify the AMCF schedule that remains canonical in digital AMCF. The current preferred physical-player direction is a dynamic folded-path A/B staged indexed-section mechanism for optical presentation, while reader/recovery remains a verification/export path back into digital AMCF.
+
+No real manufactured hardware, hardware validation, or physical proof is claimed here. Physical AMCF remains future material embodiment and testing of the same canonical digital AMCF model.

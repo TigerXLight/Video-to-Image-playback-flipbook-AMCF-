@@ -2,6 +2,8 @@
 
 The AMCF package is software-first. Current implementation is software and virtual hardware support. Future physical paths are represented by abstractions and documentation only.
 
+Digital AMCF is the canonical AMCF representation, scheduler, and validation model. Physical AMCF is the material embodiment of the same AMCF timing/update structure. Reader paths recover or verify physical AMCF back into digital AMCF; player paths physically/optically present AMCF media according to that same dynamic schedule.
+
 ## Path A - Pure software
 
 ```text
@@ -34,7 +36,7 @@ AMCF physical media -> folded indexed transport -> A/B staging gates -> fixed ph
 
 This is the corrected physical-player path. Playback is physical/mechanical/optical and should not be collapsed into a software UI viewer, LCD/OLED tablet, monitor, or normal digital display path.
 
-The preferred future physical mechanism is dynamic rather than fixed-FPS page playback. It should hold the current section at the visible gate, preload the next required section in a hidden A/B staging gate, blank the optical path during the transition, and fail closed if the next section is not verified in time.
+The preferred future physical mechanism is dynamic rather than fixed-FPS page playback. It should hold the current section at the visible gate, preload the next required section in a hidden A/B staging gate, blank the optical path during the transition, and fail closed if the next section is not verified in time. This physical motion follows the AMCF update schedule defined and validated digitally.
 
 ## Path E - Hybrid reader-player appliance
 

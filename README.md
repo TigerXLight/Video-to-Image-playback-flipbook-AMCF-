@@ -1,6 +1,6 @@
 # AMCF GitHub Clean Package
 
-AMCF is a software-first runtime and validation path for indexed component playback. The AMCF digital representation/process is canonical. This clean package focuses on the reusable AMCF core plus virtual hardware support for future physical reader and physical player integrations.
+AMCF is a software-first runtime and validation path for indexed component playback. Digital AMCF is the canonical AMCF representation, scheduler, and validation model. Physical AMCF is the material embodiment of the same AMCF timing/update structure. This clean package focuses on the reusable AMCF core plus virtual hardware support for future physical reader and physical player integrations.
 
 ## What is included
 
@@ -27,6 +27,8 @@ No real hardware is required. Hardware support is represented through software a
 
 The package works now in software through virtual hardware abstractions. Future physical work can connect through adapters, but this package does not require sensors, motors, cartridges, real scans, manufacturing, or a physical prototype.
 
+The physical path does not replace AMCF logic. A future physical player would physically/optically execute the AMCF schedule that is defined, tested, and validated digitally. The reader path recovers or verifies physical AMCF back into digital AMCF. The player path physically/optically presents AMCF media according to the same dynamic update schedule.
+
 ## Physical reader and mechanical/optical physical player support
 
 Physical reader support means future devices that read or scan AMCF physical media back into AMCF digital state for validation, recovery, diagnostics, or export.
@@ -35,7 +37,7 @@ Physical-output/printer preparation support means software generation of indexed
 
 Physical player support means future mechanical/optical devices that physically present AMCF media for direct viewing through controlled motion and a fixed view gate. The preferred future mechanism is a compact tablet-like handheld body with a folded internal media path, side-loaded indexed section cartridge, A/B staging gates or equivalent physical double-buffering, shutter/illumination blanking, prefetch/reader lanes, sensor feedback/index lock, brake/latch/pause, and reverse/seek/index where practical.
 
-The physical player is dynamic: it should move media according to the AMCF update schedule, hold visible states at the view gate, and preload the next required section so transitions can appear near-instant. It is not a fixed-FPS physical page machine and not a long linear roller path by default.
+The physical player is dynamic: it should move media according to the AMCF update schedule defined by digital AMCF, hold visible states at the view gate, and preload the next required section so transitions can appear near-instant. It is not a fixed-FPS physical page machine and not a long linear roller path by default.
 
 The physical player is not the same thing as the software UI viewer. It is not merely a digital monitor, LCD/OLED tablet, or screen appliance. Digital electronics or a microcontroller may support motor control, timing, calibration, audio sync, and error handling, but visual playback remains physical/optical. A combined reader-player appliance is possible later, with shared media/transport plus separate reader/recovery and physical view/playback roles.
 

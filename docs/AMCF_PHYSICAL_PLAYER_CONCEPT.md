@@ -4,6 +4,8 @@
 
 The AMCF physical player is a future mechanical/optical playback device that uses controlled physical transport of AMCF media through a fixed view gate, with illumination or optical presentation, so the AMCF sequence can be viewed physically without requiring a digital display.
 
+Digital AMCF is the canonical AMCF representation, scheduler, and validation model. Physical AMCF is the material embodiment of the same AMCF timing/update structure. The physical player does not replace AMCF logic; it physically/optically executes the AMCF schedule that is defined, tested, and validated digitally.
+
 The preferred future mechanism is a dynamic folded-path A/B staged indexed-section player: a compact tablet-like handheld body with a folded internal media path, side-loaded cartridge/card/section stack, a visible view gate, a hidden preload/staging gate, shutter/illumination blanking, and reader/prefetch lanes for timing/index/hash checks.
 
 ## 2. What it is not
@@ -37,7 +39,7 @@ Physical AMCF playback should remain dynamic like digital AMCF. The player shoul
 
 The physical reader/scanner path reads physical AMCF media lanes and validates timing/index, registration, colour, metadata, hash/checksum, and related recovery data. Its role is recovery, diagnostics, validation, and optional export back into digital AMCF state.
 
-The physical player path presents the physical media directly. It uses transport, illumination, and a view gate so a person can view the AMCF sequence without relying on a digital display system for the playback act.
+The physical player path presents the physical media directly. It uses transport, illumination, and a view gate so a person can view the AMCF sequence without relying on a digital display system for the playback act. It presents AMCF media according to the same dynamic update schedule validated by digital AMCF.
 
 ## 5. Combined reader-player appliance
 
