@@ -138,11 +138,11 @@ Claim boundary: software/control closeout handoff only; no physical hardware val
 
 `AMCF_PUBLIC_RELEASE_TAG_PREP_V1`
 
-Commit: current run, not committed yet.
+Commit: `e7e13155db3441887c5982cb0dfa9bd91383390a`
 
 Purpose: prepare release tag materials, suggested tag name, release notes draft, release checklist, tag-readiness report, claim-boundary scan, generated-output scan, local-path scan, and unsafe hardware claim scan.
 
-Validation summary: to be recorded by this run.
+Validation summary: py_compile PASS, unittest discovery PASS with 291 tests, integrated simulator demo PASS, release review PASS, package refresh PASS, final Pages review PASS, closeout handoff PASS, tag prep report PASS, tag_created false, `unsafe_acceptance_count` 0.
 
 Claim boundary: tag preparation only; no tag created, no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
 
