@@ -33,6 +33,7 @@ def validate_amcf_archive(archive_path: str | Path) -> dict[str, Any]:
     warnings: list[str] = []
     manifest: dict[str, Any] = {}
     validated_payloads = 0
+    validated_audio_payloads = 0
 
     if not archive_path.exists():
         return {
@@ -86,6 +87,19 @@ def validate_amcf_archive(archive_path: str | Path) -> dict[str, Any]:
                         errors.append(f"byte_count_mismatch:{payload_path}")
                         continue
                     validated_payloads += 1
+                audio = manifest.get("audio")
+                if isinstance(audio, dict) and audio.get("payload_path"):
+                    audio_path = str(audio.get("payload_path", ""))
+                    if audio_path not in names:
+                        errors.append(f"missing_audio_payload:{audio_path}")
+                    else:
+                        payload = zf.read(audio_path)
+                        if sha256_bytes(payload) != audio.get("sha256"):
+                            errors.append(f"audio_hash_mismatch:{audio_path}")
+                        elif len(payload) != int(audio.get("bytes", -1)):
+                            errors.append(f"audio_byte_count_mismatch:{audio_path}")
+                        else:
+                            validated_audio_payloads += 1
     except zipfile.BadZipFile:
         errors.append("bad_zip_file")
     except json.JSONDecodeError as exc:
@@ -98,6 +112,7 @@ def validate_amcf_archive(archive_path: str | Path) -> dict[str, Any]:
         "amcf_schema": manifest.get("amcf_schema"),
         "frame_count": int(manifest.get("frame_count", 0) or 0),
         "validated_payloads": validated_payloads,
+        "validated_audio_payloads": validated_audio_payloads,
         "errors": errors,
         "warnings": warnings,
         "unsafe_acceptance_count": 0,

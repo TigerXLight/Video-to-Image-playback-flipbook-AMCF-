@@ -14,7 +14,7 @@ Public destination root: `<public-repo>`
 
 This report compares the already-working local AMCF `Main` project against the public GitHub repo and identifies what must be ported for full user-facing parity. It does not copy generated output, caches, local paths, private media, virtual environments, or machine-specific launch scripts into the public repo.
 
-No runtime features were ported in this run because the most important local-only behaviours depend on external media tooling and local source-media assumptions that need an explicit public dependency and architecture decision first.
+This run performed the first narrow parity port. It did not bulk-copy the local `Main` scripts, but it added a public FFmpeg-backed video pipeline that restores the core user-facing path of MP4-style video input to AMCF archive and AMCF archive back to decoded frames/MP4 while preserving the newer public software I/O and physical-player architecture.
 
 ## 1. Public Repo Current HEAD
 
@@ -23,7 +23,7 @@ Current public repo state at the start of this audit:
 - branch: `main`
 - HEAD: `4b40be0144b1f0662ca828bf670edd831ab70fdc`
 - prior parity audit: `docs/AMCF_DIGITAL_AMCF_PARITY_AUDIT.md`
-- current public status: source-frame to AMCF is implemented, MP4 to AMCF is missing, decoded MP4/video export is missing
+- current public status after this run: source-frame to AMCF is implemented, MP4 to AMCF is partially implemented through an optional FFmpeg-backed adapter, decoded frames are implemented for public frame-payload AMCF archives, and decoded MP4/video export is partially implemented through FFmpeg.
 
 ## 2. Local Main Inventory
 
@@ -31,7 +31,7 @@ The local `Main` folder contains a small set of relevant files and generated/cac
 
 | Local path | Public equivalent | Purpose | Dependencies | Input handled | Output produced | Needed for parity | Safe to port now | Port recommendation |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<local-main>/amcf_test02.py` | partial equivalents: `src/amcf_digital_encoder.py`, `src/amcf_digital_validator.py`, `src/amcf_physical_carrier.py`, `src/amcf_virtual_carrier_reader.py` | Main MP4/component archive pipeline: reads source video, segments/tracks components, writes AMCF archive, decodes/reconstructs video, compares quality, creates viewer/report/package outputs. | `cv2`, `numpy`, `PIL`, `skimage.metrics`, FFmpeg command-line tools, standard library. | local MP4 source video. | `.amcf.zip`, component WebP events, audio copy, decoded frames/hashes, reconstructed MP4, viewer MP4s, quality metrics, reports, deliverable zip. | PORT_REQUIRED for MP4 to AMCF and decoded MP4 parity. | No. It has local source-media assumptions, external dependencies, broad research/report code, and a different archive format. | Split into smaller public modules: video input adapter, component archive model, audio adapter, decoder/reconstructor, quality report. Do not bulk copy. |
+| `<local-main>/amcf_test02.py` | partial equivalents: `src/amcf_digital_encoder.py`, `src/amcf_digital_validator.py`, `src/amcf_video_pipeline.py`, `src/amcf_physical_carrier.py`, `src/amcf_virtual_carrier_reader.py` | Main MP4/component archive pipeline: reads source video, segments/tracks components, writes AMCF archive, decodes/reconstructs video, compares quality, creates viewer/report/package outputs. | `cv2`, `numpy`, `PIL`, `skimage.metrics`, FFmpeg command-line tools, standard library. | local MP4 source video. | `.amcf.zip`, component WebP events, audio copy, decoded frames/hashes, reconstructed MP4, viewer MP4s, quality metrics, reports, deliverable zip. | PORT_REQUIRED for full local component-event parity. | Partially ported. The FFmpeg video/audio/frame boundary and public archive decode/export are now in `src/amcf_video_pipeline.py`; OpenCV component decomposition and quality/viewer package remain future work. | Continue splitting into smaller public modules: component archive model, OpenCV segmentation adapter, quality report, viewer package. Do not bulk copy. |
 | `<local-main>/test_archive_decode.py` | no exact public equivalent; related: `src/amcf_digital_validator.py` | Checks a local AMCF archive has manifest, base, audio, component events, and expected source resolution. | standard library only. | `.amcf.zip` from local component archive. | pass/fail console result. | TEST_REQUIRED after component archive format is ported. | Not yet. It assumes local component archive schema with base/audio/events and fixed source resolution. | Convert later into schema-aware tests once the public component archive contract is chosen. |
 | `<local-main>/amcf_vnext.py` | identical public file: `src/amcf_vnext.py` | Main-facing integration CLI for proof status, archive inspection, optional toolchain checks, GitHub manifest guidance, and smoke validation. | standard library; optional imports checked by name. | config files, proof-run folders, `.amcfvnext.zip` archives. | JSON/CSV status reports. | Already present in public repo. | Already ported. | Keep public version; do not duplicate. |
 | `<local-main>/amcf_virtual_hardware.py` | identical public file: `src/amcf_virtual_hardware.py` | Software-only virtual reader/cartridge/player handoff support. | standard library only. | virtual sections/cartridge records. | handoff state, lane validation, reader/player status. | Already present in public repo. | Already ported. | Keep public version; no action. |
@@ -51,19 +51,19 @@ The local `Main` folder contains a small set of relevant files and generated/cac
 
 | Behaviour | Local Main | Public repo | Parity label | Notes |
 | --- | --- | --- | --- | --- |
-| MP4 input | LOCAL_IMPLEMENTED | MISSING | PORT_REQUIRED | Local `amcf_test02.py` opens a source MP4 through OpenCV. Public encoder only accepts source-frame manifests. |
+| MP4 input | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local `amcf_test02.py` opens a source MP4 through OpenCV. Public `amcf_video_pipeline.py` now extracts frames with FFmpeg and feeds the existing AMCF encoder. |
 | Source frame input | not the primary local route | PUBLIC_IMPLEMENTED | PUBLIC_IMPLEMENTED | Public repo can encode deterministic PPM frames to `.amcf.zip`. |
 | Image sequence input | not clearly separated from MP4 pipeline | PUBLIC_PARTIAL | PORT_LATER | Public source-frame manifest is close, but no general image folder scanner exists. |
-| Frame extraction | LOCAL_IMPLEMENTED | MISSING | PORT_REQUIRED | Local uses OpenCV capture; public has no video frame extraction. |
+| Frame extraction | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local uses OpenCV capture; public now supports FFmpeg frame extraction. |
 | Timestamps | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local records `pts_seconds` and FPS-derived timing; public records fps/frame index but not a full schedule in the digital archive. |
 | Component decomposition | LOCAL_IMPLEMENTED | MISSING | PORT_REQUIRED | Local segments/tracks components and writes WebP component events. Public smoke archive stores whole-frame PPM payloads. |
 | Adaptive component update schedule | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local records update events/reasons; public shared package model has update events, but current digital archive does not integrate them. |
 | AMCF archive/package creation | LOCAL_IMPLEMENTED | PUBLIC_IMPLEMENTED | PUBLIC_PARTIAL | Both create zip archives, but schema/content differ. Public archive is frame-payload smoke format, not local component archive parity. |
 | Manifest generation | LOCAL_IMPLEMENTED | PUBLIC_IMPLEMENTED | PUBLIC_PARTIAL | Both generate manifests; local manifest includes source, base, audio, tracks, events, global flow, and size ceiling. |
-| Audio handling | LOCAL_IMPLEMENTED | MISSING | PORT_REQUIRED | Local extracts/copies audio to archive and reconstructed video; public smoke archive has no audio. |
+| Audio handling | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local extracts/copies audio to archive and reconstructed video. Public video pipeline can copy audio into the archive and decoded MP4 when FFmpeg can extract it. |
 | Archive size ceiling | LOCAL_IMPLEMENTED | MISSING | PORT_REQUIRED | Local records whether archive is under the source byte ceiling. Public does not enforce this yet. |
-| Decoded frames | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local decoder reconstructs frame states from base plus events. Public can recover PPM frames through virtual carrier path, not direct component decode. |
-| Decoded MP4/video | LOCAL_IMPLEMENTED | MISSING | PORT_REQUIRED | Local pipes reconstructed raw frames to FFmpeg; public does not export decoded video containers. |
+| Decoded frames | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local decoder reconstructs frame states from base plus events. Public now decodes public frame-payload AMCF archives to PPM frames and can still recover frames through virtual carrier path. |
+| Decoded MP4/video | LOCAL_IMPLEMENTED | PUBLIC_PARTIAL | PORT_REQUIRED | Local pipes reconstructed raw frames to FFmpeg. Public now exports decoded MP4 from public frame-payload AMCF archives through FFmpeg. |
 | Reconstruction quality checks | LOCAL_IMPLEMENTED | MISSING | PORT_LATER | Local computes MAE, PSNR, SSIM and visual comparisons. Public has no video parity metrics. |
 | Print process | MISSING_BOTH for real printing | PUBLIC_PARTIAL | PUBLIC_IMPLEMENTED for no-hardware planning | Public has stronger print-process software prototypes than local Main. |
 | Virtual reader | LOCAL_IMPLEMENTED in virtual hardware support | PUBLIC_IMPLEMENTED | PUBLIC_IMPLEMENTED | `amcf_virtual_hardware.py` is already identical in public. Public also has newer reader recovery fixtures. |
@@ -90,7 +90,7 @@ The local `Main` folder contains a small set of relevant files and generated/cac
 
 Dependency conclusion:
 
-The local Main project proves useful behaviour, but it is not a standard-library-only implementation. Porting MP4 parity safely requires deciding whether the public repo will accept optional media dependencies, how they are declared, and how tests behave when they are missing.
+The local Main project proves useful behaviour, but it is not a standard-library-only implementation. This run accepts FFmpeg/FFprobe as an optional external media tool path with clear missing-tool errors and tests that skip if unavailable. Python media dependencies such as OpenCV and scikit-image remain unported.
 
 ## 5. Port Plan
 
@@ -195,38 +195,49 @@ Goal:
 - keep user-facing messages accurate
 - do not build GUI or EXE until CLI behaviour is stable
 
-## 6. Safe Port Decision For This Run
+## 6. Port Completed In This Run
 
-Code ported in this run: no
+Code ported in this run: yes
 
-Reason:
+Added:
 
-- The core local MP4 pipeline in `amcf_test02.py` depends on OpenCV, Pillow, NumPy, scikit-image, and FFmpeg.
-- It assumes a local source-media layout and fixed source characteristics.
-- It mixes several concerns in one large script: video ingest, segmentation, archive write, decode, quality comparison, viewer generation, reports, and packaging.
-- The public repo currently has a clean standard-library architecture with tested source-frame, carrier, reader, software I/O, and physical-player layers.
-- A blind copy would add dependencies, local assumptions, and a second archive format without a public compatibility boundary.
+- `src/amcf_video_pipeline.py`
+- `demo/run_amcf_video_pipeline_demo.py`
+- `tests/test_amcf_video_pipeline.py`
+- audio payload support in `src/amcf_digital_encoder.py`
+- audio payload validation in `src/amcf_digital_validator.py`
 
-Therefore the safe action is to commit this report only, then perform a staged adapter/port phase after a dependency and archive-format decision.
+Behaviour added:
+
+- MP4-style video input to AMCF using FFmpeg/FFprobe.
+- Extracted source frames feed the existing public AMCF archive encoder.
+- Optional copied audio payload inclusion when the source has extractable audio.
+- Direct public archive decode to PPM frames.
+- Direct public archive decode to MP4 when FFmpeg is available.
+- Tests covering the video adapter, audio payload validation, decoded frames, decoded MP4, and missing-tool diagnostics.
+
+Remaining parity gap:
+
+- This is not yet the full local `Main` component-event/WebP archive, OpenCV segmentation, adaptive component update schedule, PSNR/SSIM quality metrics, or viewer package.
 
 ## 7. Recommended Next Phase
 
-Recommended next phase: `AMCF_LOCAL_MAIN_VIDEO_ADAPTER_BOUNDARY_V1`
+Recommended next phase: `AMCF_LOCAL_MAIN_COMPONENT_ARCHIVE_PARITY_V1`
 
 Purpose:
 
-- create a public, dependency-aware video input adapter boundary
-- preserve standard-library import safety
-- expose explicit missing-dependency diagnostics
-- avoid local paths
-- optionally support MP4 frame extraction only when approved tools are present
-- feed extracted frames into the existing public source-frame AMCF encoder before attempting full component-event archive parity
+- port the local component-event archive structure into public modules
+- preserve the existing public frame-payload archive path
+- keep OpenCV/Pillow/NumPy/scikit-image optional and explicit
+- add component update schedule tests
+- add archive size ceiling checks
+- add quality metrics only after optional dependencies are handled
 
 Why this should come before CLI/EXE:
 
 - The required user-facing workflow starts with video to digital AMCF.
-- Public MP4 ingestion is still missing.
-- The public repo needs an explicit dependency policy before packaging.
+- Public MP4 ingestion now exists through FFmpeg, but full local component archive parity is still missing.
+- The public repo still needs a broader dependency policy before packaging.
 - The CLI should wrap stable behaviour, not a partly ported local research script.
 
 CLI ready now: no

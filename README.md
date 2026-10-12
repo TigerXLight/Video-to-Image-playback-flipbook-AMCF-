@@ -78,11 +78,13 @@ Do not describe the whole repository as strict OSI open source.
 
 See `QUICKSTART.md` for demo and test commands.
 
-## Source frames/video to AMCF digital smoke demo
+## Source frames/video to AMCF digital demos
 
 The package includes a deterministic source-frame to AMCF digital smoke demo. It generates a tiny standard-library PPM frame set, encodes those frames into an actual `.amcf.zip` archive, writes manifest metadata and per-frame SHA-256 checksums, then validates the archive by reading it back.
 
-This proves the clean package can create AMCF digital output from source frames. Arbitrary real-world video ingestion may require later optional tooling and is not claimed by this smoke demo.
+The package also includes an FFmpeg-backed video pipeline demo in `demo/run_amcf_video_pipeline_demo.py`. When FFmpeg/FFprobe are available, it can generate or ingest an MP4-style source video, extract source frames, include copied audio when present, create a digital AMCF archive, decode the archive back to frames, and export a decoded MP4.
+
+This proves the clean package can create AMCF digital output from source frames and can exercise an MP4-to-AMCF-to-decoded-MP4 path when the optional FFmpeg tooling is available. The FFmpeg path is software-only and does not claim final GUI/EXE readiness.
 
 This smoke path does not claim physical proof, hardware validation, final UI status, manufacturing readiness, or a built physical prototype.
 

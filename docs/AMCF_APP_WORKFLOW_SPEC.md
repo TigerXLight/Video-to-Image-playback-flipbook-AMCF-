@@ -45,11 +45,11 @@ The workflow should expose AMCF as a conversion pipeline, not only as a physical
 - deterministic sample source frames
 - source-frame manifest
 
-### Future Input
+### Current Optional Input
 
 - real video file such as `video.mp4`
 
-Real video ingestion will require an explicit dependency and packaging decision. It is not claimed by the current standard-library source-frame smoke path.
+Real video ingestion now has a public FFmpeg-backed adapter path in `src/amcf_video_pipeline.py` and `demo/run_amcf_video_pipeline_demo.py`. It remains optional because it requires FFmpeg/FFprobe on the host. The standard-library source-frame smoke path remains available without FFmpeg.
 
 ### Output
 
@@ -65,14 +65,17 @@ Implemented developer support exists in:
 
 - `src/amcf_digital_encoder.py`
 - `src/amcf_digital_validator.py`
+- `src/amcf_video_pipeline.py`
 - `demo/run_source_frames_to_amcf_digital_demo.py`
+- `demo/run_amcf_video_pipeline_demo.py`
 - `tests/test_source_frames_to_amcf_digital.py`
+- `tests/test_amcf_video_pipeline.py`
 
-The current path can encode generated/source-frame PPM payloads into an AMCF digital archive and validate frame hashes, payload presence, manifest fields, and claim-boundary flags.
+The current source-frame path can encode generated/source-frame PPM payloads into an AMCF digital archive and validate frame hashes, payload presence, manifest fields, and claim-boundary flags. The FFmpeg-backed video path extracts frames from MP4-style video input, carries copied audio into the archive when present, and validates the resulting archive.
 
 ### Missing Pieces
 
-- real video file decoding
+- GUI-level video file selection
 - user-selected frame extraction
 - user-facing progress output
 - stable app command
@@ -169,10 +172,10 @@ Decoded frame export may exist before MP4/video export. The current repo does no
 | Workflow | Current support | Current status |
 | --- | --- | --- |
 | source frames -> digital AMCF | `amcf_digital_encoder`, `amcf_digital_validator`, source-frame demo/tests | developer demo works |
-| video file -> digital AMCF | not implemented | future |
+| video file -> digital AMCF | FFmpeg-backed adapter and demo | optional dependency path |
 | digital AMCF -> carrier/print process | physical-carrier generator and abstract print-layout prototype | no-hardware prototype |
 | digital AMCF -> decoded frames | virtual carrier recovery exports PPM frames | no-hardware recovery demo |
-| digital AMCF -> MP4/video | not implemented | future |
+| digital AMCF -> MP4/video | FFmpeg-backed archive decode/export path | optional dependency path |
 | unified user CLI | not implemented | next implementation phase |
 | GUI / EXE | not implemented | later |
 
@@ -180,7 +183,7 @@ Decoded frame export may exist before MP4/video export. The current repo does no
 
 ### Encode
 
-- real video input support
+- packaged dependency policy for FFmpeg/FFprobe
 - stable CLI input contract
 - output folder naming rules
 - package metadata for an installable command
@@ -195,7 +198,7 @@ Decoded frame export may exist before MP4/video export. The current repo does no
 ### Decode
 
 - direct AMCF archive to decoded-frames command
-- optional MP4/video export policy
+- packaged MP4/video export policy
 - output format settings
 
 ### Whole App
@@ -287,7 +290,7 @@ A future CLI workflow succeeds only if:
 The app should fail clearly for:
 
 - missing source input
-- unsupported video input before real video support exists
+- unsupported video input when FFmpeg/FFprobe is unavailable or the input cannot be decoded
 - malformed source-frame manifest
 - missing frame payload
 - hash mismatch
@@ -341,8 +344,8 @@ Required claim values:
 - real printer integration claimed: false
 - real scanner integration claimed: false
 - real player hardware claimed: false
-- real video ingestion claimed: false until implemented
-- MP4/video-container export claimed: false until implemented
+- real video ingestion support: optional FFmpeg-backed path, not GUI/EXE-ready
+- MP4/video-container export support: optional FFmpeg-backed path, not GUI/EXE-ready
 - `unsafe_acceptance_count` must remain `0`
 
 The workflow may claim:

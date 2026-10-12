@@ -65,6 +65,28 @@ def encode_source_frames(source_manifest_path: str | Path, output_archive_path: 
             }
         )
 
+    audio_manifest: dict[str, Any] | None = None
+    audio_payload: tuple[Path, str] | None = None
+    source_audio = source_manifest.get("audio")
+    if isinstance(source_audio, dict) and source_audio.get("file"):
+        audio_rel = str(source_audio["file"])
+        audio_path = source_root / audio_rel
+        if not audio_path.exists():
+            raise FileNotFoundError(f"missing source audio payload: {audio_rel}")
+        actual_hash = sha256_file(audio_path)
+        expected_hash = str(source_audio.get("sha256", ""))
+        if expected_hash and actual_hash != expected_hash:
+            raise ValueError(f"source audio hash mismatch before encoding: {audio_rel}")
+        archive_audio_path = str(source_audio.get("payload_path", "audio/source_audio.m4a"))
+        audio_payload = (audio_path, archive_audio_path)
+        audio_manifest = {
+            "payload_path": archive_audio_path,
+            "source_path": audio_rel,
+            "format": str(source_audio.get("format", "audio")),
+            "bytes": audio_path.stat().st_size,
+            "sha256": actual_hash,
+        }
+
     manifest = {
         "amcf_schema": AMCF_SCHEMA,
         "source_type": source_manifest.get("source_type", "generated_source_frames"),
@@ -74,9 +96,16 @@ def encode_source_frames(source_manifest_path: str | Path, output_archive_path: 
         "height": int(source_manifest["height"]),
         "fps": int(source_manifest["fps"]),
         "frame_entries": frame_entries,
+        "source_video": source_manifest.get("source_video"),
+        "audio": audio_manifest,
         "hash_algorithm": "sha256",
         "created_by": "amcf_digital_encoder.py",
         "created_at": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+        "capabilities": {
+            "source_frame_payloads": True,
+            "mp4_video_input_adapter_used": source_manifest.get("source_type") == "mp4_video_extracted_frames",
+            "audio_payload_included": audio_manifest is not None,
+        },
         "claim_boundary": {
             "physical_proof_claimed": False,
             "hardware_validation_claimed": False,
@@ -84,6 +113,7 @@ def encode_source_frames(source_manifest_path: str | Path, output_archive_path: 
             "manufacturing_readiness_claimed": False,
             "physical_prototype_built": False,
             "arbitrary_real_video_support_claimed": False,
+            "decoded_video_export_claimed": False,
         },
     }
 
@@ -91,12 +121,15 @@ def encode_source_frames(source_manifest_path: str | Path, output_archive_path: 
         zf.writestr("manifest.json", json.dumps(manifest, indent=2, sort_keys=True))
         for source_path, archive_path in payloads:
             zf.write(source_path, archive_path)
+        if audio_payload is not None:
+            zf.write(audio_payload[0], audio_payload[1])
 
     return {
         "ok": True,
         "archive_path": str(output_archive_path),
         "amcf_schema": AMCF_SCHEMA,
         "frame_count": manifest["frame_count"],
+        "audio_payload_included": audio_manifest is not None,
         "archive_sha256": sha256_file(output_archive_path),
         "claim_boundary": manifest["claim_boundary"],
     }

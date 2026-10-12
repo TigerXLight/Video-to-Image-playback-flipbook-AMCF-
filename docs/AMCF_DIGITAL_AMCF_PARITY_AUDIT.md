@@ -16,16 +16,26 @@ This is a discovery and parity-audit document for the public GitHub version of A
 
 This audit does not implement new runtime behaviour, GUI, EXE packaging, hardware APIs, printer/scanner/camera/USB/serial support, or physical-player simulator changes.
 
+## 2026-10-12 Parity Sync Update
+
+After this audit, `AMCF_PUBLIC_REPO_FULL_LOCAL_MAIN_PARITY_SYNC_V1` added a first public video pipeline port:
+
+- `src/amcf_video_pipeline.py`
+- `demo/run_amcf_video_pipeline_demo.py`
+- `tests/test_amcf_video_pipeline.py`
+
+The public repo now supports an optional FFmpeg/FFprobe-backed path for MP4-style source video to AMCF digital archive, optional copied audio payload inclusion, archive-to-decoded-frame export, and archive-to-decoded-MP4 export. This does not yet port the full local `Main` component-event/WebP archive format, OpenCV segmentation, optical-flow tracking, quality metrics, or viewer package.
+
 ## Summary
 
 | Capability | Status | Current evidence |
 | --- | --- | --- |
-| MP4/source video to digital AMCF | MISSING | No public-repo source path accepts MP4 directly, extracts frames from video, invokes FFmpeg, preserves audio, or creates a component archive from a video container. |
+| MP4/source video to digital AMCF | PARTIAL | `src/amcf_video_pipeline.py`, `demo/run_amcf_video_pipeline_demo.py`, and `tests/test_amcf_video_pipeline.py` provide an optional FFmpeg-backed MP4-to-frame-to-AMCF path. The full local component-event archive format is not yet ported. |
 | Source-frame folder to digital AMCF | IMPLEMENTED | `src/amcf_digital_encoder.py`, `src/amcf_digital_validator.py`, `demo/run_source_frames_to_amcf_digital_demo.py`, and `tests/test_source_frames_to_amcf_digital.py` create and validate a real `.amcf.zip` from deterministic PPM frames. |
 | Digital AMCF to print process | PARTIAL | `src/amcf_physical_carrier.py` and `src/amcf_print_layout.py` provide no-hardware carrier/layout planning. No real printer, PDF, PNG, or production print pipeline is claimed. |
-| Digital AMCF to decoded frames | PARTIAL | `src/amcf_virtual_carrier_reader.py` can recover PPM frames through the software carrier/virtual reader path. There is no single direct user command for `.amcf.zip` to decoded frames yet. |
-| Digital AMCF to decoded MP4/video | MISSING | The public repo explicitly does not claim MP4/video-container export. |
-| Audio preservation/handling | MISSING | The public digital AMCF smoke archive stores frame payloads only. Audio preservation is not implemented in the public repo. |
+| Digital AMCF to decoded frames | PARTIAL | `src/amcf_video_pipeline.py` can decode public frame-payload AMCF archives directly to PPM frames. `src/amcf_virtual_carrier_reader.py` also recovers frames through the software carrier/virtual reader path. |
+| Digital AMCF to decoded MP4/video | PARTIAL | `src/amcf_video_pipeline.py` can export decoded MP4 when FFmpeg is available. This is not a final media-player app or GUI/EXE export flow. |
+| Audio preservation/handling | PARTIAL | The video pipeline can copy source audio into the AMCF archive and carry it into decoded MP4 output when FFmpeg can extract it. Full audio policy/validation remains future work. |
 | Archive size ceiling <= source size | MISSING | The canonical concept requires size discipline, but current public encoder/tests do not enforce an archive-size ceiling against the source. |
 | Manifest/update-event schedule | PARTIAL | The digital archive has `manifest.json`, `frame_entries`, frame count, dimensions, hashes, and fps. The shared package model has update events, but current `.amcf.zip` smoke archives do not yet carry a first-class update-event schedule. |
 | Validation/report output | PARTIAL | Digital archive validation exists and demos emit JSON summaries. A full user-facing parity validation report for MP4, audio, size ceiling, update events, and decoded video does not yet exist. |
@@ -37,12 +47,13 @@ Current public-repo digital AMCF commands are developer demos rather than a unif
 | Command | Purpose | Output | Status |
 | --- | --- | --- | --- |
 | `python demo/run_source_frames_to_amcf_digital_demo.py` | Builds deterministic PPM sample frames, encodes them into digital AMCF, and validates the archive. | `demo/output/source_to_amcf/sample_video_source.amcf.zip` plus JSON summaries. | DEMO-ONLY, IMPLEMENTED core source-frame archive path |
+| `python demo/run_amcf_video_pipeline_demo.py` | Generates a small MP4-style source, extracts frames/audio with FFmpeg, creates a digital AMCF archive, decodes frames, and exports decoded MP4. | `output/amcf_video_pipeline_demo/` | DEMO-ONLY, PARTIAL MP4 parity path |
 | `python demo/run_amcf_to_physical_carrier_demo.py` | Converts a digital AMCF archive into a no-hardware physical carrier package. | `demo/output/amcf_to_physical_carrier/` | DEMO-ONLY, PARTIAL print-process path |
 | `python demo/run_virtual_reader_recovery_export_demo.py` | Runs software carrier recovery and exports recovered PPM frames and a recovered AMCF state/archive. | `demo/output/virtual_reader_recovery/` | DEMO-ONLY, PARTIAL decoded-frame path |
 | `python demo/run_amcf_shared_package_model_demo.py` | Demonstrates shared package, manifest, physical-section, and update-event model primitives. | `output/amcf_shared_package_model/` | FIXTURE-ONLY support layer |
 | `python demo/run_amcf_cross_corridor_roundtrip_demo.py` | Runs a no-hardware software I/O roundtrip using fixtures and corridor models. | `output/amcf_cross_corridor_roundtrip/` | FIXTURE-ONLY cross-corridor prototype |
 
-There is no current public-repo command equivalent to:
+There is no current stable package CLI command equivalent to:
 
 ```text
 amcf encode --input-video input.mp4 --output output/my_amcf
@@ -51,20 +62,20 @@ amcf decode --input output/my_amcf/archive.amcf.zip --output output/my_decoded_v
 
 ## MP4 to AMCF Status
 
-Status: MISSING
+Status: PARTIAL
 
-The public GitHub repo does not currently support direct MP4/source-video ingestion into digital AMCF.
+The public GitHub repo now supports direct MP4/source-video ingestion into digital AMCF through an optional FFmpeg-backed adapter.
 
 Findings:
 
-- No public-repo encoder accepts an `input_video` or MP4 path.
-- No public-repo code extracts frames from MP4.
-- No public-repo code invokes FFmpeg for digital AMCF encoding.
-- No public-repo code preserves, copies, or validates audio in the digital AMCF archive.
-- The current encoder claim boundary explicitly keeps arbitrary real-video support unclaimed.
-- README and workflow docs correctly describe real video input as future work.
+- `src/amcf_video_pipeline.py` accepts a video path and output folder.
+- FFmpeg extracts PPM frames.
+- FFprobe records video metadata.
+- Copied audio is included when present and extractable.
+- The resulting source-frame manifest feeds the existing public AMCF archive encoder.
+- Tests generate a tiny video fixture with FFmpeg and verify archive validation, audio payload validation, decoded frame export, and decoded MP4 export.
 
-This is the largest parity gap for the user-facing workflow.
+Remaining gap: this is not yet the full local `Main` component-event/WebP archive with OpenCV segmentation, optical-flow component updates, quality metrics, and viewer packaging.
 
 ## Source Frames to AMCF Status
 
