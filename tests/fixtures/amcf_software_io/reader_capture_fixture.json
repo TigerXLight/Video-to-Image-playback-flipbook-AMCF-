@@ -1,0 +1,24 @@
+{
+  "fixture_version": "amcf_software_io_fixtures_v1",
+  "capture_source": "simulated_no_hardware_reader_fixture",
+  "simulated_captures": [
+    {
+      "section_id": "fixture-section-000",
+      "registration_status": "matched",
+      "hash_status": "matched",
+      "colour_status": "matched"
+    },
+    {
+      "section_id": "fixture-section-001",
+      "registration_status": "matched",
+      "hash_status": "matched",
+      "colour_status": "degraded_warning"
+    },
+    {
+      "section_id": "fixture-section-002",
+      "registration_status": "matched",
+      "hash_status": "matched",
+      "colour_status": "matched"
+    }
+  ]
+}
