@@ -1,0 +1,75 @@
+{
+  "fixture_version": "amcf_software_io_fixtures_v1",
+  "package_id": "fixture-package-software-io-v1",
+  "manifest": {
+    "manifest_id": "fixture-manifest-software-io-v1",
+    "section_count": 3,
+    "update_events": [
+      {
+        "event_id": "fixture-update-000",
+        "section_id": "fixture-section-000",
+        "timestamp_ms": 0,
+        "dwell_ms": 120
+      },
+      {
+        "event_id": "fixture-update-001",
+        "section_id": "fixture-section-001",
+        "timestamp_ms": 120,
+        "dwell_ms": 180
+      },
+      {
+        "event_id": "fixture-update-002",
+        "section_id": "fixture-section-002",
+        "timestamp_ms": 300,
+        "dwell_ms": 160
+      }
+    ],
+    "physical_sections": [
+      {
+        "section_id": "fixture-section-000",
+        "section_index": 0,
+        "payload_seed": "fixture-update-000:fixture-section-000:0",
+        "payload_hash": "c7722b101868392c17508ef7e87a826bf06255f4cf52147f3048781dabc8df90",
+        "lanes": {
+          "timing_lane": "fixture-section-000:timing_lane",
+          "index_lane": "fixture-section-000:index_lane",
+          "registration_lane": "fixture-section-000:registration_lane",
+          "image_payload_lane": "fixture-section-000:image_payload_lane",
+          "colour_registry_lane": "fixture-section-000:colour_registry_lane",
+          "metadata_lane": "fixture-section-000:metadata_lane",
+          "checksum_hash_lane": "fixture-section-000:checksum_hash_lane"
+        }
+      },
+      {
+        "section_id": "fixture-section-001",
+        "section_index": 1,
+        "payload_seed": "fixture-update-001:fixture-section-001:120",
+        "payload_hash": "6218c017c3777fd99cc9ef58c1c223486bedcbefba15e58d6c099d6b88d48c7b",
+        "lanes": {
+          "timing_lane": "fixture-section-001:timing_lane",
+          "index_lane": "fixture-section-001:index_lane",
+          "registration_lane": "fixture-section-001:registration_lane",
+          "image_payload_lane": "fixture-section-001:image_payload_lane",
+          "colour_registry_lane": "fixture-section-001:colour_registry_lane",
+          "metadata_lane": "fixture-section-001:metadata_lane",
+          "checksum_hash_lane": "fixture-section-001:checksum_hash_lane"
+        }
+      },
+      {
+        "section_id": "fixture-section-002",
+        "section_index": 2,
+        "payload_seed": "fixture-update-002:fixture-section-002:300",
+        "payload_hash": "1ab281135d67262dde119a1f45d91be68c8c7ee96146bd32281021eedc290dbe",
+        "lanes": {
+          "timing_lane": "fixture-section-002:timing_lane",
+          "index_lane": "fixture-section-002:index_lane",
+          "registration_lane": "fixture-section-002:registration_lane",
+          "image_payload_lane": "fixture-section-002:image_payload_lane",
+          "colour_registry_lane": "fixture-section-002:colour_registry_lane",
+          "metadata_lane": "fixture-section-002:metadata_lane",
+          "checksum_hash_lane": "fixture-section-002:checksum_hash_lane"
+        }
+      }
+    ]
+  }
+}

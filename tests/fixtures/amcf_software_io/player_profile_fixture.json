@@ -1,0 +1,12 @@
+{
+  "fixture_version": "amcf_software_io_fixtures_v1",
+  "profile_id": "fixture-player-software-control-profile",
+  "carrier_layout": "folded_indexed_carrier",
+  "staging_model": "abstract_ab_staging",
+  "gate_model": "single_visible_gate_plus_hidden_staging",
+  "prefetch_model": "reader_prefetch_ahead",
+  "reverse_model": "limited_reverse_buffer",
+  "seek_model": "local_buffer_seek_only",
+  "safety_model": "fail_closed_required",
+  "hardware_validation_claimed": false
+}
