@@ -90,13 +90,25 @@ Claim boundary: documentation/navigation sync only; no runtime behaviour change 
 
 `AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW_V1`
 
-Commit: current run, not committed yet.
+Commit: `659bd3e74a9e4dd254600558aec6e76309ba596f`
 
 Purpose: release-style review of the physical-player software/control branch. It verifies tests, demos, docs, site navigation, claim boundaries, generated-output policy, local-path scan, and release review report.
 
-Validation summary: to be recorded by this run.
+Validation summary: py_compile PASS, unittest discovery PASS with 214 tests, integrated simulator demo PASS, release review script PASS, all physical-player demos PASS, release review final_passed yes, `unsafe_acceptance_count` 0.
 
 Claim boundary: software/control release review only; no physical hardware validation and no physical Level 5 claim.
+
+## Stage 9
+
+`AMCF_PUBLIC_RELEASE_PACKAGE_REFRESH_V1`
+
+Commit: current run, not committed yet.
+
+Purpose: public package/release inventory refresh. It verifies source, docs, demos, tests, site inclusion, generated-output exclusion, claim-boundary scan, local-path scan, and package refresh report.
+
+Validation summary: to be recorded by this run.
+
+Claim boundary: software/control release-package refresh only; no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
 
 ## Later Stages
 

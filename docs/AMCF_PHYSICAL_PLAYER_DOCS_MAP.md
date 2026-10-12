@@ -15,9 +15,11 @@ The current repository implements deterministic software/control simulators and 
 5. `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md`
 6. `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md`
 7. `docs/AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW.md`
-8. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
-9. `CLAIM_BOUNDARIES.md`
-10. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
+8. `docs/AMCF_PUBLIC_RELEASE_PACKAGE_REFRESH.md`
+9. `docs/AMCF_PUBLIC_RELEASE_PACKAGE_INVENTORY.md`
+10. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
+11. `CLAIM_BOUNDARIES.md`
+12. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
 
 ## Physical-Player Docs
 
@@ -30,6 +32,8 @@ The current repository implements deterministic software/control simulators and 
 - `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md` - mechanism candidates and default simulator profile.
 - `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md` - integrated deterministic simulator demo.
 - `docs/AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW.md` - release-style review checks and report output.
+- `docs/AMCF_PUBLIC_RELEASE_PACKAGE_REFRESH.md` - public package-refresh checks and report output.
+- `docs/AMCF_PUBLIC_RELEASE_PACKAGE_INVENTORY.md` - human-readable package inventory.
 - `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md` - staged development sequence and known commits.
 - `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md` - relationship between digital AMCF and physical paths.
 
@@ -41,6 +45,7 @@ The current repository implements deterministic software/control simulators and 
 - `demo/run_physical_player_mechanism_profiles_demo.py`
 - `demo/run_physical_player_simulator_demo.py`
 - `demo/run_physical_player_release_review.py`
+- `demo/run_public_release_package_refresh.py`
 
 ## Test Files
 
@@ -51,6 +56,7 @@ The current repository implements deterministic software/control simulators and 
 - `tests/test_physical_player_simulator_demo.py`
 - `tests/test_physical_player_public_docs_sync.py`
 - `tests/test_physical_player_release_review.py`
+- `tests/test_public_release_package_refresh.py`
 
 ## Output And Report Folders
 
@@ -60,6 +66,7 @@ The current repository implements deterministic software/control simulators and 
 - `output/physical_player_mechanism_profiles_demo/`
 - `output/physical_player_simulator_demo/`
 - `output/physical_player_release_review/`
+- `output/public_release_package_refresh/`
 
 Generated output is demo output and normally not committed.
 
