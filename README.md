@@ -104,6 +104,27 @@ The package can simulate the future mechanical/optical physical-player path. It 
 
 This is not a fixed-FPS physical page machine and not a digital-screen physical player. It is not real physical playback and not hardware validation. Real physical manufacture and testing remain optional future work.
 
+## AMCF Physical Player Software-Control Simulator
+
+AMCF is software-first. The physical-player branch is the software/control foundation for future mechanical/optical hardware alignment. It models a folded indexed carrier, A/B staging, a visible view gate, hidden staging, reader prefetch, transition blanking, fail-closed safety, bounded reverse/seek, and mechanism profiles.
+
+The integrated simulator demo combines mechanism profile selection, safe forward playback, fail-closed scenarios, reverse/seek limits, and an unsafe-acceptance audit. The latest integrated run preserved `unsafe_acceptance_count` at 0.
+
+This branch does not claim manufactured physical hardware, physical Level 5 validation, hardware validation, real sensors, real motors, real cartridges, or real scans.
+
+Public physical-player docs:
+
+- `docs/AMCF_PHYSICAL_PLAYER_DOCS_MAP.md`
+- `docs/AMCF_PHYSICAL_PLAYER_PUBLIC_SUMMARY.md`
+- `docs/AMCF_PHYSICAL_PLAYER_CONCEPT.md`
+- `docs/AMCF_PHYSICAL_PLAYER_STATE_MACHINE.md`
+- `docs/AMCF_PHYSICAL_PLAYER_FAIL_CLOSED.md`
+- `docs/AMCF_PHYSICAL_PLAYER_REVERSE_SEEK.md`
+- `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md`
+- `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md`
+- `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
+- `CLAIM_BOUNDARIES.md`
+
 ## Concept assets and physical-player correction
 
 `assets/concepts/` contains current and legacy AMCF concept references. Old diagrams may be superseded and are retained for context only.

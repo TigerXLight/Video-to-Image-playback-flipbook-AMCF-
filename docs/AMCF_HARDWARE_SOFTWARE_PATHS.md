@@ -38,6 +38,8 @@ This is the corrected physical-player path. Playback is physical/mechanical/opti
 
 The preferred future physical mechanism is dynamic rather than fixed-FPS page playback. It should hold the current section at the visible gate, preload the next required section in a hidden A/B staging gate, blank the optical path during the transition, and fail closed if the next section is not verified in time. This physical motion follows the AMCF update schedule defined and validated digitally.
 
+Current software/control stages for this path include the physical-player state machine, fail-closed safety model, bounded reverse/seek controls, mechanism profiles, and integrated simulator demo. Future hardware should align to these control contracts. Hardware proof remains future work.
+
 ## Path E - Hybrid reader-player appliance
 
 ```text
@@ -48,7 +50,7 @@ A future appliance may combine physical playback and reader/recovery, but the ro
 
 ## Current implementation status
 
-- Implemented now: Path A support and Path B virtual hardware support.
-- Documented/future: Path C, Path D, and Path E.
+- Implemented now: Path A support, Path B virtual hardware support, and Path D software/control simulator stages for future physical-player alignment.
+- Documented/future hardware: Path C, physical Path D hardware, and Path E.
 - No manufactured hardware exists in this package.
 - No hardware validation, physical proof, physical Level 5, final UI, manufacturing readiness, or prototype build is claimed.

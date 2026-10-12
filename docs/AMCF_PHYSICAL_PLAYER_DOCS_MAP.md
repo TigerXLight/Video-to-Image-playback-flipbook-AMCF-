@@ -1,0 +1,95 @@
+# AMCF Physical Player Docs Map
+
+## Overview
+
+The AMCF physical-player branch is a software/control foundation for future compact mechanical/optical AMCF playback hardware. It documents and tests how later hardware should follow the digital AMCF update schedule through folded indexed media, A/B staging, a visible view gate, hidden staging, reader prefetch, transition blanking, fail-closed safety, bounded reverse/seek, and mechanism profiles.
+
+The current repository implements deterministic software/control simulators and reports. It does not claim manufactured hardware or physical validation.
+
+## Reading Order
+
+1. `docs/AMCF_PHYSICAL_PLAYER_CONCEPT.md`
+2. `docs/AMCF_PHYSICAL_PLAYER_STATE_MACHINE.md`
+3. `docs/AMCF_PHYSICAL_PLAYER_FAIL_CLOSED.md`
+4. `docs/AMCF_PHYSICAL_PLAYER_REVERSE_SEEK.md`
+5. `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md`
+6. `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md`
+7. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
+8. `CLAIM_BOUNDARIES.md`
+9. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
+
+## Physical-Player Docs
+
+- `docs/AMCF_PHYSICAL_PLAYER_CONCEPT.md` - compact folded-path physical/optical concept and boundary.
+- `docs/AMCF_PHYSICAL_PLAYER_STATE_MACHINE.md` - deterministic software/control state machine.
+- `docs/AMCF_PHYSICAL_PLAYER_FAIL_CLOSED.md` - safety decisions and unsafe acceptance prevention.
+- `docs/AMCF_PHYSICAL_PLAYER_REVERSE_SEEK.md` - bounded reverse buffer and local-buffer seek rules.
+- `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md` - mechanism candidates and default simulator profile.
+- `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md` - integrated deterministic simulator demo.
+- `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md` - staged development sequence and known commits.
+- `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md` - relationship between digital AMCF and physical paths.
+
+## Demo Scripts
+
+- `demo/run_physical_player_state_machine_demo.py`
+- `demo/run_physical_player_fail_closed_demo.py`
+- `demo/run_physical_player_reverse_seek_demo.py`
+- `demo/run_physical_player_mechanism_profiles_demo.py`
+- `demo/run_physical_player_simulator_demo.py`
+
+## Test Files
+
+- `tests/test_physical_player_state_machine.py`
+- `tests/test_physical_player_fail_closed.py`
+- `tests/test_physical_player_reverse_seek.py`
+- `tests/test_physical_player_mechanism_profiles.py`
+- `tests/test_physical_player_simulator_demo.py`
+
+## Output And Report Folders
+
+- `output/physical_player_state_machine_demo/`
+- `output/physical_player_fail_closed_demo/`
+- `output/physical_player_reverse_seek_demo/`
+- `output/physical_player_mechanism_profiles_demo/`
+- `output/physical_player_simulator_demo/`
+
+Generated output is demo output and normally not committed.
+
+## Claim Boundaries
+
+Claimed:
+
+- software/control simulator sequence
+- deterministic physical-player demos
+- mechanism profile selection
+- state-machine orchestration
+- fail-closed safety demonstration
+- bounded reverse/seek demonstration
+- unsafe-acceptance audit
+- integrated report generation
+
+Not claimed:
+
+- manufactured physical player
+- real physical/optical playback
+- real motor validation
+- real sensor validation
+- real cartridge validation
+- real scan validation
+- real no-gap physical switching proof
+- real reverse hardware
+- arbitrary physical seek hardware
+- physical Level 5 completion
+- hardware validation
+
+## What Is Implemented Now
+
+The current software/control sequence includes the state machine, fail-closed safety model, reverse/seek controls, mechanism profiles, integrated simulator demo, and report generation. The integrated simulator demo keeps `unsafe_acceptance_count` at 0.
+
+## What Remains Future Hardware
+
+Future hardware work includes manufactured player hardware, physical transport validation, real motors and sensors, real cartridges, optical path testing, real reverse mechanics, physical seek characterization, and hardware validation.
+
+## Recommended Next Development Step
+
+The next development step is hardware-adapter alignment or physical-player PC recognition/control simulation, while preserving the current claim boundary until real hardware tests exist.
