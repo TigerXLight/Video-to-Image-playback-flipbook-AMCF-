@@ -102,13 +102,25 @@ Claim boundary: software/control release review only; no physical hardware valid
 
 `AMCF_PUBLIC_RELEASE_PACKAGE_REFRESH_V1`
 
-Commit: current run, not committed yet.
+Commit: `8f76d7528e4f6399ef719a99f15e1b248ce8e2ff`
 
 Purpose: public package/release inventory refresh. It verifies source, docs, demos, tests, site inclusion, generated-output exclusion, claim-boundary scan, local-path scan, and package refresh report.
 
-Validation summary: to be recorded by this run.
+Validation summary: py_compile PASS, unittest discovery PASS with 233 tests, integrated simulator demo PASS, release review script PASS, package refresh script PASS, package refresh final_passed yes, `unsafe_acceptance_count` 0.
 
 Claim boundary: software/control release-package refresh only; no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
+
+## Stage 10
+
+`AMCF_PUBLIC_GITHUB_PAGES_FINAL_REVIEW_V1`
+
+Commit: current run, not committed yet.
+
+Purpose: final GitHub Pages/public documentation review. It verifies README entry points, docs map and public summary, site navigation, release review and package inventory links, generated-output exclusion, local-path scan, and unsafe hardware claim scan.
+
+Validation summary: to be recorded by this run.
+
+Claim boundary: software/control public-docs review only; no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
 
 ## Later Stages
 

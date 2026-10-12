@@ -17,9 +17,10 @@ The current repository implements deterministic software/control simulators and 
 7. `docs/AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW.md`
 8. `docs/AMCF_PUBLIC_RELEASE_PACKAGE_REFRESH.md`
 9. `docs/AMCF_PUBLIC_RELEASE_PACKAGE_INVENTORY.md`
-10. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
-11. `CLAIM_BOUNDARIES.md`
-12. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
+10. `docs/AMCF_PUBLIC_GITHUB_PAGES_FINAL_REVIEW.md`
+11. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
+12. `CLAIM_BOUNDARIES.md`
+13. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
 
 ## Physical-Player Docs
 
@@ -34,6 +35,7 @@ The current repository implements deterministic software/control simulators and 
 - `docs/AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW.md` - release-style review checks and report output.
 - `docs/AMCF_PUBLIC_RELEASE_PACKAGE_REFRESH.md` - public package-refresh checks and report output.
 - `docs/AMCF_PUBLIC_RELEASE_PACKAGE_INVENTORY.md` - human-readable package inventory.
+- `docs/AMCF_PUBLIC_GITHUB_PAGES_FINAL_REVIEW.md` - final public GitHub Pages and documentation review.
 - `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md` - staged development sequence and known commits.
 - `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md` - relationship between digital AMCF and physical paths.
 
