@@ -193,7 +193,7 @@ That command should initially support fixtures and later accept real package pat
 | `python -m ...` module CLI | not ready | Needs a module entrypoint and command routing. |
 | Console `.exe` | not ready | Needs stable CLI, package config, dependency policy, user guide, and passing full tests. |
 | Desktop GUI `.exe` | not ready | Needs workflow spec and CLI/report baseline first. |
-| Portable zip | partially ready | Docs/demos can be zipped, but local-path leak and test failure must be fixed first. |
+| Portable zip | partially ready | Docs/demos can be zipped, but the repo still needs a user workflow, CLI contract, package metadata, and packaging validation plan. |
 | GitHub release artifact | not ready for app release | Current repo is a research/demo release, not an app binary release. |
 
 ## Recommended Next Phase
@@ -242,13 +242,13 @@ Command:
 python -m unittest discover -s tests
 ```
 
-Result with bundled runtime:
+Current result with bundled runtime:
 
-- FAIL
+- PASS
 - 371 tests run
-- 10 failures
-- Failure cause: public-doc local-path scan tests detected local Windows workspace paths in `docs/AMCF_PHYSICAL_PLAYER_SOFTWARE_DEVELOPMENT_BASELINE_BRIEF_AND_SINGLE_CODEX_PROMPT.md`.
-- This appears to be a documentation/package-readiness blocker, not a failure in the four corridor demos audited here.
+- 0 failures
+- The previous public-doc local-path scan failure was repaired in commit `39ec979`.
+- The local-path blocker is resolved. App/executable packaging is still not ready because workflow, CLI, package metadata, user-guide, real package input/output contract, and packaging validation pieces are still missing.
 
 Targeted corridor demo validation:
 
@@ -284,7 +284,6 @@ It is ready for:
 
 It is missing, before EXE work:
 
-- fixed public-doc local-path scan failure
 - single app workflow
 - stable CLI entrypoint
 - package/project config
