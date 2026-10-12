@@ -60,7 +60,7 @@ class ReleasePackageTests(unittest.TestCase):
 
     def test_package_contains_no_huge_generated_artifacts(self) -> None:
         for path in PACKAGE.rglob("*"):
-            if "__pycache__" in path.parts or path.suffix == ".pyc":
+            if ".git" in path.parts or "__pycache__" in path.parts or path.suffix == ".pyc":
                 continue
             if path.is_file():
                 self.assertLess(path.stat().st_size, 5_000_000, str(path))

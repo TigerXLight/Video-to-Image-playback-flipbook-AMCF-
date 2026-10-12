@@ -77,6 +77,25 @@ Provides:
 
 This stage does not mark hardware complete and does not claim any mechanism is physically validated.
 
+## Stage 6
+
+`AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO_V1`
+
+Implemented in this run.
+
+Provides:
+
+- integrated deterministic simulator demo
+- mechanism profile selection
+- forward playback orchestration
+- fail-closed scenario orchestration
+- reverse/seek orchestration
+- unsafe acceptance audit
+- unified report package
+- tests
+
+This stage does not mark hardware complete and does not claim physical hardware validation.
+
 ## Later Stages
 
 Later work may add richer physical-player model bundles, PC recognition/control simulation, hardware adapter boundaries, and end-to-end Physical I/O simulation. Those later stages must preserve the claim boundary: no hardware validation is claimed until real hardware tests exist.
