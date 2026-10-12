@@ -131,6 +131,29 @@ Public physical-player docs:
 - `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
 - `CLAIM_BOUNDARIES.md`
 
+## AMCF Software I/O Control Baseline
+
+The software I/O branch extends the software-first foundation across PC -> Printer, PC <-> Reader, and Player <-> PC corridors. It adds shared package/manifest/update-event/physical-section models, cross-corridor reports, deterministic no-hardware fixtures, abstract print layout, simulated reader recovery, simulated player-control bridge, roundtrip reporting, and mutation safety tests.
+
+This branch keeps `unsafe_acceptance_count` at 0 and does not claim hardware validation, physical Level 5 completion, manufactured player completion, real printer integration, real scanner/reader integration, real player communication, PDF/image/barcode support, or USB/serial/firmware support.
+
+Software I/O docs:
+
+- `docs/AMCF_SOFTWARE_IO_DOCS_MAP.md`
+- `docs/AMCF_SOFTWARE_IO_PUBLIC_SUMMARY.md`
+- `docs/AMCF_SOFTWARE_DEVELOPMENT_AND_IO_CONTROL_DOSSIER_COLLECTION.md`
+- `docs/AMCF_SOFTWARE_IO_REPO_AUDIT.md`
+- `docs/AMCF_SHARED_PACKAGE_MANIFEST_MODEL.md`
+- `docs/AMCF_CROSS_CORRIDOR_REPORTING_MODEL.md`
+- `docs/AMCF_SOFTWARE_IO_FIXTURE_REGRESSION_BASELINE.md`
+- `docs/AMCF_PC_TO_PRINTER_SOFTWARE_PATH.md`
+- `docs/AMCF_PC_READER_SOFTWARE_PATH.md`
+- `docs/AMCF_PLAYER_PC_SOFTWARE_PATH.md`
+- `docs/AMCF_CROSS_CORRIDOR_ROUNDTRIP.md`
+- `docs/AMCF_CROSS_CORRIDOR_MUTATION_SAFETY.md`
+- `docs/AMCF_SOFTWARE_IO_RELEASE_REVIEW_REFRESH.md`
+- `docs/AMCF_SOFTWARE_IO_IMPLEMENTATION_PROGRESS.md`
+
 ## Concept assets and physical-player correction
 
 `assets/concepts/` contains current and legacy AMCF concept references. Old diagrams may be superseded and are retained for context only.
