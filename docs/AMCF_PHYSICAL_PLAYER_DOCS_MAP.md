@@ -14,18 +14,22 @@ The current repository implements deterministic software/control simulators and 
 4. `docs/AMCF_PHYSICAL_PLAYER_REVERSE_SEEK.md`
 5. `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md`
 6. `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md`
-7. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
-8. `CLAIM_BOUNDARIES.md`
-9. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
+7. `docs/AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW.md`
+8. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
+9. `CLAIM_BOUNDARIES.md`
+10. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
 
 ## Physical-Player Docs
 
+- `docs/AMCF_PHYSICAL_PLAYER_DOCS_MAP.md` - this public-facing map for the branch.
+- `docs/AMCF_PHYSICAL_PLAYER_PUBLIC_SUMMARY.md` - short public-facing summary of the branch.
 - `docs/AMCF_PHYSICAL_PLAYER_CONCEPT.md` - compact folded-path physical/optical concept and boundary.
 - `docs/AMCF_PHYSICAL_PLAYER_STATE_MACHINE.md` - deterministic software/control state machine.
 - `docs/AMCF_PHYSICAL_PLAYER_FAIL_CLOSED.md` - safety decisions and unsafe acceptance prevention.
 - `docs/AMCF_PHYSICAL_PLAYER_REVERSE_SEEK.md` - bounded reverse buffer and local-buffer seek rules.
 - `docs/AMCF_PHYSICAL_PLAYER_MECHANISM_PROFILES.md` - mechanism candidates and default simulator profile.
 - `docs/AMCF_PHYSICAL_PLAYER_SIMULATOR_DEMO.md` - integrated deterministic simulator demo.
+- `docs/AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW.md` - release-style review checks and report output.
 - `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md` - staged development sequence and known commits.
 - `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md` - relationship between digital AMCF and physical paths.
 
@@ -36,6 +40,7 @@ The current repository implements deterministic software/control simulators and 
 - `demo/run_physical_player_reverse_seek_demo.py`
 - `demo/run_physical_player_mechanism_profiles_demo.py`
 - `demo/run_physical_player_simulator_demo.py`
+- `demo/run_physical_player_release_review.py`
 
 ## Test Files
 
@@ -44,6 +49,8 @@ The current repository implements deterministic software/control simulators and 
 - `tests/test_physical_player_reverse_seek.py`
 - `tests/test_physical_player_mechanism_profiles.py`
 - `tests/test_physical_player_simulator_demo.py`
+- `tests/test_physical_player_public_docs_sync.py`
+- `tests/test_physical_player_release_review.py`
 
 ## Output And Report Folders
 
@@ -52,6 +59,7 @@ The current repository implements deterministic software/control simulators and 
 - `output/physical_player_reverse_seek_demo/`
 - `output/physical_player_mechanism_profiles_demo/`
 - `output/physical_player_simulator_demo/`
+- `output/physical_player_release_review/`
 
 Generated output is demo output and normally not committed.
 

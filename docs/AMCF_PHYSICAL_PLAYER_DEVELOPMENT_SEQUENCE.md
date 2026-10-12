@@ -78,13 +78,25 @@ Claim boundary: integrated deterministic software/control simulator package only
 
 `AMCF_PHYSICAL_PLAYER_PUBLIC_DOCS_SYNC_V1`
 
-Commit: current run, not committed yet.
+Commit: `c7c2658877f04d40b94b127c6e44fe30d3597a18`
 
 Purpose: synchronize public docs, navigation, claim boundaries, Pages links, docs map, public summary, and docs-link tests.
 
-Validation summary: to be recorded by this run.
+Validation summary: py_compile PASS, unittest discovery PASS with 197 tests, integrated simulator demo PASS, docs map created, public summary created, README updated, claim boundaries updated.
 
 Claim boundary: documentation/navigation sync only; no runtime behaviour change and no hardware validation claim.
+
+## Stage 8
+
+`AMCF_PHYSICAL_PLAYER_RELEASE_REVIEW_V1`
+
+Commit: current run, not committed yet.
+
+Purpose: release-style review of the physical-player software/control branch. It verifies tests, demos, docs, site navigation, claim boundaries, generated-output policy, local-path scan, and release review report.
+
+Validation summary: to be recorded by this run.
+
+Claim boundary: software/control release review only; no physical hardware validation and no physical Level 5 claim.
 
 ## Later Stages
 
