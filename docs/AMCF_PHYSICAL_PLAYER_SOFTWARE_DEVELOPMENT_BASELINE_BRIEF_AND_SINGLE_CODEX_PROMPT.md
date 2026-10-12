@@ -320,7 +320,7 @@ Public repo:
 https://github.com/TigerXLight/Video-to-Image-playback-flipbook-AMCF-
 
 Local workspace:
-T:\References\to go\Media\tools\Video to Image
+<workspace-root>
 
 If Codex is already inside the repo root, use the current repo root.
 
@@ -801,13 +801,13 @@ Do not claim a manufactured physical player exists.
 ## Step 1 — create the public checkpoint tag
 
 ```cmd
-cd /d "T:\References\to go\Media\tools\Video to Image\Tests\Test AMCF_PUBLIC_GITHUB_PAGES_SITE_PREP\20261011_011430\01_UPDATED_PUBLIC_PACKAGE_WITH_PAGES\AMCF_GITHUB_CLEAN_PACKAGE" && git status --short && git tag -a amcf-physical-player-software-control-v1 -m "AMCF physical-player software-control public release v1" && git push origin amcf-physical-player-software-control-v1
+cd /d "<repo-root>" && git status --short && git tag -a amcf-physical-player-software-control-v1 -m "AMCF physical-player software-control public release v1" && git push origin amcf-physical-player-software-control-v1
 ```
 
 ## Step 2 — create the runtime integration branch
 
 ```cmd
-cd /d "T:\References\to go\Media\tools\Video to Image\Tests\Test AMCF_PUBLIC_GITHUB_PAGES_SITE_PREP\20261011_011430\01_UPDATED_PUBLIC_PACKAGE_WITH_PAGES\AMCF_GITHUB_CLEAN_PACKAGE" && git checkout -b dev/physical-player-runtime-integration
+cd /d "<repo-root>" && git checkout -b dev/physical-player-runtime-integration
 ```
 
 ## Step 3 — save this brief into the repo
