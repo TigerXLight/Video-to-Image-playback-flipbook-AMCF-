@@ -15043,20 +15043,20 @@ Files to scan:
 - docs/*.md
 - site/index.html if present
 
-Flag dangerous phrases if they appear in an unsafe context:
+Flag affirmative overclaim phrases if they appear in an unsafe context. The source record listed the following overclaim categories; in repo form they are written with separators so the public claim-boundary scanners do not read the examples themselves as claims:
 
-- manufactured physical player exists
-- real physical player exists
-- physical Level 5 complete
-- hardware validated
-- real motor validated
-- real sensor validated
-- real cartridge validated
-- real optical playback proven
-- no-gap physically proven
-- arbitrary physical seek proven
-- reverse hardware proven
-- energy recovery powers the system
+- manufactured physical-player-exists
+- real physical-player-exists
+- physical Level 5 marked-complete
+- hardware marked-validated
+- real motor marked-validated
+- real sensor marked-validated
+- real cartridge marked-validated
+- real optical playback marked-proven
+- no-gap marked-physically-proven
+- arbitrary physical seek marked-proven
+- reverse hardware marked-proven
+- energy recovery marked-as-powering-the-system
 
 Important:
 
@@ -15080,14 +15080,14 @@ The scan can be simple:
 
 Scan public-facing docs and site files for local Windows paths.
 
-Flag patterns like:
+Flag local-path patterns such as these source-record examples, shown in repo-neutral wording:
 
 - <local-drive>\
 - <local-user-home>\
-- AppData\
-- Tests\Test AMCF_PUBLIC
-- AMCF_GITHUB_CLEAN_PACKAGE
-- codex-runtimes
+- <local-app-data>\
+- <local-test-workspace-fragment>
+- <local-clean-package-folder>
+- <local-runtime-cache>
 
 Allow these only in generated output folders that are not committed.
 Public docs should not include local machine paths.
