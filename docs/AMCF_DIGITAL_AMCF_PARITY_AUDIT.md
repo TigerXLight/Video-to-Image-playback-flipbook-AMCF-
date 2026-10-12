@@ -24,21 +24,35 @@ After this audit, `AMCF_PUBLIC_REPO_FULL_LOCAL_MAIN_PARITY_SYNC_V1` added a firs
 - `demo/run_amcf_video_pipeline_demo.py`
 - `tests/test_amcf_video_pipeline.py`
 
-The public repo now supports an optional FFmpeg/FFprobe-backed path for MP4-style source video to AMCF digital archive, optional copied audio payload inclusion, archive-to-decoded-frame export, and archive-to-decoded-MP4 export. This does not yet port the full local `Main` component-event/WebP archive format, OpenCV segmentation, optical-flow tracking, quality metrics, or viewer package.
+The public repo now supports an optional FFmpeg/FFprobe-backed path for MP4-style source video to AMCF digital archive, optional copied audio payload inclusion, archive-to-decoded-frame export, and archive-to-decoded-MP4 export.
+
+`AMCF_LOCAL_MAIN_COMPONENT_EVENT_PARITY_V2` then added the first public component-event archive parity layer:
+
+- `src/amcf_component_event_archive.py`
+- `src/amcf_adaptive_component_scheduler.py`
+- `src/amcf_quality_metrics.py`
+- `demo/run_amcf_component_event_archive_demo.py`
+- `demo/run_amcf_quality_metrics_demo.py`
+- `tests/test_amcf_component_event_archive.py`
+- `tests/test_amcf_adaptive_component_scheduler.py`
+- `tests/test_amcf_quality_metrics.py`
+
+The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, and explicit optional dependency status. It does not yet port the full local `Main` OpenCV segmentation, optical-flow tracking, SSIM metric parity, or viewer package.
 
 ## Summary
 
 | Capability | Status | Current evidence |
 | --- | --- | --- |
-| MP4/source video to digital AMCF | PARTIAL | `src/amcf_video_pipeline.py`, `demo/run_amcf_video_pipeline_demo.py`, and `tests/test_amcf_video_pipeline.py` provide an optional FFmpeg-backed MP4-to-frame-to-AMCF path. The full local component-event archive format is not yet ported. |
+| MP4/source video to digital AMCF | PARTIAL | `src/amcf_video_pipeline.py`, `demo/run_amcf_video_pipeline_demo.py`, and `tests/test_amcf_video_pipeline.py` provide an optional FFmpeg-backed MP4-to-frame-to-AMCF path. |
 | Source-frame folder to digital AMCF | IMPLEMENTED | `src/amcf_digital_encoder.py`, `src/amcf_digital_validator.py`, `demo/run_source_frames_to_amcf_digital_demo.py`, and `tests/test_source_frames_to_amcf_digital.py` create and validate a real `.amcf.zip` from deterministic PPM frames. |
 | Digital AMCF to print process | PARTIAL | `src/amcf_physical_carrier.py` and `src/amcf_print_layout.py` provide no-hardware carrier/layout planning. No real printer, PDF, PNG, or production print pipeline is claimed. |
 | Digital AMCF to decoded frames | PARTIAL | `src/amcf_video_pipeline.py` can decode public frame-payload AMCF archives directly to PPM frames. `src/amcf_virtual_carrier_reader.py` also recovers frames through the software carrier/virtual reader path. |
 | Digital AMCF to decoded MP4/video | PARTIAL | `src/amcf_video_pipeline.py` can export decoded MP4 when FFmpeg is available. This is not a final media-player app or GUI/EXE export flow. |
 | Audio preservation/handling | PARTIAL | The video pipeline can copy source audio into the AMCF archive and carry it into decoded MP4 output when FFmpeg can extract it. Full audio policy/validation remains future work. |
-| Archive size ceiling <= source size | MISSING | The canonical concept requires size discipline, but current public encoder/tests do not enforce an archive-size ceiling against the source. |
-| Manifest/update-event schedule | PARTIAL | The digital archive has `manifest.json`, `frame_entries`, frame count, dimensions, hashes, and fps. The shared package model has update events, but current `.amcf.zip` smoke archives do not yet carry a first-class update-event schedule. |
-| Validation/report output | PARTIAL | Digital archive validation exists and demos emit JSON summaries. A full user-facing parity validation report for MP4, audio, size ceiling, update events, and decoded video does not yet exist. |
+| Component-event archive | PARTIAL | `src/amcf_component_event_archive.py`, `src/amcf_adaptive_component_scheduler.py`, and tests provide base-plus-event archives with changed-region payloads. Full OpenCV/WebP/optical-flow parity remains future work. |
+| Archive size ceiling <= source size | PARTIAL | Component-event archives report archive size against a source-size ceiling. A hard fail policy and broader MP4/source ceiling enforcement remain future work. |
+| Manifest/update-event schedule | PARTIAL | The digital archive has `manifest.json`, `frame_entries`, frame count, dimensions, hashes, and fps. The component-event archive now carries timestamped changed-region events. Integration into one final public archive contract remains future work. |
+| Validation/report output | PARTIAL | Digital archive validation exists and demos emit JSON summaries. Component-event demos now report reconstruction and quality status. A full user-facing parity validation report remains future work. |
 
 ## Current Digital AMCF Runnable Surface
 
@@ -75,7 +89,7 @@ Findings:
 - The resulting source-frame manifest feeds the existing public AMCF archive encoder.
 - Tests generate a tiny video fixture with FFmpeg and verify archive validation, audio payload validation, decoded frame export, and decoded MP4 export.
 
-Remaining gap: this is not yet the full local `Main` component-event/WebP archive with OpenCV segmentation, optical-flow component updates, quality metrics, and viewer packaging.
+Remaining gap: this is not yet the full local `Main` component-event/WebP archive with OpenCV segmentation, optical-flow component updates, SSIM parity, and viewer packaging. The public repo now has the first component-event archive layer and quality fallback, but the optional OpenCV/scikit-image path remains future work.
 
 ## Source Frames to AMCF Status
 
@@ -167,23 +181,23 @@ Limitations:
 
 ## AMCF to Decoded Video Status
 
-Status: MISSING
+Status: PARTIAL
 
-The public repo does not currently export decoded MP4 or another video container from digital AMCF.
+The public repo can export decoded MP4 from the public frame-payload AMCF archive path when FFmpeg is available through `src/amcf_video_pipeline.py`.
 
-The virtual reader recovery claim boundary explicitly keeps MP4/video-container export unclaimed.
+The virtual reader recovery path still exports decoded frames only and keeps real scanner/camera and final media-player claims out of scope.
 
 ## Audio Handling Status
 
-Status: MISSING
+Status: PARTIAL
 
-The public digital AMCF smoke archive does not preserve audio. Audio is discussed in canonical goals and physical-player sync testing, but the public digital encoder does not include audio payloads or audio extraction.
+The public FFmpeg-backed video pipeline can copy source audio into the AMCF archive and carry it into decoded MP4 output when the source has extractable audio. Full audio policy, validation, and non-FFmpeg fallback remain future work.
 
 ## Archive Size Ceiling Status
 
-Status: MISSING
+Status: PARTIAL
 
-The canonical concept says AMCF should respect a source-size ceiling or explicitly fail that condition. The current public digital encoder and tests do not compare output archive size to source size.
+The canonical concept says AMCF should respect a source-size ceiling or explicitly fail that condition. The public component-event archive now reports archive size against a configured/source-derived ceiling. The public frame-payload encoder and final user-facing policy do not yet enforce a hard size ceiling.
 
 This should be treated as a parity gap before declaring the public repo equivalent to the already-tested local implementation.
 
@@ -278,38 +292,35 @@ Required user workflow:
 
 Current public repo status:
 
-1. video to digital AMCF: MISSING for MP4/video; IMPLEMENTED only for source-frame fixtures.
+1. video to digital AMCF: PARTIAL for MP4/video through optional FFmpeg; IMPLEMENTED for source-frame fixtures.
 2. digital AMCF to print process: PARTIAL no-hardware layout/carrier planning.
-3. digital AMCF to decoded video: MISSING for video container; PARTIAL for recovered PPM frames through the virtual reader path.
+3. digital AMCF to decoded video: PARTIAL through optional FFmpeg archive decode/export; PARTIAL for recovered PPM frames through the virtual reader path.
 
 Therefore the GitHub version is not yet at user-facing parity with the expected local/core AMCF workflow.
 
 ## Parity Gaps
 
-1. MP4/source-video input is missing.
-2. Audio extraction/preservation is missing.
-3. Decoded MP4/video-container export is missing.
-4. Archive size ceiling is missing.
-5. Digital AMCF update-event schedule is not yet integrated into the `.amcf.zip` smoke archive.
-6. The current digital AMCF archive is frame-payload based, not full component-update archive parity.
+1. MP4/source-video input is partial and optional through FFmpeg.
+2. Audio extraction/preservation is partial and optional through FFmpeg.
+3. Decoded MP4/video-container export is partial and optional through FFmpeg.
+4. Archive size ceiling is partial: component-event archives report it, but the final user-facing policy is not complete.
+5. Digital AMCF update-event schedule is partial: component-event archives carry timestamped changed-region events, but the frame-payload archive and component archive are not yet unified.
+6. The current component-event archive is a deterministic public fallback, not full local OpenCV/WebP/optical-flow archive parity.
 7. No stable CLI wraps encode, print-plan, and decode workflows.
 8. No user guide covers a real end-to-end AMCF run.
 9. No packaging/EXE validation should proceed until the workflow and CLI are stable.
 
 ## Recommended Next Phase
 
-Recommended next phase: `AMCF_MP4_TO_DIGITAL_AMCF_PARITY_PLAN_V1`
+Recommended next phase: `AMCF_LOCAL_MAIN_OPENCV_SEGMENTATION_PARITY_V1`
 
 Purpose:
 
-- Define the public-repo parity target for MP4/source-video to digital AMCF.
-- Compare the local `Main` implementation against the public repo safely.
-- Decide the dependency policy for FFmpeg, OpenCV/Pillow, or a standard-library-only frame-folder bridge.
-- Define archive structure requirements for frames, component updates, audio, manifest/update events, validation reports, and size ceiling.
-- Decide whether the first public implementation should be:
-  - source-frame CLI only,
-  - MP4 via external FFmpeg adapter,
-  - or a two-step import where users extract frames first.
+- Add an optional OpenCV segmentation/tracking adapter behind clear dependency checks.
+- Preserve the current public FFmpeg and component-event fallback paths.
+- Keep generated synthetic fixtures small and deterministic.
+- Do not add GUI, EXE packaging, hardware APIs, or local media assumptions.
+- Continue keeping OpenCV/Pillow/scikit-image behavior explicit rather than silently required.
 
 The general CLI baseline should wait until this parity decision is made. A source-frame-only CLI could be built now, but it would not satisfy the stated normal-user workflow.
 
@@ -319,10 +330,10 @@ CLI ready now: no
 
 Reason:
 
-- There is no MP4 input path.
-- There is no decoded-video output path.
-- There is no audio path.
-- There is no source-size ceiling check.
+- MP4 input exists only as an optional FFmpeg-backed developer path.
+- Decoded-video output exists only as an optional FFmpeg-backed developer path.
+- Audio exists only as optional copied payload handling.
+- Source-size ceiling status exists only in the component-event archive layer.
 - The user workflow contract is not yet stable enough for a single app entrypoint.
 
 EXE ready now: no
