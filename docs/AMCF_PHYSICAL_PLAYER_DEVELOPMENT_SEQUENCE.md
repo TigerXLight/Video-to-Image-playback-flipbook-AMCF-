@@ -126,13 +126,25 @@ Claim boundary: software/control public-docs review only; no physical hardware v
 
 `AMCF_PUBLIC_RELEASE_CLOSEOUT_HANDOFF_V1`
 
-Commit: current run, not committed yet.
+Commit: `331848fdf10ff18eab0a9426441f0f00e91a8f03`
 
 Purpose: final public-release closeout handoff. It summarizes commits, tests, demos, docs, site, package state, claim boundaries, generated-output policy, local-path scan, and unsafe-claim scan.
 
-Validation summary: to be recorded by this run.
+Validation summary: py_compile PASS, unittest discovery PASS with 272 tests, integrated simulator demo PASS, release review PASS, package refresh PASS, final Pages review PASS, closeout handoff report PASS, commit trail complete yes, `unsafe_acceptance_count` 0.
 
 Claim boundary: software/control closeout handoff only; no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
+
+## Stage 12
+
+`AMCF_PUBLIC_RELEASE_TAG_PREP_V1`
+
+Commit: current run, not committed yet.
+
+Purpose: prepare release tag materials, suggested tag name, release notes draft, release checklist, tag-readiness report, claim-boundary scan, generated-output scan, local-path scan, and unsafe hardware claim scan.
+
+Validation summary: to be recorded by this run.
+
+Claim boundary: tag preparation only; no tag created, no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
 
 ## Later Stages
 

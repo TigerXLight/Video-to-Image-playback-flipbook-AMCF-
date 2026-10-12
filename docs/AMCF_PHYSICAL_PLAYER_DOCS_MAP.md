@@ -19,9 +19,12 @@ The current repository implements deterministic software/control simulators and 
 9. `docs/AMCF_PUBLIC_RELEASE_PACKAGE_INVENTORY.md`
 10. `docs/AMCF_PUBLIC_GITHUB_PAGES_FINAL_REVIEW.md`
 11. `docs/AMCF_PUBLIC_RELEASE_CLOSEOUT_HANDOFF.md`
-12. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
-13. `CLAIM_BOUNDARIES.md`
-14. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
+12. `docs/AMCF_PUBLIC_RELEASE_TAG_PREP.md`
+13. `docs/AMCF_PUBLIC_RELEASE_NOTES_DRAFT.md`
+14. `docs/AMCF_PUBLIC_RELEASE_TAG_CHECKLIST.md`
+15. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
+16. `CLAIM_BOUNDARIES.md`
+17. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
 
 ## Physical-Player Docs
 
@@ -38,6 +41,9 @@ The current repository implements deterministic software/control simulators and 
 - `docs/AMCF_PUBLIC_RELEASE_PACKAGE_INVENTORY.md` - human-readable package inventory.
 - `docs/AMCF_PUBLIC_GITHUB_PAGES_FINAL_REVIEW.md` - final public GitHub Pages and documentation review.
 - `docs/AMCF_PUBLIC_RELEASE_CLOSEOUT_HANDOFF.md` - final public-release closeout and handoff record.
+- `docs/AMCF_PUBLIC_RELEASE_TAG_PREP.md` - release-tag preparation checks and report output.
+- `docs/AMCF_PUBLIC_RELEASE_NOTES_DRAFT.md` - human-readable draft notes for a possible later tag.
+- `docs/AMCF_PUBLIC_RELEASE_TAG_CHECKLIST.md` - manual checklist for later explicit tag approval.
 - `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md` - staged development sequence and known commits.
 - `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md` - relationship between digital AMCF and physical paths.
 
@@ -50,6 +56,9 @@ The current repository implements deterministic software/control simulators and 
 - `demo/run_physical_player_simulator_demo.py`
 - `demo/run_physical_player_release_review.py`
 - `demo/run_public_release_package_refresh.py`
+- `demo/run_public_github_pages_final_review.py`
+- `demo/run_public_release_closeout_handoff.py`
+- `demo/run_public_release_tag_prep.py`
 
 ## Test Files
 
@@ -61,6 +70,9 @@ The current repository implements deterministic software/control simulators and 
 - `tests/test_physical_player_public_docs_sync.py`
 - `tests/test_physical_player_release_review.py`
 - `tests/test_public_release_package_refresh.py`
+- `tests/test_public_github_pages_final_review.py`
+- `tests/test_public_release_closeout_handoff.py`
+- `tests/test_public_release_tag_prep.py`
 
 ## Output And Report Folders
 
@@ -71,6 +83,9 @@ The current repository implements deterministic software/control simulators and 
 - `output/physical_player_simulator_demo/`
 - `output/physical_player_release_review/`
 - `output/public_release_package_refresh/`
+- `output/public_github_pages_final_review/`
+- `output/public_release_closeout_handoff/`
+- `output/public_release_tag_prep/`
 
 Generated output is demo output and normally not committed.
 
