@@ -114,13 +114,25 @@ Claim boundary: software/control release-package refresh only; no physical hardw
 
 `AMCF_PUBLIC_GITHUB_PAGES_FINAL_REVIEW_V1`
 
-Commit: current run, not committed yet.
+Commit: `8082f0a1134ea33df330c0508f06cc3ff7130e59`
 
 Purpose: final GitHub Pages/public documentation review. It verifies README entry points, docs map and public summary, site navigation, release review and package inventory links, generated-output exclusion, local-path scan, and unsafe hardware claim scan.
 
-Validation summary: to be recorded by this run.
+Validation summary: py_compile PASS, unittest discovery PASS with 253 tests, integrated simulator demo PASS, release review script PASS, package refresh script PASS, final Pages review script PASS, all physical-player demos PASS, final Pages review final_passed yes, `unsafe_acceptance_count` 0.
 
 Claim boundary: software/control public-docs review only; no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
+
+## Stage 11
+
+`AMCF_PUBLIC_RELEASE_CLOSEOUT_HANDOFF_V1`
+
+Commit: current run, not committed yet.
+
+Purpose: final public-release closeout handoff. It summarizes commits, tests, demos, docs, site, package state, claim boundaries, generated-output policy, local-path scan, and unsafe-claim scan.
+
+Validation summary: to be recorded by this run.
+
+Claim boundary: software/control closeout handoff only; no physical hardware validation, no physical Level 5 claim, and no manufactured physical player claim.
 
 ## Later Stages
 
