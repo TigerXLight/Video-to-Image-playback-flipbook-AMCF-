@@ -14,7 +14,7 @@ Public destination root: `<public-repo>`
 
 This report compares the already-working local AMCF `Main` project against the public GitHub repo and identifies what must be ported for full user-facing parity. It does not copy generated output, caches, local paths, private media, virtual environments, or machine-specific launch scripts into the public repo.
 
-This report now records four narrow parity ports. It did not bulk-copy the local `Main` scripts, but it added a public FFmpeg-backed video pipeline, a public component-event archive layer, optional media parity hooks for WebP/OpenCV/SSIM/static viewer output, and an optional optical-flow tracking report while preserving the newer public software I/O and physical-player architecture.
+This report now records five parity ports. It did not bulk-copy generated/local artifacts from the local `Main` tree, but it added a public FFmpeg-backed video pipeline, a public component-event archive layer, optional media parity hooks for WebP/OpenCV/SSIM/static viewer output, an optional optical-flow tracking report, and an initial public workflow CLI while preserving the newer public software I/O and physical-player architecture.
 
 ## 1. Public Repo Current HEAD
 
@@ -69,8 +69,8 @@ The local `Main` folder contains a small set of relevant files and generated/cac
 | Virtual reader | LOCAL_IMPLEMENTED in virtual hardware support | PUBLIC_IMPLEMENTED | PUBLIC_IMPLEMENTED | `amcf_virtual_hardware.py` is already identical in public. Public also has newer reader recovery fixtures. |
 | Physical carrier export | not central in local Main | PUBLIC_IMPLEMENTED | PUBLIC_IMPLEMENTED | Public has carrier generation from digital AMCF smoke archives. |
 | Player/simulator handoff | LOCAL_IMPLEMENTED in virtual hardware support | PUBLIC_IMPLEMENTED | PUBLIC_IMPLEMENTED | Public has same virtual hardware plus newer physical-player simulator/control sequence. |
-| User-facing app workflow | LOCAL_PARTIAL via scripts | PUBLIC_PARTIAL via docs/demos | PORT_REQUIRED | Neither has a polished user CLI. Public has the newer workflow spec. |
-| CLI or app entrypoint | LOCAL_IMPLEMENTED for local proof CLI | MISSING for app workflow | PORT_REQUIRED | Local `amcf_vnext.py` is present publicly but does not provide encode/print/decode workflow commands. |
+| User-facing app workflow | LOCAL_PARTIAL via scripts | PUBLIC_PARTIAL via CLI/docs/demos | PORT_REQUIRED | Public now has an initial workflow CLI for encode, component-archive, print-plan, and decode. Packaging/user-guide polish remains future work. |
+| CLI or app entrypoint | LOCAL_IMPLEMENTED for local proof CLI | PUBLIC_PARTIAL | PORT_REQUIRED | Public now has `src/amcf_cli.py` and `demo/run_amcf_cli_workflow_demo.py`. It is not yet an installed `amcf` command or EXE. |
 | Dependency handling | LOCAL_IMPLEMENTED for local environment | MISSING in public package | PORT_REQUIRED | Public repo has no dependency file for media pipeline; this is intentional so far. |
 | Tests | LOCAL_PARTIAL helper tests/checks | PUBLIC_IMPLEMENTED for current smoke/prototypes | PUBLIC_PARTIAL | Public now includes MP4 pipeline tests and component-event archive/scheduler/quality tests. More local-Main WebP/OpenCV parity tests remain future work. |
 
@@ -268,27 +268,28 @@ Behaviour added:
 
 Remaining parity gap:
 
-- This is not yet the exact local `Main` waterfall-specific track taxonomy, synchronized comparison-video viewer, deliverable zip package, or polished user CLI.
+- This is not yet the exact local `Main` waterfall-specific track taxonomy, synchronized comparison-video viewer, or deliverable zip package. The public repo now has an initial user workflow CLI, but not an installed/package-managed command.
 
 ## 7. Recommended Next Phase
 
-Recommended next phase: `AMCF_LOCAL_MAIN_CLI_PARITY_V1`
+Completed phase: `AMCF_LOCAL_MAIN_CLI_PARITY_V1`
 
 Purpose:
 
-- wrap the now-available encode, component-archive, print-plan, decode, and report paths behind a stable CLI
+- wrapped the now-available encode, component-archive, print-plan, decode, and report paths behind an initial CLI
 - preserve optional dependency checks for FFmpeg, Pillow, OpenCV, NumPy, and scikit-image
 - keep generated output under `output/`
 - do not require GUI, real media downloads, hardware APIs, or executable packaging yet
 
-Why this should come before CLI/EXE:
+Recommended next phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
 
-- The required user-facing workflow starts with video to digital AMCF.
-- Public MP4 ingestion, component-event archives, optional WebP, optional OpenCV changed-region segmentation, optional optical-flow tracking, optional SSIM, and a static viewer package now exist, but the exact local track taxonomy, synchronized comparison-video viewer, and user-facing CLI are still missing.
+- The required user-facing workflow now has an initial CLI baseline.
+- Public MP4 ingestion, component-event archives, optional WebP, optional OpenCV changed-region segmentation, optional optical-flow tracking, optional SSIM, static viewer package, and workflow CLI now exist.
+- The remaining local `Main` gaps are exact source-specific track taxonomy, synchronized comparison-video viewer packaging, and deliverable zip polish.
 - The public repo still needs a broader dependency policy before packaging.
-- The CLI should wrap stable behaviour, not a partly ported local research script.
+- The next viewer/deliverable work should keep local sample media, generated evidence folders, caches, and machine wrappers out of Git.
 
-CLI ready now: no
+CLI ready now: partial initial baseline
 
 EXE ready now: no
 

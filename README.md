@@ -88,6 +88,8 @@ This proves the clean package can create AMCF digital output from source frames 
 
 The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation and optical-flow track reporting when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
+The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, and `print-plan` commands over the existing clean public pipeline. The CLI is a software workflow entrypoint; it is not a GUI, EXE, real printer/scanner/player integration, or hardware validation claim.
+
 This smoke path does not claim physical proof, hardware validation, final UI status, manufacturing readiness, or a built physical prototype.
 
 ## AMCF digital to printable/indexed physical carrier package

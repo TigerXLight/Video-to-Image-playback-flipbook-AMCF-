@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-`AMCF_APP_WORKFLOW_SPEC_V1` defines the first user-facing AMCF workflow before any CLI, GUI, executable, installer, or hardware adapter is implemented.
+`AMCF_APP_WORKFLOW_SPEC_V1` defines the first user-facing AMCF workflow. The repo now has an initial public CLI module for this workflow, but it still has no GUI, executable, installer, or hardware adapter.
 
 The app should first be understood as an AMCF conversion workbench:
 
@@ -13,7 +13,7 @@ video / source frames
 -> decoded video / decoded frames
 ```
 
-This specification turns the current developer demos and no-hardware prototypes into a clear future app/CLI plan. It does not change runtime behavior.
+This specification turns the current developer demos and no-hardware prototypes into a clear app/CLI plan. The initial CLI baseline wraps the clean public software paths; GUI and EXE work remain later packaging phases.
 
 ## 2. Intended User
 
@@ -176,7 +176,7 @@ Decoded frame export may exist before MP4/video export. The current repo does no
 | digital AMCF -> carrier/print process | physical-carrier generator and abstract print-layout prototype | no-hardware prototype |
 | digital AMCF -> decoded frames | virtual carrier recovery exports PPM frames | no-hardware recovery demo |
 | digital AMCF -> MP4/video | FFmpeg-backed archive decode/export path | optional dependency path |
-| unified user CLI | not implemented | next implementation phase |
+| unified user CLI | `src/amcf_cli.py`, `demo/run_amcf_cli_workflow_demo.py`, `tests/test_amcf_cli.py` | initial baseline |
 | GUI / EXE | not implemented | later |
 
 ## 8. Missing Pieces By Workflow
@@ -210,7 +210,18 @@ Decoded frame export may exist before MP4/video export. The current repo does no
 - packaging validation plan
 - installer/EXE plan after CLI stabilizes
 
-## 9. Proposed Future CLI Commands
+## 9. Current And Proposed CLI Commands
+
+Current public CLI module:
+
+```text
+python src/amcf_cli.py status
+python src/amcf_cli.py encode --input-frames-manifest path/to/source_frames_manifest.json --output output/my_amcf
+python src/amcf_cli.py encode --input-video path/to/video.mp4 --output output/my_amcf
+python src/amcf_cli.py component-archive --input-frames-manifest path/to/source_frames_manifest.json --output output/my_component_archive
+python src/amcf_cli.py decode --input output/my_amcf/package.amcf.zip --output output/my_decoded_frames
+python src/amcf_cli.py print-plan --input output/my_amcf/package.amcf.zip --output output/my_print_plan
+```
 
 Near-term source-frame command:
 
@@ -242,7 +253,7 @@ Potential later grouped workflow:
 amcf workflow full --input-video path/to/video.mp4 --output output/my_run --steps encode,print-plan,decode
 ```
 
-The first implementation should prefer `encode`, `print-plan`, and `decode` subcommands before grouped workflows.
+The initial implementation now exposes `encode`, `component-archive`, `decode`, and `print-plan` subcommands before grouped workflows.
 
 ## 10. Proposed Output Folder Structure
 
@@ -390,28 +401,35 @@ A GUI or EXE built before those contracts would mostly wrap developer demos and 
 
 ## 17. Recommended Next Implementation Phase
 
-Recommended next phase:
+Completed baseline phase:
 
 ```text
 AMCF_CLI_ENTRYPOINT_BASELINE_V1
 ```
 
-That phase should create a unified standard-library CLI entrypoint for the three core app commands:
+That phase created a standard-library CLI entrypoint for the core app commands:
 
 ```text
 amcf encode
+amcf component-archive
 amcf print-plan
 amcf decode
 ```
 
-The first CLI baseline should wrap existing proven software paths and keep all claim boundaries false. It should not build an EXE or GUI.
+Recommended next implementation phase:
+
+```text
+AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1
+```
+
+That phase should align the remaining local `Main` deliverable polish: source-specific track taxonomy where useful, synchronized comparison/viewer packaging where safe, and release-style output packaging without private paths or generated media.
 
 ## Readiness Summary
 
 - EXE ready now: no
 - GUI ready now: no
-- first implementation should be CLI baseline: yes
-- recommended next phase: `AMCF_CLI_ENTRYPOINT_BASELINE_V1`
+- first CLI baseline implemented: yes
+- recommended next phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
 - generated output committed: no
 - hardware validation claimed: false
 - physical Level 5 claimed: false

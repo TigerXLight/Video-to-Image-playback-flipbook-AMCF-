@@ -37,7 +37,7 @@ The public repo now supports an optional FFmpeg/FFprobe-backed path for MP4-styl
 - `tests/test_amcf_adaptive_component_scheduler.py`
 - `tests/test_amcf_quality_metrics.py`
 
-The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, optional SSIM reporting, a static viewer package, and explicit optional dependency status. It does not yet port the full local `Main` waterfall-specific track taxonomy or synchronized comparison-video viewer package.
+The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, optional SSIM reporting, a static viewer package, and explicit optional dependency status. The public repo now also has an initial workflow CLI wrapper for encode, component-archive, decode, and print-plan paths. It does not yet port the full local `Main` waterfall-specific track taxonomy or synchronized comparison-video viewer package.
 
 ## Summary
 
@@ -56,7 +56,7 @@ The component-event layer implements deterministic base-plus-changed-region even
 
 ## Current Digital AMCF Runnable Surface
 
-Current public-repo digital AMCF commands are developer demos rather than a unified user CLI:
+Current public-repo digital AMCF commands include developer demos and an initial workflow CLI baseline:
 
 | Command | Purpose | Output | Status |
 | --- | --- | --- | --- |
@@ -66,12 +66,17 @@ Current public-repo digital AMCF commands are developer demos rather than a unif
 | `python demo/run_virtual_reader_recovery_export_demo.py` | Runs software carrier recovery and exports recovered PPM frames and a recovered AMCF state/archive. | `demo/output/virtual_reader_recovery/` | DEMO-ONLY, PARTIAL decoded-frame path |
 | `python demo/run_amcf_shared_package_model_demo.py` | Demonstrates shared package, manifest, physical-section, and update-event model primitives. | `output/amcf_shared_package_model/` | FIXTURE-ONLY support layer |
 | `python demo/run_amcf_cross_corridor_roundtrip_demo.py` | Runs a no-hardware software I/O roundtrip using fixtures and corridor models. | `output/amcf_cross_corridor_roundtrip/` | FIXTURE-ONLY cross-corridor prototype |
+| `python src/amcf_cli.py status` | Shows public CLI commands and claim boundaries. | stdout JSON | INITIAL CLI BASELINE |
+| `python src/amcf_cli.py encode ...` | Encodes source-frame manifests or optional FFmpeg-backed source video to AMCF. | requested output folder | INITIAL CLI BASELINE |
+| `python src/amcf_cli.py component-archive ...` | Builds component-event archive output and a static viewer package from source-frame manifests. | requested output folder | INITIAL CLI BASELINE |
+| `python src/amcf_cli.py decode ...` | Decodes frame-payload or component-event AMCF archives, with optional FFmpeg video export for supported archives. | requested output folder | INITIAL CLI BASELINE |
+| `python src/amcf_cli.py print-plan ...` | Creates a no-hardware physical-carrier / print-plan package from public frame-payload AMCF archives. | requested output folder | INITIAL CLI BASELINE |
 
-There is no current stable package CLI command equivalent to:
+The current CLI command shape is:
 
 ```text
-amcf encode --input-video input.mp4 --output output/my_amcf
-amcf decode --input output/my_amcf/archive.amcf.zip --output output/my_decoded_video
+python src/amcf_cli.py encode --input-video input.mp4 --output output/my_amcf
+python src/amcf_cli.py decode --input output/my_amcf/archive.amcf.zip --output output/my_decoded_video
 ```
 
 ## MP4 to AMCF Status
@@ -306,27 +311,31 @@ Therefore the GitHub version is not yet at user-facing parity with the expected 
 4. Archive size ceiling is partial: component-event archives report it, but the final user-facing policy is not complete.
 5. Digital AMCF update-event schedule is partial: component-event archives carry timestamped changed-region events, but the frame-payload archive and component archive are not yet unified.
 6. The current component-event archive is a public parity layer with optional WebP/OpenCV/optical-flow/SSIM support, not the exact local waterfall-specific track taxonomy.
-7. No stable CLI wraps encode, print-plan, and decode workflows.
+7. An initial CLI now wraps encode, component-archive, print-plan, and decode workflows; packaging and end-user polish remain future work.
 8. No user guide covers a real end-to-end AMCF run.
 9. No packaging/EXE validation should proceed until the workflow and CLI are stable.
 
 ## Recommended Next Phase
 
-Recommended next phase: `AMCF_LOCAL_MAIN_CLI_PARITY_V1`
+Completed phase: `AMCF_LOCAL_MAIN_CLI_PARITY_V1`
 
 Purpose:
 
-- Wrap the public encode, component-archive, print-plan, decode, and report paths behind a stable CLI.
+- Wrapped the public encode, component-archive, print-plan, decode, and report paths behind an initial CLI baseline.
 - Preserve the current public FFmpeg and component-event paths.
 - Keep generated output under `output/`.
-- Do not add GUI, EXE packaging, hardware APIs, or local media assumptions.
+- Did not add GUI, EXE packaging, hardware APIs, or local media assumptions.
 - Continue keeping OpenCV/Pillow/scikit-image behavior explicit rather than silently required.
 
-The general CLI baseline should wait until this parity decision is made. A source-frame-only CLI could be built now, but it would not satisfy the stated normal-user workflow.
+Recommended next phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
+
+- Align the remaining local `Main` deliverable polish that is safe to make public.
+- Add synchronized comparison/viewer packaging only where it can be deterministic and free of private paths.
+- Keep local sample media, generated evidence folders, caches, and machine wrappers out of Git.
 
 ## CLI and EXE Readiness
 
-CLI ready now: no
+CLI ready now: partial initial baseline
 
 Reason:
 
@@ -334,13 +343,13 @@ Reason:
 - Decoded-video output exists only as an optional FFmpeg-backed developer path.
 - Audio exists only as optional copied payload handling.
 - Source-size ceiling status exists only in the component-event archive layer.
-- The user workflow contract is not yet stable enough for a single app entrypoint.
+- The user workflow has an initial CLI entrypoint but not a packaged command, installer, or end-user guide.
 
 EXE ready now: no
 
 Reason:
 
-- The repo has no stable CLI entrypoint for the core user workflow.
+- The repo has an initial CLI entrypoint for the core user workflow, but not a packaged command or installer.
 - The repo has no packaging configuration for a user-facing executable.
 - The repo has no MP4 dependency policy.
 - The repo has no end-user workflow guide for real video input/output.
