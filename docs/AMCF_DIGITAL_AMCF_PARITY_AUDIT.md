@@ -37,7 +37,7 @@ The public repo now supports an optional FFmpeg/FFprobe-backed path for MP4-styl
 - `tests/test_amcf_adaptive_component_scheduler.py`
 - `tests/test_amcf_quality_metrics.py`
 
-The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, and explicit optional dependency status. It does not yet port the full local `Main` OpenCV segmentation, optical-flow tracking, SSIM metric parity, or viewer package.
+The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, optional OpenCV changed-region segmentation, optional SSIM reporting, a static viewer package, and explicit optional dependency status. It does not yet port the full local `Main` waterfall-specific optical-flow track policy or synchronized comparison-video viewer package.
 
 ## Summary
 
@@ -49,7 +49,7 @@ The component-event layer implements deterministic base-plus-changed-region even
 | Digital AMCF to decoded frames | PARTIAL | `src/amcf_video_pipeline.py` can decode public frame-payload AMCF archives directly to PPM frames. `src/amcf_virtual_carrier_reader.py` also recovers frames through the software carrier/virtual reader path. |
 | Digital AMCF to decoded MP4/video | PARTIAL | `src/amcf_video_pipeline.py` can export decoded MP4 when FFmpeg is available. This is not a final media-player app or GUI/EXE export flow. |
 | Audio preservation/handling | PARTIAL | The video pipeline can copy source audio into the AMCF archive and carry it into decoded MP4 output when FFmpeg can extract it. Full audio policy/validation remains future work. |
-| Component-event archive | PARTIAL | `src/amcf_component_event_archive.py`, `src/amcf_adaptive_component_scheduler.py`, and tests provide base-plus-event archives with changed-region payloads. Full OpenCV/WebP/optical-flow parity remains future work. |
+| Component-event archive | PARTIAL | `src/amcf_component_event_archive.py`, `src/amcf_adaptive_component_scheduler.py`, and tests provide base-plus-event archives with changed-region payloads, WebP when Pillow is available, optional OpenCV changed-region segmentation, and static viewer output. Full local optical-flow track parity remains future work. |
 | Archive size ceiling <= source size | PARTIAL | Component-event archives report archive size against a source-size ceiling. A hard fail policy and broader MP4/source ceiling enforcement remain future work. |
 | Manifest/update-event schedule | PARTIAL | The digital archive has `manifest.json`, `frame_entries`, frame count, dimensions, hashes, and fps. The component-event archive now carries timestamped changed-region events. Integration into one final public archive contract remains future work. |
 | Validation/report output | PARTIAL | Digital archive validation exists and demos emit JSON summaries. Component-event demos now report reconstruction and quality status. A full user-facing parity validation report remains future work. |
@@ -89,7 +89,7 @@ Findings:
 - The resulting source-frame manifest feeds the existing public AMCF archive encoder.
 - Tests generate a tiny video fixture with FFmpeg and verify archive validation, audio payload validation, decoded frame export, and decoded MP4 export.
 
-Remaining gap: this is not yet the full local `Main` component-event/WebP archive with OpenCV segmentation, optical-flow component updates, SSIM parity, and viewer packaging. The public repo now has the first component-event archive layer and quality fallback, but the optional OpenCV/scikit-image path remains future work.
+Remaining gap: this is not yet the full local `Main` component-event archive with waterfall-specific OpenCV track taxonomy, Farneback optical-flow component updates, synchronized comparison videos, and deliverable packaging. The public repo now has component-event archives, WebP when available, optional OpenCV changed-region segmentation, optional SSIM, and a static inspection viewer.
 
 ## Source Frames to AMCF Status
 
@@ -305,18 +305,18 @@ Therefore the GitHub version is not yet at user-facing parity with the expected 
 3. Decoded MP4/video-container export is partial and optional through FFmpeg.
 4. Archive size ceiling is partial: component-event archives report it, but the final user-facing policy is not complete.
 5. Digital AMCF update-event schedule is partial: component-event archives carry timestamped changed-region events, but the frame-payload archive and component archive are not yet unified.
-6. The current component-event archive is a deterministic public fallback, not full local OpenCV/WebP/optical-flow archive parity.
+6. The current component-event archive is a public parity layer with optional WebP/OpenCV/SSIM support, not the exact local optical-flow track model.
 7. No stable CLI wraps encode, print-plan, and decode workflows.
 8. No user guide covers a real end-to-end AMCF run.
 9. No packaging/EXE validation should proceed until the workflow and CLI are stable.
 
 ## Recommended Next Phase
 
-Recommended next phase: `AMCF_LOCAL_MAIN_OPENCV_SEGMENTATION_PARITY_V1`
+Recommended next phase: `AMCF_LOCAL_MAIN_OPTICAL_FLOW_TRACK_PARITY_V1`
 
 Purpose:
 
-- Add an optional OpenCV segmentation/tracking adapter behind clear dependency checks.
+- Add the local optical-flow track/motion policy behind clear dependency checks.
 - Preserve the current public FFmpeg and component-event fallback paths.
 - Keep generated synthetic fixtures small and deterministic.
 - Do not add GUI, EXE packaging, hardware APIs, or local media assumptions.

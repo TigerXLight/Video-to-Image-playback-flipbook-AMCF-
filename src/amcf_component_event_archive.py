@@ -70,6 +70,52 @@ def _changed_bbox(previous: bytes, current: bytes, width: int, height: int) -> t
     return [min_x, min_y, max_x - min_x + 1, max_y - min_y + 1], changed_pixels
 
 
+def _opencv_changed_region(previous: bytes, current: bytes, width: int, height: int) -> tuple[list[int] | None, int, dict[str, Any]]:
+    try:
+        import cv2
+        import numpy as np
+    except ImportError as exc:
+        raise RuntimeError("OpenCV segmentation requested but cv2/numpy are not importable") from exc
+
+    prev = np.frombuffer(previous, dtype=np.uint8).reshape((height, width, 3))
+    curr = np.frombuffer(current, dtype=np.uint8).reshape((height, width, 3))
+    diff = cv2.absdiff(prev, curr)
+    gray = cv2.cvtColor(diff, cv2.COLOR_RGB2GRAY)
+    _, mask = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    changed_pixels = int(np.count_nonzero(mask))
+    if changed_pixels == 0:
+        return None, 0, {"strategy": "opencv_changed_region", "contour_count": 0, "changed_pixels": 0}
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = [c for c in contours if cv2.contourArea(c) >= 1.0]
+    if not contours:
+        return _changed_bbox(previous, current, width, height)[0], changed_pixels, {
+            "strategy": "opencv_changed_region",
+            "contour_count": 0,
+            "changed_pixels": changed_pixels,
+        }
+    x_values: list[int] = []
+    y_values: list[int] = []
+    contour_boxes: list[list[int]] = []
+    for contour in contours:
+        x, y, w, h = cv2.boundingRect(contour)
+        contour_boxes.append([int(x), int(y), int(w), int(h)])
+        x_values.extend([int(x), int(x + w)])
+        y_values.extend([int(y), int(y + h)])
+    x0 = min(x_values)
+    y0 = min(y_values)
+    x1 = max(x_values)
+    y1 = max(y_values)
+    return [x0, y0, x1 - x0, y1 - y0], changed_pixels, {
+        "strategy": "opencv_changed_region",
+        "contour_count": len(contours),
+        "contour_bboxes": contour_boxes,
+        "changed_pixels": changed_pixels,
+    }
+
+
 def _crop_pixels(pixels: bytes, frame_width: int, bbox: list[int]) -> bytes:
     x, y, width, height = bbox
     out = bytearray()
@@ -131,6 +177,7 @@ def build_component_event_archive(
     *,
     source_size_ceiling_bytes: int | None = None,
     prefer_webp: bool = True,
+    segmentation_mode: str = "changed_region",
     policy: ComponentUpdatePolicy | None = None,
 ) -> dict[str, Any]:
     source_manifest_path = Path(source_manifest_path)
@@ -167,6 +214,9 @@ def build_component_event_archive(
     last_update_frame: int | None = None
     total_pixels = width * height
 
+    if segmentation_mode not in {"changed_region", "opencv_changed_region"}:
+        raise ValueError(f"unsupported segmentation mode: {segmentation_mode}")
+
     for frame_index, frame_path, frame_pixels in loaded_frames:
         source_hashes.append(
             {
@@ -178,7 +228,11 @@ def build_component_event_archive(
         if frame_index == base_index:
             last_update_frame = frame_index
             continue
-        bbox, changed_pixels = _changed_bbox(reconstructed, frame_pixels, width, height)
+        if segmentation_mode == "opencv_changed_region":
+            bbox, changed_pixels, segmentation_report = _opencv_changed_region(reconstructed, frame_pixels, width, height)
+        else:
+            bbox, changed_pixels = _changed_bbox(reconstructed, frame_pixels, width, height)
+            segmentation_report = {"strategy": "changed_region", "changed_pixels": changed_pixels}
         decision = decide_component_update(
             frame_index=frame_index,
             last_update_frame=last_update_frame,
@@ -205,6 +259,7 @@ def build_component_event_archive(
             "reason": decision.reason,
             "changed_pixels": changed_pixels,
             "changed_ratio": decision.changed_ratio,
+            "segmentation": segmentation_report,
         }
         events.append(event)
         reconstructed = _paste_patch(reconstructed, width, bbox, patch_pixels)
@@ -239,6 +294,7 @@ def build_component_event_archive(
                 "component_id": "changed_region",
                 "component_type": "bounding_box_delta",
                 "description": "Standard-library changed-region component fallback for local Main component-event archive parity.",
+                "segmentation_mode": segmentation_mode,
             }
         ],
         "events": events,
@@ -248,6 +304,8 @@ def build_component_event_archive(
             "webp_payloads_requested": bool(prefer_webp),
             "webp_payloads_used": use_webp,
             "standard_library_ppm_fallback_used": not use_webp,
+            "opencv_segmentation_requested": segmentation_mode == "opencv_changed_region",
+            "opencv_segmentation_used": segmentation_mode == "opencv_changed_region",
         },
         "archive_size_ceiling": {
             "ceiling_bytes": ceiling_bytes,
@@ -259,7 +317,7 @@ def build_component_event_archive(
             "bounding_box_changed_regions": True,
             "webp_payloads": use_webp,
             "ppm_fallback_payloads": not use_webp,
-            "opencv_segmentation": False,
+            "opencv_segmentation": segmentation_mode == "opencv_changed_region",
             "psnr_metric": True,
             "ssim_metric": False,
             "viewer_package": False,
@@ -295,6 +353,7 @@ def build_component_event_archive(
         "frame_count": len(loaded_frames),
         "event_count": len(events),
         "payload_format": "webp_lossless" if use_webp else "ppm_p6",
+        "segmentation_mode": segmentation_mode,
         "dependency_status": manifest["dependency_status"],
         "archive_size_ceiling": {
             "ceiling_bytes": int(ceiling_bytes),

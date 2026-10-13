@@ -81,6 +81,26 @@ def psnr_db(expected: bytes, actual: bytes) -> float | None:
     return 20.0 * math.log10(255.0 / math.sqrt(mse))
 
 
+def ssim_rgb(expected: bytes, actual: bytes, width: int, height: int) -> float | None:
+    if not optional_quality_dependency_status()["skimage_available"]:
+        return None
+    try:
+        import numpy as np
+        from skimage.metrics import structural_similarity
+    except ImportError:
+        return None
+    if width < 3 or height < 3:
+        return None
+    expected_arr = np.frombuffer(expected, dtype=np.uint8).reshape((height, width, 3))
+    actual_arr = np.frombuffer(actual, dtype=np.uint8).reshape((height, width, 3))
+    win_size = min(7, width, height)
+    if win_size % 2 == 0:
+        win_size -= 1
+    if win_size < 3:
+        return None
+    return float(structural_similarity(expected_arr, actual_arr, channel_axis=2, data_range=255, win_size=win_size))
+
+
 def compare_ppm_frames(expected_path: str | Path, actual_path: str | Path) -> dict[str, Any]:
     expected_width, expected_height, expected_pixels = read_ppm(expected_path)
     actual_width, actual_height, actual_pixels = read_ppm(actual_path)
@@ -97,6 +117,7 @@ def compare_ppm_frames(expected_path: str | Path, actual_path: str | Path) -> di
             "ssim_available": False,
         }
     mae = mean_absolute_error_rgb(expected_pixels, actual_pixels)
+    ssim = ssim_rgb(expected_pixels, actual_pixels, expected_width, expected_height)
     return {
         "ok": mae == 0.0,
         "same_dimensions": True,
@@ -104,8 +125,8 @@ def compare_ppm_frames(expected_path: str | Path, actual_path: str | Path) -> di
         "actual_size": [actual_width, actual_height],
         "mean_absolute_error": mae,
         "psnr_db": psnr_db(expected_pixels, actual_pixels),
-        "ssim": None,
-        "ssim_available": False,
+        "ssim": ssim,
+        "ssim_available": ssim is not None,
         "dependency_status": optional_quality_dependency_status(),
     }
 
@@ -116,13 +137,15 @@ def compare_ppm_frame_folders(expected_dir: str | Path, actual_dir: str | Path) 
     pairs = list(zip(expected, actual))
     comparisons = [compare_ppm_frames(left, right) for left, right in pairs]
     mae_values = [float(item["mean_absolute_error"]) for item in comparisons if item["mean_absolute_error"] is not None]
+    ssim_values = [float(item["ssim"]) for item in comparisons if item["ssim"] is not None]
     return {
         "ok": len(expected) == len(actual) and all(item["ok"] for item in comparisons),
         "expected_frame_count": len(expected),
         "actual_frame_count": len(actual),
         "compared_frame_count": len(comparisons),
         "mean_absolute_error": sum(mae_values) / len(mae_values) if mae_values else None,
+        "mean_ssim": sum(ssim_values) / len(ssim_values) if ssim_values else None,
         "frames": comparisons,
-        "ssim_available": False,
+        "ssim_available": bool(ssim_values),
         "dependency_status": optional_quality_dependency_status(),
     }

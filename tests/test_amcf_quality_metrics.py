@@ -4,6 +4,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import importlib.util
 from pathlib import Path
 
 
@@ -53,6 +54,17 @@ class AmcfQualityMetricsTests(unittest.TestCase):
         report = compare_ppm_frame_folders(expected, actual)
         self.assertTrue(report["ok"])
         self.assertEqual(report["compared_frame_count"], 1)
+
+    @unittest.skipUnless(importlib.util.find_spec("skimage") is not None and importlib.util.find_spec("numpy") is not None, "skimage/numpy not available")
+    def test_ssim_available_when_optional_dependency_exists(self) -> None:
+        first = self.tmp / "first_ssim.ppm"
+        second = self.tmp / "second_ssim.ppm"
+        pixels = bytes([20, 30, 40] * 64)
+        write_ppm(first, 8, 8, pixels)
+        write_ppm(second, 8, 8, pixels)
+        report = compare_ppm_frames(first, second)
+        self.assertTrue(report["ssim_available"])
+        self.assertAlmostEqual(float(report["ssim"]), 1.0)
 
 
 if __name__ == "__main__":

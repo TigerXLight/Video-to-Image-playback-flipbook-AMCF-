@@ -86,7 +86,7 @@ The package also includes an FFmpeg-backed video pipeline demo in `demo/run_amcf
 
 This proves the clean package can create AMCF digital output from source frames and can exercise an MP4-to-AMCF-to-decoded-MP4 path when the optional FFmpeg tooling is available. The FFmpeg path is software-only and does not claim final GUI/EXE readiness.
 
-The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, and uses a deterministic PPM fallback when optional WebP/Pillow support is unavailable. This is not yet the full local OpenCV segmentation/tracking, SSIM, or viewer package parity path.
+The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
 This smoke path does not claim physical proof, hardware validation, final UI status, manufacturing readiness, or a built physical prototype.
 
