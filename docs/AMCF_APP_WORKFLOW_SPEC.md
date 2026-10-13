@@ -416,20 +416,28 @@ amcf print-plan
 amcf decode
 ```
 
-Recommended next implementation phase:
+Completed follow-up phase:
 
 ```text
 AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1
 ```
 
-That phase should align the remaining local `Main` deliverable polish: source-specific track taxonomy where useful, synchronized comparison/viewer packaging where safe, and release-style output packaging without private paths or generated media.
+That phase aligned the safe local `Main` deliverable polish: track-taxonomy metadata, comparison frames, optional FFmpeg comparison video, static viewer files, quality report, and deterministic zip packaging without private paths or generated media.
+
+Recommended next implementation phase:
+
+```text
+AMCF_LOCAL_MAIN_DEPENDENCY_AND_PACKAGING_POLICY_V1
+```
+
+That phase should define how FFmpeg/Pillow/OpenCV/NumPy/scikit-image are declared for users and how the current module CLI becomes an installed command before any EXE work.
 
 ## Readiness Summary
 
 - EXE ready now: no
 - GUI ready now: no
 - first CLI baseline implemented: yes
-- recommended next phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
+- recommended next phase: `AMCF_LOCAL_MAIN_DEPENDENCY_AND_PACKAGING_POLICY_V1`
 - generated output committed: no
 - hardware validation claimed: false
 - physical Level 5 claimed: false

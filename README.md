@@ -90,6 +90,8 @@ The package now also includes a component-event archive parity layer in `src/amc
 
 The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, and `print-plan` commands over the existing clean public pipeline. The CLI is a software workflow entrypoint; it is not a GUI, EXE, real printer/scanner/player integration, or hardware validation claim.
 
+The local-Main-style deliverable package path in `src/amcf_deliverable_package.py` can bundle a component-event archive, decoded-frame comparison frames, optional FFmpeg comparison video, static viewer files, quality report, and track-taxonomy manifest into a deterministic zip under `output/`. Generated deliverable zips are local output and are not committed.
+
 This smoke path does not claim physical proof, hardware validation, final UI status, manufacturing readiness, or a built physical prototype.
 
 ## AMCF digital to printable/indexed physical carrier package

@@ -7,6 +7,7 @@ from typing import Any
 
 from amcf_component_event_archive import build_component_event_archive, decode_component_event_archive
 from amcf_component_event_viewer import build_component_event_viewer
+from amcf_deliverable_package import build_deliverable_package
 from amcf_physical_carrier import generate_physical_carrier_from_amcf_archive
 from amcf_quality_metrics import compare_ppm_frame_folders
 from amcf_video_pipeline import decode_amcf_to_frames, decode_amcf_to_video, encode_video_to_amcf
@@ -70,12 +71,22 @@ def cmd_component_archive(args: argparse.Namespace) -> int:
         quality_report=quality,
         output_dir=output / "viewer",
     )
+    deliverable = build_deliverable_package(
+        archive_path=archive_path,
+        source_frames_dir=Path(args.input_frames_manifest).parent / "frames",
+        decoded_frames_dir=Path(decoded["decoded_frames_dir"]),
+        quality_report=quality,
+        viewer_dir=output / "viewer",
+        output_dir=output / "deliverable_package",
+        fps=int(decoded.get("fps", 24) or 24),
+    )
     result = {
-        "ok": archive["ok"] and decoded["ok"] and quality["ok"] and viewer["ok"],
+        "ok": archive["ok"] and decoded["ok"] and quality["ok"] and viewer["ok"] and deliverable["ok"],
         "archive": archive,
         "decode": decoded,
         "quality": quality,
         "viewer": viewer,
+        "deliverable": deliverable,
         "unsafe_acceptance_count": archive.get("unsafe_acceptance_count", 0),
     }
     return _print_result(result)

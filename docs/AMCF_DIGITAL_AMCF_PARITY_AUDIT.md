@@ -37,7 +37,7 @@ The public repo now supports an optional FFmpeg/FFprobe-backed path for MP4-styl
 - `tests/test_amcf_adaptive_component_scheduler.py`
 - `tests/test_amcf_quality_metrics.py`
 
-The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, optional SSIM reporting, a static viewer package, and explicit optional dependency status. The public repo now also has an initial workflow CLI wrapper for encode, component-archive, decode, and print-plan paths. It does not yet port the full local `Main` waterfall-specific track taxonomy or synchronized comparison-video viewer package.
+The component-event layer implements deterministic base-plus-changed-region events, decode/reconstruction to PPM frames, archive size-ceiling reporting, standard-library quality checks, optional WebP payload use when Pillow is available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, optional SSIM reporting, a static viewer package, and explicit optional dependency status. The public repo now also has an initial workflow CLI wrapper for encode, component-archive, decode, and print-plan paths plus a deliverable package path with track-taxonomy metadata, comparison frames, optional FFmpeg comparison video, viewer files, quality report, and deterministic zip output. It does not yet port the full local `Main` source-specific contour-overlay browser player.
 
 ## Summary
 
@@ -49,7 +49,8 @@ The component-event layer implements deterministic base-plus-changed-region even
 | Digital AMCF to decoded frames | PARTIAL | `src/amcf_video_pipeline.py` can decode public frame-payload AMCF archives directly to PPM frames. `src/amcf_virtual_carrier_reader.py` also recovers frames through the software carrier/virtual reader path. |
 | Digital AMCF to decoded MP4/video | PARTIAL | `src/amcf_video_pipeline.py` can export decoded MP4 when FFmpeg is available. This is not a final media-player app or GUI/EXE export flow. |
 | Audio preservation/handling | PARTIAL | The video pipeline can copy source audio into the AMCF archive and carry it into decoded MP4 output when FFmpeg can extract it. Full audio policy/validation remains future work. |
-| Component-event archive | PARTIAL | `src/amcf_component_event_archive.py`, `src/amcf_adaptive_component_scheduler.py`, and tests provide base-plus-event archives with changed-region payloads, WebP when Pillow is available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, and static viewer output. Full local track-taxonomy parity remains future work. |
+| Component-event archive | PARTIAL | `src/amcf_component_event_archive.py`, `src/amcf_adaptive_component_scheduler.py`, and tests provide base-plus-event archives with changed-region payloads, WebP when Pillow is available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, and static viewer output. Source-specific contour-overlay browser parity remains future work. |
+| Deliverable package | PARTIAL | `src/amcf_deliverable_package.py`, `demo/run_amcf_deliverable_package_demo.py`, and `tests/test_amcf_deliverable_package.py` bundle archive, comparison frames/video when FFmpeg is available, viewer files, quality report, track taxonomy, and deterministic zip output. |
 | Archive size ceiling <= source size | PARTIAL | Component-event archives report archive size against a source-size ceiling. A hard fail policy and broader MP4/source ceiling enforcement remain future work. |
 | Manifest/update-event schedule | PARTIAL | The digital archive has `manifest.json`, `frame_entries`, frame count, dimensions, hashes, and fps. The component-event archive now carries timestamped changed-region events. Integration into one final public archive contract remains future work. |
 | Validation/report output | PARTIAL | Digital archive validation exists and demos emit JSON summaries. Component-event demos now report reconstruction and quality status. A full user-facing parity validation report remains future work. |
@@ -71,6 +72,7 @@ Current public-repo digital AMCF commands include developer demos and an initial
 | `python src/amcf_cli.py component-archive ...` | Builds component-event archive output and a static viewer package from source-frame manifests. | requested output folder | INITIAL CLI BASELINE |
 | `python src/amcf_cli.py decode ...` | Decodes frame-payload or component-event AMCF archives, with optional FFmpeg video export for supported archives. | requested output folder | INITIAL CLI BASELINE |
 | `python src/amcf_cli.py print-plan ...` | Creates a no-hardware physical-carrier / print-plan package from public frame-payload AMCF archives. | requested output folder | INITIAL CLI BASELINE |
+| `python demo/run_amcf_deliverable_package_demo.py` | Builds a local-Main-style deliverable package from component-event archive output. | `output/amcf_deliverable_package_demo/` | DEMO-ONLY, PARTIAL deliverable parity path |
 
 The current CLI command shape is:
 
@@ -94,7 +96,7 @@ Findings:
 - The resulting source-frame manifest feeds the existing public AMCF archive encoder.
 - Tests generate a tiny video fixture with FFmpeg and verify archive validation, audio payload validation, decoded frame export, and decoded MP4 export.
 
-Remaining gap: this is not yet the full local `Main` component-event archive with waterfall-specific OpenCV track taxonomy, synchronized comparison videos, and deliverable packaging. The public repo now has component-event archives, WebP when available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, optional SSIM, and a static inspection viewer.
+Remaining gap: this is not yet the full local `Main` source-specific contour-overlay browser player. The public repo now has component-event archives, WebP when available, optional OpenCV changed-region segmentation, optional optical-flow tracking reports, optional SSIM, static inspection viewer output, track-taxonomy metadata, comparison frames/video when FFmpeg is available, and deterministic deliverable packaging.
 
 ## Source Frames to AMCF Status
 
@@ -310,14 +312,14 @@ Therefore the GitHub version is not yet at user-facing parity with the expected 
 3. Decoded MP4/video-container export is partial and optional through FFmpeg.
 4. Archive size ceiling is partial: component-event archives report it, but the final user-facing policy is not complete.
 5. Digital AMCF update-event schedule is partial: component-event archives carry timestamped changed-region events, but the frame-payload archive and component archive are not yet unified.
-6. The current component-event archive is a public parity layer with optional WebP/OpenCV/optical-flow/SSIM support, not the exact local waterfall-specific track taxonomy.
+6. The current component-event archive and deliverable package are public parity layers with optional WebP/OpenCV/optical-flow/SSIM support, track-taxonomy metadata, comparison frames/video when FFmpeg is available, and deterministic zip output; they are not the exact local source-specific contour-overlay browser player.
 7. An initial CLI now wraps encode, component-archive, print-plan, and decode workflows; packaging and end-user polish remain future work.
 8. No user guide covers a real end-to-end AMCF run.
 9. No packaging/EXE validation should proceed until the workflow and CLI are stable.
 
 ## Recommended Next Phase
 
-Completed phase: `AMCF_LOCAL_MAIN_CLI_PARITY_V1`
+Completed phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
 
 Purpose:
 
@@ -327,11 +329,18 @@ Purpose:
 - Did not add GUI, EXE packaging, hardware APIs, or local media assumptions.
 - Continue keeping OpenCV/Pillow/scikit-image behavior explicit rather than silently required.
 
-Recommended next phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
+Completed phase: `AMCF_LOCAL_MAIN_DELIVERABLE_VIEWER_PARITY_V1`
 
-- Align the remaining local `Main` deliverable polish that is safe to make public.
-- Add synchronized comparison/viewer packaging only where it can be deterministic and free of private paths.
-- Keep local sample media, generated evidence folders, caches, and machine wrappers out of Git.
+- Preserved the CLI baseline from `AMCF_LOCAL_MAIN_CLI_PARITY_V1`.
+- Added deliverable package output that is deterministic and free of private paths.
+- Added comparison frames, optional FFmpeg comparison video, viewer files, quality report, track taxonomy, and zip packaging.
+- Kept local sample media, generated evidence folders, caches, and machine wrappers out of Git.
+
+Recommended next phase: `AMCF_LOCAL_MAIN_DEPENDENCY_AND_PACKAGING_POLICY_V1`
+
+- Decide how FFmpeg/Pillow/OpenCV/NumPy/scikit-image are declared for users.
+- Convert the module CLI into an installed command only after the dependency policy is settled.
+- Keep GUI/EXE work blocked until packaging validation exists.
 
 ## CLI and EXE Readiness
 
@@ -390,4 +399,4 @@ Results:
 - decoded MP4/video export claimed: false
 - generated output committed: false
 
-This audit does not claim that the public repo proves real video parity yet. It confirms the public repo has a tested source-frame digital AMCF path and identifies the remaining parity gaps before a user-facing CLI or EXE should be built.
+This audit does not claim that the public repo proves final app/EXE parity yet. It confirms the public repo has tested source-frame digital AMCF, optional FFmpeg video paths, component-event archives, initial CLI workflow, and deliverable package output, while identifying packaging/dependency work still needed before an EXE should be built.

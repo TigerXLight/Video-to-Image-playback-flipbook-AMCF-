@@ -51,6 +51,7 @@ class AmcfCliTests(unittest.TestCase):
         self.assertEqual(cli_main(["component-archive", "--input-frames-manifest", str(self.manifest), "--output", str(output)]), 0)
         self.assertTrue((output / "component_event_archive.amcf.zip").exists())
         self.assertTrue((output / "viewer" / "index.html").exists())
+        self.assertTrue((output / "deliverable_package" / "amcf_public_deliverable_package.zip").exists())
 
 
 if __name__ == "__main__":
