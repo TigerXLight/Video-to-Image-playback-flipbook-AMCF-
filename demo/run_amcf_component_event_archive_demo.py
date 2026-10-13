@@ -99,7 +99,7 @@ def run_demo(output_dir: Path = OUTPUT_DIR) -> dict:
         "claim_boundary": claim_boundary,
         "unsafe_acceptance_count": archive["unsafe_acceptance_count"],
         "generated_output_committed": False,
-        "recommended_next_phase": "AMCF_LOCAL_MAIN_OPTICAL_FLOW_TRACK_PARITY_V1",
+        "recommended_next_phase": "AMCF_LOCAL_MAIN_CLI_PARITY_V1",
     }
     write_json(output_dir / "component_event_archive_report.json", report)
     (output_dir / "COMPONENT_EVENT_ARCHIVE_SUMMARY.md").write_text(build_summary_markdown(report), encoding="utf-8")
