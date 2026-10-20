@@ -17,6 +17,7 @@ local progression:
 | Test 03M | Passed as a complete family | Raw screen motion, camera compensation, green residual zone motion, residual mask, component coverage, camera vectors, missing-motion regions, original reference, and side-by-side motion-truth comparison. |
 | Test 08E | Passed | Farneback/TURBO motion heat and `diff x8` comparison behavior. |
 | Test 10A/10B | Passed | Water and people/scene crop review, truth/full-rate/selected comparisons, and ROI motion ratios. |
+| Test 12B | Passed with proxy boundary | Original green object/orange fluid candidate overlay and persistent proxy tracks. Boxes are not masks or verified identities. |
 | Test 12D | Passed with review boundary | Calibrated proxy candidates and temporal box trajectories. Boxes are not masks. |
 | Test 12E | Passed with review boundary | Reviewed proxy taxonomy and narrow event review. It remains human-review evidence, not universal semantic tracking. |
 | HOOT | Bounded proof retained | Dataset-annotated lost/recovered semantic Level 5 evidence, not a universal arbitrary-video claim. |
@@ -27,12 +28,21 @@ Authoritative report:
 Main/output/amcf_diagnostic_coverage_audit_20261020_full/DIAGNOSTIC_COVERAGE_REPORT.md
 ```
 
+The corrected 12B-specific audit is also recorded at:
+
+```text
+Main/output/amcf_diagnostic_coverage_audit_20261020_12b/DIAGNOSTIC_COVERAGE_REPORT.md
+```
+
 ## Proxy Direction Answer
 
 The proxy renderer does move boxes over time when a track has multiple frame
 observations. The current evidence does **not** prove that the white-dot people
 in the timelapse are moving right-to-left under the reviewed proxy taxonomy:
 
+- 12B has the original green object/orange fluid candidate behavior and 224
+  thresholded leftward person/object proxy candidates in the Main audit, but
+  those are not confirmed identities.
 - 12D has 215 leftward candidate trajectories, but they were not semantically
   confirmed as people.
 - 12E has zero reviewed leftward person tracks.
@@ -87,18 +97,16 @@ sensor, manufactured carrier, or physical Level 5 validation is claimed.
   closure protects uncovered changed pixels.
 - Main has an installable `amcf` CLI with encode, component-archive, decode,
   print-plan, and status paths; wheel build/install smoke passed.
-- The maintained Main suite passes when run from the package root: 518 tests.
-- The Windows EXE build specification exists, but an EXE is not claimed until
-  PyInstaller builds it and `amcf.exe status` plus `amcf.exe --help` pass.
+- The maintained Main suite passes when run from the package root: 519 tests.
+- The Windows EXE was built and smoke-tested: `Main/output/amcf_cli_exe_20261020/amcf.exe`.
 
 ## Still Open Before Public GitHub Closeout
 
 - A confirmed reviewed right-to-left person track, if that specific semantic
   claim is required.
 - A source-independent native archive at or below the source-size ceiling.
-- Exact byte/behavior parity against the public GitHub checkout after that
-  checkout is obtained and tested.
-- Actual Windows EXE build and smoke validation.
+- The public GitHub remote still needs the authenticated push of the two local
+  parity commits; the downloaded public checkout itself has been tested.
 - Hardware implementation and validation remain outside the current claim.
 
 Generated videos, archives, source-specific manifests, and local output folders

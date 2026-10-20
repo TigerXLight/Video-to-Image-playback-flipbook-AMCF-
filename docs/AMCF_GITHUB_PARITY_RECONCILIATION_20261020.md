@@ -23,10 +23,11 @@ repositories.
 | `packaging` | 3 | 3 | 0 | 3 |
 | repository-root files | 23 | 23 | 0 | 23 |
 
-The public checkout passes the maintained suite from its package root:
+The public checkout passes the maintained suite from its package root after
+the 12B diagnostic profile is included:
 
 ```text
-Ran 518 tests
+Ran 519 tests
 OK
 ```
 
@@ -36,14 +37,15 @@ source set at `Main/output/amcf_cli_exe_20261020/amcf.exe`.
 
 ## Commit and Remote State
 
-Local public-checkout commit:
+The downloaded public checkout contains the local parity commits on its local
+`main` branch. Its exact current commit is recorded by:
 
 ```text
-5b41afa0a5f9bee2164937cbaddccc3529059279
-Reconcile Main diagnostics CLI and workflow parity
+git -C Github_Public_Current rev-parse HEAD
 ```
 
-The commit is one commit ahead of `origin/main`. The push was attempted with
+At the time of this reconciliation it is two commits ahead of `origin/main`
+before the 12B correction commit is added. The push was attempted with
 the OpenSSL Git transport but Git Credential Manager returned no credentials,
 so the remote GitHub branch was not changed by this run. No claim of a pushed
 GitHub update is made until authentication is available.

@@ -5,6 +5,8 @@ The profiles preserve the local contracts selected by the progression:
 
 * 03M: camera-compensated green zone-motion residuals.
 * 08E: Farneback motion heat comparison for a truth/decoded pair.
+* 12B: green object-candidate and orange fluid proxy boxes from the original
+  classical-CV semantic diagnostic.
 * 12E: conservative reviewed proxy boxes, including narrow event review.
 
 Generated videos remain caller-owned output and are never bundled as source
@@ -670,8 +672,18 @@ def _proxy_label(track: dict[str, Any]) -> str:
     return "uncertain"
 
 
-def _proxy_color(final_label: str) -> tuple[int, int, int] | None:
+def _proxy_color(final_label: str, *, style: str = "reviewed") -> tuple[int, int, int] | None:
     final_label = _normalize_proxy_label(final_label)
+    if style == "12B":
+        # Test 12B's original diagnostic palette: green object candidates,
+        # orange fluid candidates, magenta global motion, yellow uncertainty.
+        return {
+            "person_or_moving_object": (0, 255, 0),
+            "water_or_fluid_motion": (255, 128, 0),
+            "global_or_camera_motion": (255, 0, 255),
+            "uncertain": (0, 255, 255),
+            "reject_noise": None,
+        }.get(final_label, (0, 255, 255))
     return {
         "person_or_moving_object": (0, 255, 255),
         "water_or_fluid_motion": (255, 120, 0),
@@ -681,7 +693,14 @@ def _proxy_color(final_label: str) -> tuple[int, int, int] | None:
     }.get(final_label, (180, 180, 180))
 
 
-def _draw_reviewed_proxy_track(frame: Any, track: dict[str, Any], frame_number: int, *, only_track_id: str | None = None) -> None:
+def _draw_reviewed_proxy_track(
+    frame: Any,
+    track: dict[str, Any],
+    frame_number: int,
+    *,
+    only_track_id: str | None = None,
+    color_style: str = "reviewed",
+) -> None:
     import cv2
 
     track_id = _proxy_track_id(track)
@@ -690,7 +709,7 @@ def _draw_reviewed_proxy_track(frame: Any, track: dict[str, Any], frame_number: 
     if not (int(track.get("frame_start", 0)) <= frame_number <= int(track.get("frame_end", 0))):
         return
     final_label = _proxy_label(track)
-    color = _proxy_color(final_label)
+    color = _proxy_color(final_label, style=color_style)
     if color is None:
         return
     boxes = track.get("bboxes", [])
@@ -782,8 +801,10 @@ def render_reviewed_proxy_video(
     only_track_id: str | None = None,
     include_labels: Iterable[str] | None = None,
     profile_name: str = "12E_reviewed_timelapse_proxy",
+    color_style: str = "reviewed",
+    overlay_title: str = "12E reviewed proxy; semantic/object AMCF not claimed",
 ) -> dict[str, Any]:
-    """Render the conservative 12E reviewed proxy without claiming masks."""
+    """Render a historical proxy manifest without claiming masks or identity."""
     import cv2
 
     tracks = json.loads(reviewed_manifest.read_text(encoding="utf-8"))
@@ -815,8 +836,14 @@ def render_reviewed_proxy_video(
             overlay = frame.copy()
             for track in tracks:
                 if _proxy_label(track) in allowed:
-                    _draw_reviewed_proxy_track(overlay, track, frame_count, only_track_id=only_track_id)
-            writer.write(_label(overlay, "12E reviewed proxy; semantic/object AMCF not claimed"))
+                    _draw_reviewed_proxy_track(
+                        overlay,
+                        track,
+                        frame_count,
+                        only_track_id=only_track_id,
+                        color_style=color_style,
+                    )
+            writer.write(_label(overlay, overlay_title))
     finally:
         capture.release()
         if writer is not None:
@@ -839,6 +866,8 @@ def render_reviewed_proxy_video(
         "motion_audit": motion_audit,
         "only_track_id": only_track_id,
         "allowed_labels": sorted(allowed),
+        "color_style": color_style,
+        "overlay_title": overlay_title,
         "boxes_are_proxy_tracks": True,
         "pixel_segmentation_masks_used": False,
         "semantic_object_amcf_solved": False,

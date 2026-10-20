@@ -56,6 +56,7 @@ def _write_markdown(path: Path, report: dict[str, Any]) -> None:
         f"- Profile renders pass: `{report['profile_renders_pass']}`",
         f"- Core diagnostic classes runnable from Main: `{report['core_diagnostic_classes_runnable']}`",
         f"- Confirmed right-to-left person behaviour: `{report['proxy_question']['confirmed_right_to_left_person_behaviour']}`",
+        f"- 12B leftward person/object candidates: `{report['proxy_question']['12b_leftward_person_object_candidates']}`",
         f"- 12D leftward candidate tracks: `{report['proxy_question']['calibrated_leftward_candidate_tracks']}`",
         f"- 12E reviewed leftward person tracks: `{report['proxy_question']['reviewed_leftward_person_tracks']}`",
         f"- Semantic correctness claimed: `{report['proxy_question']['semantic_correctness_claimed']}`",
@@ -75,6 +76,7 @@ def _write_markdown(path: Path, report: dict[str, Any]) -> None:
             "08E_motion_heat": "Farneback/TURBO heat and diff x8; not a mask",
             "10A_third_water_roi": "truth/fullrate/selected/diff crop and motion audit",
             "10B_fourth_people_roi": "truth/fullrate/selected/diff crop and motion audit",
+            "12B_semantic_proxy_candidates": "original green object/orange fluid proxy boxes; not semantic truth or masks",
             "12D_calibrated_proxy": "candidate proxy boxes; not semantic truth or masks",
             "12E_reviewed_proxy": "human-reviewed proxy taxonomy; boxes are not masks",
         }.get(name, "process diagnostic")
@@ -88,12 +90,13 @@ def _write_markdown(path: Path, report: dict[str, Any]) -> None:
             "- 03M raw screen motion, camera registration, green residual zone motion, residual mask, component coverage, camera vectors, and missing-region views are rendered from Main.",
             "- 08E motion heat, optical-flow comparison, and `diff x8` behavior are rendered from Main.",
             "- 10A/10B crop review and ROI motion ratios are now rendered from Main.",
+            "- 12B green object/orange fluid proxy behavior is rendered from the original 12B manifest; boxes remain diagnostic candidates, not masks.",
             "- 12D calibrated proxy labels and 12E reviewed proxy labels are both accepted as schema inputs and rendered without treating boxes as masks.",
             "- HOOT remains a bounded semantic evidence profile; it is not silently upgraded to universal semantic tracking.",
             "",
             "## Still Open",
             "",
-            "- A confirmed 12D/12E right-to-left white-dot/person track is not present in the reviewed evidence; candidate leftward motion is not enough to make that claim.",
+            "- 12B has leftward person/object candidates, but its own contract calls them proxy IDs; 12E review does not confirm a right-to-left person track.",
             "- Historical 03A-03Z videos remain source-specific evidence, not one byte-identical Main renderer for every old experiment.",
             "- Physical PC-to-reader/player diagnostics remain a separate physical/software branch and do not replace digital AMCF acceptance.",
             "- The installable CLI is validated separately; the Windows EXE and GitHub parity remain subsequent packaging steps.",
@@ -152,6 +155,7 @@ def main() -> int:
     fourth_fullrate = third_root / "fourth_fullrate_control/fourth_fullrate_microcomponent_control_10B.mp4"
     manifest_12d = WORKSPACE_ROOT / "Tests/Test 12D/20261006_172244/imported_12c/calibrated_proxy_tracks_12C.json"
     manifest_12e = WORKSPACE_ROOT / "Tests/Test 12E/20261006_181534/reviewed_tracks/reviewed_proxy_tracks_12E.json"
+    manifest_12b = WORKSPACE_ROOT / "Tests/Test 12B/20261006_164238/proxy_tracks/proxy_tracks_12B.json"
 
     profiles = [
         _run_profile(
@@ -187,6 +191,17 @@ def main() -> int:
             ),
         ),
         _run_profile(
+            "12B_semantic_proxy_candidates",
+            lambda: render_reviewed_proxy_video(
+                timelapse_video,
+                manifest_12b,
+                output_dir / "12b_semantic_proxy_candidates.mp4",
+                profile_name="12B_semantic_proxy_candidates",
+                color_style="12B",
+                overlay_title="12B water/fluid vs person/object candidates; proxy diagnostic only",
+            ),
+        ),
+        _run_profile(
             "12D_calibrated_proxy",
             lambda: render_reviewed_proxy_video(
                 timelapse_video,
@@ -208,6 +223,8 @@ def main() -> int:
     profile_renders_pass = all(row.get("status") == "PASS" for row in profiles)
     proxy_12d = next(row for row in profiles if row["name"] == "12D_calibrated_proxy")
     proxy_12e = next(row for row in profiles if row["name"] == "12E_reviewed_proxy")
+    proxy_12b = next(row for row in profiles if row["name"] == "12B_semantic_proxy_candidates")
+    audit_12b = proxy_12b.get("motion_audit", {})
     audit_12d = proxy_12d.get("motion_audit", {})
     audit_12e = proxy_12e.get("motion_audit", {})
     report = {
@@ -217,6 +234,9 @@ def main() -> int:
         "profile_renders_pass": profile_renders_pass,
         "core_diagnostic_classes_runnable": profile_renders_pass,
         "proxy_question": {
+            "12b_leftward_person_object_candidates": int(
+                audit_12b.get("by_label", {}).get("person_or_moving_object", {}).get("leftward", 0)
+            ),
             "calibrated_leftward_candidate_tracks": int(
                 audit_12d.get("by_label", {}).get("person_or_moving_object", {}).get("leftward", 0)
             ),
@@ -226,9 +246,9 @@ def main() -> int:
             ),
             "semantic_correctness_claimed": bool(audit_12d.get("semantic_correctness_proven", False))
             or bool(audit_12e.get("semantic_correctness_proven", False)),
-            "interpretation": "Temporal box motion exists in the calibrated candidate set, but the reviewed evidence does not confirm a right-to-left person track.",
+            "interpretation": "12B contains leftward person/object proxy candidates; 03M designates camera-compensated motion zones; 12E reviewed evidence does not confirm a right-to-left person identity.",
         },
-        "component_geometry_boundary": "Test 02 polygon contours only; 03M/08E/10A_10B/12D/12E remain diagnostics, not masks.",
+        "component_geometry_boundary": "Test 02 polygon contours only; 03M/08E/10A_10B/12B/12D/12E remain diagnostics, not masks.",
         "hoot_status": "BOUNDED_DATASET_EVIDENCE_ONLY",
         "physical_branch_status": "SEPARATE_NO_HARDWARE_CLAIM",
         "unsafe_acceptance_count": max(int(row.get("unsafe_acceptance_count", 0)) for row in profiles),
