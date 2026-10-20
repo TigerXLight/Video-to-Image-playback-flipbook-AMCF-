@@ -49,3 +49,11 @@ The hardware-plan command records concrete Windows-facing printer/carrier,
 reader/scanner, and player-control interface contracts. It first reruns the
 software-only baseline and keeps display and transition permissions disabled.
 No physical validation is claimed by the plan.
+
+## Provider Runtime
+
+The hardware-providers command executes provider-neutral printer, reader, and
+player interfaces against deterministic software fixtures. It includes a
+negative test that blocks an unverified visible-gate switch. Future device
+providers can implement these interfaces without changing the AMCF status or
+fail-closed contract.

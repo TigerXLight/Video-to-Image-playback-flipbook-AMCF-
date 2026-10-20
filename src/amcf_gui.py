@@ -53,6 +53,7 @@ class AmcfApp(tk.Tk):
             "Create physical print plan",
             "Run physical software adapter layer",
             "Plan physical device adapters",
+            "Run virtual hardware provider layer",
             "Check dependencies",
             "Prepare deep dependencies",
             "Download HOOT proof dataset",
@@ -151,6 +152,8 @@ class AmcfApp(tk.Tk):
             args = ["adapter-roundtrip", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Plan physical device adapters":
             args = ["hardware-plan", "--project-root", self.project_root.get(), "--output", str(output_path)]
+        elif mode == "Run virtual hardware provider layer":
+            args = ["hardware-providers", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Check dependencies":
             args = [
                 "setup",

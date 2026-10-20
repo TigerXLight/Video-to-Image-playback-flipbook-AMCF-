@@ -79,5 +79,7 @@ device was detected, a driver or protocol was used, a carrier was printed, a
 scan was captured, or a physical player was operated. Display and physical
 transition permissions remain disabled.
 
-The next implementation layer is device-specific provider work, selected one
-corridor at a time, with the same status and fail-closed contract.
+The provider-neutral runtime layer now supplies abstract printer, reader, and
+player interfaces plus simulated implementations. See
+docs/AMCF_HARDWARE_PROVIDER_RUNTIME_LAYER.md. The next implementation step is
+to place one selected real device provider behind one interface.

@@ -104,6 +104,14 @@ print-to-file, WIA or TWAIN/OpenCV capture, and USB or serial player-control
 interfaces. It remains planning-only and keeps all physical transitions
 fail-closed.
 
+Exercise the provider-neutral runtime with deterministic software providers:
+
+    amcf hardware-providers --project-root . --output output/hardware_provider_runtime
+
+This runs the printer, reader, and player handshakes, including staged-section
+hash verification and an unverified-switch rejection check. It does not open
+hardware.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

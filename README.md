@@ -113,6 +113,11 @@ or print-to-file, WIA or TWAIN/OpenCV, and USB or serial player-control
 boundaries. It reruns the software baseline but remains planning-only; no
 device is opened and no physical transition is authorized.
 
+The provider-neutral runtime is available through the hardware-providers
+command. It gives future Print Spooler, WIA/TWAIN/OpenCV, USB, or serial
+implementations a stable handshake and fail-closed status contract while
+remaining software-only.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.

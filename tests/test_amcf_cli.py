@@ -37,6 +37,7 @@ class AmcfCliTests(unittest.TestCase):
         self.assertIn("physical-roundtrip", help_text)
         self.assertIn("adapter-roundtrip", help_text)
         self.assertIn("hardware-plan", help_text)
+        self.assertIn("hardware-providers", help_text)
         self.assertIn("setup", help_text)
 
     def test_status_command_passes(self) -> None:
@@ -84,6 +85,19 @@ class AmcfCliTests(unittest.TestCase):
         report = json.loads((output / "hardware_adapter_plan_report.json").read_text(encoding="utf-8"))
         self.assertTrue(report["final_passed"])
         self.assertEqual(report["unsafe_acceptance_count"], 0)
+        self.assertFalse(report["hardware_connected"])
+        self.assertFalse(report["feedback"]["transition_allowed"])
+
+    def test_hardware_provider_runtime_command(self) -> None:
+        output = self.tmp / "hardware_providers"
+        self.assertEqual(
+            cli_main(["hardware-providers", "--project-root", str(PACKAGE), "--output", str(output)]),
+            0,
+        )
+        report = json.loads((output / "hardware_provider_runtime_report.json").read_text(encoding="utf-8"))
+        self.assertTrue(report["final_passed"])
+        self.assertEqual(report["scheduled_event_count"], 3)
+        self.assertTrue(report["unverified_switch_blocked"])
         self.assertFalse(report["hardware_connected"])
         self.assertFalse(report["feedback"]["transition_allowed"])
 

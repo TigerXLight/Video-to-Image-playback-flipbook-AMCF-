@@ -30,6 +30,7 @@ class AmcfCliPackagingTests(unittest.TestCase):
             "amcf_physical_carrier",
             "amcf_physical_adapters",
             "amcf_hardware_adapter_planning",
+            "amcf_hardware_provider_runtime",
             "amcf_quality_metrics",
             "amcf_setup",
             "amcf_temporal_component_codec",
