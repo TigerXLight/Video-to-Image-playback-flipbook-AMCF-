@@ -35,6 +35,25 @@ that project's licence to the AMCF specification; copied code, adapted code,
 data, weights, and direct quotations still require their own source and licence
 review.
 
+## Licence vocabulary and upstream status
+
+"Mixed licence" means that different project paths and dependencies retain
+their own applicable terms. It does not erase an upstream open-source licence.
+Apache-2.0, MIT, BSD, GPL, and LGPL material remains governed by those
+licences where applicable. A source-available, non-commercial, research-only,
+or field-of-use-restricted term should not be described as OSI open source,
+even when the source is publicly readable.
+
+| Source or dependency group | Current classification | Main treatment |
+| --- | --- | --- |
+| OpenCV, scikit-image, RAFT, PySceneDetect, Cutie, XMem | Apache-2.0, BSD, or MIT terms as recorded by the manifests | Installed APIs or reference-only; no upstream source tree copied into Main. |
+| FFmpeg | GPL/LGPL depending on the selected build | Installed executable; build licence and notices remain applicable. |
+| SAM2 | Apache-2.0 as recorded in the manifest | Local optional research dependency; not bundled in the clean core package. |
+| CompressorJS and UPNG.js | MIT reference material | Compression research references only; not AMCF runtime dependencies. |
+| CoTracker | Majority CC-BY-NC with file-level exceptions | Research-only; not copied into the AMCF core. |
+| SAMURAI, TAPNet, DEVA, Segment-and-Track-Anything, AOT, Track-Anything, XMem2 | Repository/file-level research terms require their own review | Reference repositories only; no blanket OSI claim is made. |
+| Project-owned AMCF code and specification | No final single project licence selected | Do not infer a project licence from upstream dependencies. |
+
 ## Public concept assets
 
 Mixed-licence, source-available AMCF research repository.

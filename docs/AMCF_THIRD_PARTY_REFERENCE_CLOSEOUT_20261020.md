@@ -68,6 +68,13 @@ The project-owned package is currently mixed-licence/source-available. A
 single final legal license has not been selected, so the package must not be
 described as uniformly OSI-licensed.
 
+Mixed licence does not erase an upstream open-source licence. Apache-2.0,
+MIT, BSD, GPL, and LGPL components retain their own terms. Conversely,
+non-commercial, research-only, or field-of-use-restricted terms are not
+described as OSI open source merely because their source is public. The exact
+dependency classification is recorded in `LICENSE_MAP.md` and the repository
+manifests.
+
 ## Later reference-only collections
 
 Two workspace collections were inventoried separately from the repository
