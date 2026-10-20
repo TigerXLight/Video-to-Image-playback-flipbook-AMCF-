@@ -66,7 +66,7 @@ The first Main-facing execution was run against the same five-frame proxy
 sample used by the historical toolchain test.  It passed with five SAM2 masks,
 five frames of CoTracker output shaped `1 x 5 x 16 x 2`, separate diagnostic
 overlays, and no source-video fallback.  Evidence was written under
-`Main/output/deep_inference_acceptance_20261020/` and is generated output, not
+`Main/output/deep_inference_acceptance_20261020_v2/` and is generated output, not
 release source.
 
 The standalone HOOT reproduction was then run on the existing 54-frame
