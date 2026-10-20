@@ -77,6 +77,7 @@ class AmcfDiagnosticStateTests(unittest.TestCase):
         self.assertEqual(normalized["source"]["frame_count"], 4)
         self.assertEqual(normalized["frames"][0]["tracks"][0]["geometry_contract"]["kind"], "polygon_contours")
         self.assertFalse(normalized["claim_boundary"]["semantic_object_amcf_solved"])
+        self.assertFalse(normalized["process_contracts"]["12b_classical_proxy"]["object_identity_verified"])
         self.assertEqual(diagnostic_state_summary(normalized)["contour_track_frame_rows"], 4)
 
     def test_diagnostic_component_events_close_exact_residuals(self) -> None:

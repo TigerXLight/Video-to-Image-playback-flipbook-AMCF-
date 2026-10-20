@@ -203,6 +203,12 @@ def normalize_test02_tracks_manifest(
                 "diagnostic_only_when_loaded": True,
                 "roi_motion_audit_available": True,
             },
+            "12b_classical_proxy": {
+                "present": False,
+                "diagnostic_only_when_loaded": True,
+                "proxy_boxes_are_not_masks": True,
+                "object_identity_verified": False,
+            },
             "12d_calibrated_proxy": {
                 "present": False,
                 "diagnostic_only_when_loaded": True,
