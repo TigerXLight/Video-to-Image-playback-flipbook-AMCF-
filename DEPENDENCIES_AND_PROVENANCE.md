@@ -40,11 +40,11 @@ open source.
 
 The tracked `amcf_dependency_manifest.json` and `src/amcf_setup.py` provide a
 reproducible opt-in bootstrap. They install ordinary Python requirements,
-clone pinned external trees, download the selected checkpoints, verify their
-SHA-256 values, and write a local runtime config. The bootstrap keeps those
-bytes outside the project checkout, requires explicit upstream/non-commercial
-acceptance, does not download HOOT data, and does not silently download an
-FFmpeg build whose distribution/licence choice belongs to the user.
+clone pinned external trees, download the selected checkpoints or the declared
+HOOT proof vector, verify their SHA-256 values, and write a local runtime
+config. The bootstrap keeps those bytes outside the project checkout, requires
+explicit upstream/non-commercial/HOOT-term acceptance, and does not silently
+download an FFmpeg build whose distribution/licence choice belongs to the user.
 
 ## Media
 

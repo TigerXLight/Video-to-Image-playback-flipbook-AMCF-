@@ -82,7 +82,8 @@ The bounded real-world HOOT proof is executable separately through
 annotations, runs SAM2 on visible frames, and emits the lost/recovered event
 window, masks, overlays, semantic sidecar, hashes, and a dataset-bounded
 Level-5 status. HOOT data and SAM2 resources remain external and are never
-silently downloaded or embedded.
+silently downloaded or embedded; the setup command can fetch the declared HOOT
+proof vector only after explicit terms acceptance.
 
 ## Claim boundaries
 
@@ -127,8 +128,9 @@ checkpoint hashes. `amcf setup --install-deep --accept-upstream-licenses
 --accept-noncommercial` installs the declared deep packages, clones the pinned
 external repositories, downloads the selected checkpoints, and writes an
 ignored `amcf_runtime_config.json`. The Windows equivalent is
-`cmd\RUN_AMCF_SETUP.cmd`. External source, checkpoints, and HOOT data remain
-outside the public checkout and retain their own licence boundaries. See
+`cmd\RUN_AMCF_SETUP.cmd`. Add `--download-hoot --accept-hoot-terms` when the
+declared HOOT proof vector is needed. External source, checkpoints, and HOOT
+data remain outside the public checkout and retain their own licence boundaries. See
 `docs/AMCF_SETUP_AND_DEPENDENCY_BOOTSTRAP.md`.
 
 The local-Main-style deliverable package path in `src/amcf_deliverable_package.py` can bundle a component-event archive, decoded-frame comparison frames, optional FFmpeg comparison video, static viewer files, quality report, and track-taxonomy manifest into a deterministic zip under `output/`. Generated deliverable zips are local output and are not committed.

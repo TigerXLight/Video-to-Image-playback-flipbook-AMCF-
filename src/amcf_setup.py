@@ -6,8 +6,8 @@ The maintained AMCF package is intentionally source-first.  This module does
 not vendor research repositories, model checkpoints, datasets, or FFmpeg
 builds into the repository.  It can, when explicitly requested, install the
 declared Python dependencies, clone pinned external repositories into a local
-runtime directory, download checksummed checkpoints, and emit a runtime
-config that the deep-inference adapters can consume.
+runtime directory, download checksummed checkpoints/datasets, and emit a
+runtime config that the deep-inference adapters can consume.
 """
 
 import hashlib
@@ -86,11 +86,21 @@ DEFAULT_MANIFEST: dict[str, Any] = {
             "license": "CC-BY-NC-4.0 / upstream model terms; research and non-commercial boundary",
             "requires_noncommercial_acceptance": True,
         },
+        {
+            "id": "hoot_potted_plant_008",
+            "kind": "dataset",
+            "url": "https://data.hootbenchmark.org/v1_0/HD/potted_plant/008.zip",
+            "relative_path": "datasets/HOOT/potted_plant_008.zip",
+            "sha256": "22E1DCABE46F6538B4679DC1AF5778C997C55A7B0790E824B6D3A8150C0E9D36",
+            "license": "HOOT Benchmark dataset terms; inspect and accept the upstream terms before use",
+            "requires_hoot_terms": True,
+            "required_for_deep_inference": False,
+        },
     ],
     "claim_boundary": {
         "core_archive": "Deep tools are not required for source-independent AMCF archive playback.",
         "deep_inference": "SAM2/CoTracker are optional external research adapters and must retain upstream terms.",
-        "hoot": "HOOT data and checkpoints are user-supplied; no dataset is silently downloaded or redistributed.",
+        "hoot": "HOOT data is optional and may be explicitly downloaded after accepting its dataset terms; it is never silently downloaded or redistributed.",
         "physical": "No hardware, printer, reader, scanner, or manufactured-player validation is claimed.",
     },
 }
@@ -170,7 +180,7 @@ def _repo_status(path: Path, expected_ref: str, expected_url: str) -> dict[str, 
     return row
 
 
-def _checkpoint_status(path: Path, expected_hash: str | None) -> dict[str, Any]:
+def _file_status(path: Path, expected_hash: str | None) -> dict[str, Any]:
     row: dict[str, Any] = {
         "path": str(path),
         "exists": path.is_file(),
@@ -183,6 +193,9 @@ def _checkpoint_status(path: Path, expected_hash: str | None) -> dict[str, Any]:
         row["sha256"] = sha256(path)
         row["checksum_match"] = not expected_hash or row["sha256"].lower() == expected_hash.lower()
     return row
+
+
+_checkpoint_status = _file_status
 
 
 def check_setup(
@@ -208,13 +221,14 @@ def check_setup(
             adapter_path = str(resource.get("adapter_path", "."))
             row["adapter_path"] = str((root_path / adapter_path).resolve())
         else:
-            row = _checkpoint_status(root_path, resource.get("sha256"))
+            row = _file_status(root_path, resource.get("sha256"))
         row.update(
             {
                 "id": resource.get("id", ""),
                 "kind": kind,
                 "license": resource.get("license", ""),
                 "requires_noncommercial_acceptance": bool(resource.get("requires_noncommercial_acceptance")),
+                "requires_hoot_terms": bool(resource.get("requires_hoot_terms")),
             }
         )
         resources.append(row)
@@ -227,7 +241,9 @@ def check_setup(
             existing = {"error": repr(exc)}
 
     deep_ready = True
-    for row in resources:
+    for row, resource in zip(resources, manifest.get("resources", [])):
+        if resource.get("required_for_deep_inference", True) is False:
+            continue
         if row.get("kind") == "repository":
             deep_ready = deep_ready and bool(row.get("exists") and row.get("ref_match") and row.get("remote_match"))
         else:
@@ -248,12 +264,22 @@ def check_setup(
     }
 
 
-def _license_gate(resources: list[dict[str, Any]], upstream: bool, noncommercial: bool) -> list[str]:
+def _license_gate(
+    resources: list[dict[str, Any]],
+    upstream: bool,
+    noncommercial: bool,
+    hoot_terms: bool,
+    *,
+    prepare_upstream: bool,
+    prepare_hoot: bool,
+) -> list[str]:
     errors: list[str] = []
-    if not upstream:
+    if prepare_upstream and not upstream:
         errors.append("upstream licence acceptance is required for external repositories/checkpoints")
-    if any(resource.get("requires_noncommercial_acceptance") for resource in resources) and not noncommercial:
+    if prepare_upstream and any(resource.get("requires_noncommercial_acceptance") for resource in resources) and not noncommercial:
         errors.append("--accept-noncommercial is required before preparing CoTracker resources")
+    if prepare_hoot and any(resource.get("requires_hoot_terms") for resource in resources) and not hoot_terms:
+        errors.append("--accept-hoot-terms is required before downloading HOOT data")
     return errors
 
 
@@ -271,14 +297,18 @@ def _clone_repo(resource: dict[str, Any], target: Path) -> dict[str, Any]:
     return {"id": resource["id"], "ok": ok, "stage": "checkout", "fetch": fetch, "checkout": checkout}
 
 
-def _download_checkpoint(resource: dict[str, Any], target: Path, force: bool) -> dict[str, Any]:
+def _download_file(resource: dict[str, Any], target: Path, force: bool) -> dict[str, Any]:
     if target.exists() and not force:
         current = _checkpoint_status(target, resource.get("sha256"))
         return {"id": resource["id"], "ok": bool(current["checksum_match"]), "stage": "existing", "status": current}
     target.parent.mkdir(parents=True, exist_ok=True)
     partial = target.with_suffix(target.suffix + ".part")
     try:
-        with urllib.request.urlopen(resource["url"], timeout=60) as response, partial.open("wb") as handle:
+        request = urllib.request.Request(
+            resource["url"],
+            headers={"User-Agent": "AMCF-setup/1.0 (+https://github.com/TigerXLight/Video-to-Image-playback-flipbook-AMCF-)"},
+        )
+        with urllib.request.urlopen(request, timeout=60) as response, partial.open("wb") as handle:
             while True:
                 block = response.read(1024 * 1024)
                 if not block:
@@ -290,6 +320,9 @@ def _download_checkpoint(resource: dict[str, Any], target: Path, force: bool) ->
         return {"id": resource["id"], "ok": False, "stage": "download", "error": repr(exc)}
     status = _checkpoint_status(target, resource.get("sha256"))
     return {"id": resource["id"], "ok": bool(status["checksum_match"]), "stage": "download", "status": status}
+
+
+_download_checkpoint = _download_file
 
 
 def _install_packages(packages: list[str], python_executable: Path, label: str) -> dict[str, Any]:
@@ -348,8 +381,10 @@ def run_setup(
     install_deep: bool = False,
     clone_repositories: bool = False,
     download_checkpoints: bool = False,
+    download_hoot: bool = False,
     accept_upstream_licenses: bool = False,
     accept_noncommercial: bool = False,
+    accept_hoot_terms: bool = False,
     force: bool = False,
     config_output: str | Path | None = None,
     report_output: str | Path | None = None,
@@ -364,8 +399,18 @@ def run_setup(
 
     prepare_repos = clone_repositories or install_deep
     prepare_checkpoints = download_checkpoints or install_deep
-    if prepare_repos or prepare_checkpoints:
-        errors.extend(_license_gate(resources, accept_upstream_licenses, accept_noncommercial))
+    prepare_hoot = download_hoot
+    if prepare_repos or prepare_checkpoints or prepare_hoot:
+        errors.extend(
+            _license_gate(
+                resources,
+                accept_upstream_licenses,
+                accept_noncommercial,
+                accept_hoot_terms,
+                prepare_upstream=prepare_repos or prepare_checkpoints,
+                prepare_hoot=prepare_hoot,
+            )
+        )
     if not python.exists():
         errors.append(f"Python executable does not exist: {python}")
 
@@ -402,7 +447,12 @@ def run_setup(
     checkpoint_resources = [resource for resource in resources if resource.get("kind") == "checkpoint"]
     if prepare_checkpoints and not errors:
         for resource in checkpoint_resources:
-            actions.append(_download_checkpoint(resource, _resource_path(deps, resource), force))
+            actions.append(_download_file(resource, _resource_path(deps, resource), force))
+
+    dataset_resources = [resource for resource in resources if resource.get("kind") == "dataset"]
+    if prepare_hoot and not errors:
+        for resource in dataset_resources:
+            actions.append(_download_file(resource, _resource_path(deps, resource), force))
 
     config_path = Path(config_output).resolve() if config_output else project / "amcf_runtime_config.json"
     config_data = write_runtime_config(config_path, project, deps, python)
@@ -429,8 +479,8 @@ def run_setup(
         "notes": [
             "Core source-independent AMCF archive playback does not require the deep runtime.",
             "Deep inference requires the external repositories, compatible Python runtime, and checkpoints.",
-            "Checkpoint bytes are never copied into the AMCF repository by this command.",
-            "HOOT datasets remain user-supplied and are not downloaded implicitly.",
+            "Checkpoint and dataset bytes are never copied into the AMCF repository by this command.",
+            "HOOT download is opt-in and requires explicit acceptance of the dataset terms.",
         ],
     }
     if report_output:
@@ -454,8 +504,10 @@ def build_setup_parser(parser: Any) -> Any:
     )
     parser.add_argument("--clone-repositories", action="store_true", help="Clone/update pinned external research repositories.")
     parser.add_argument("--download-checkpoints", action="store_true", help="Download and checksum declared checkpoints.")
+    parser.add_argument("--download-hoot", action="store_true", help="Download and checksum the declared HOOT proof vector dataset.")
     parser.add_argument("--accept-upstream-licenses", action="store_true", help="Confirm that upstream repository/checkpoint terms were reviewed.")
     parser.add_argument("--accept-noncommercial", action="store_true", help="Confirm the CoTracker non-commercial/research boundary.")
+    parser.add_argument("--accept-hoot-terms", action="store_true", help="Confirm that the HOOT dataset terms were reviewed and permit the intended use.")
     parser.add_argument("--force", action="store_true", help="Redownload an existing checkpoint after checksum verification is bypassed.")
     parser.add_argument("--config-output", help="Generated runtime config path.")
     parser.add_argument("--report-output", help="Optional JSON setup report path.")
@@ -471,7 +523,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     action_flags = any(
         getattr(args, name)
-        for name in ("install_research", "install_deep", "clone_repositories", "download_checkpoints")
+        for name in ("install_research", "install_deep", "clone_repositories", "download_checkpoints", "download_hoot")
     )
     result = run_setup(
         manifest_path=args.manifest,
@@ -483,8 +535,10 @@ def main(argv: list[str] | None = None) -> int:
         install_deep=args.install_deep,
         clone_repositories=args.clone_repositories,
         download_checkpoints=args.download_checkpoints,
+        download_hoot=args.download_hoot,
         accept_upstream_licenses=args.accept_upstream_licenses,
         accept_noncommercial=args.accept_noncommercial,
+        accept_hoot_terms=args.accept_hoot_terms,
         force=args.force,
         config_output=args.config_output,
         report_output=args.report_output,

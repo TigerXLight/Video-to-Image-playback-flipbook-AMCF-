@@ -124,15 +124,17 @@ def cmd_setup(args: argparse.Namespace) -> int:
         install_deep=args.install_deep,
         clone_repositories=args.clone_repositories,
         download_checkpoints=args.download_checkpoints,
+        download_hoot=args.download_hoot,
         accept_upstream_licenses=args.accept_upstream_licenses,
         accept_noncommercial=args.accept_noncommercial,
+        accept_hoot_terms=args.accept_hoot_terms,
         force=args.force,
         config_output=args.config_output,
         report_output=args.report_output,
     )
     action_requested = any(
         getattr(args, name)
-        for name in ("install_research", "install_deep", "clone_repositories", "download_checkpoints")
+        for name in ("install_research", "install_deep", "clone_repositories", "download_checkpoints", "download_hoot")
     )
     if not action_requested:
         result = {**result, "ok": True, "check_only": True}
@@ -185,7 +187,7 @@ def build_parser() -> argparse.ArgumentParser:
     print_plan.add_argument("--output", required=True)
     print_plan.set_defaults(func=cmd_print_plan)
 
-    setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, and checkpoint resources.")
+    setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, checkpoints, and the optional HOOT proof dataset.")
     setup.add_argument("--manifest", help="Dependency manifest JSON.")
     setup.add_argument("--project-root", help="Repository root receiving the generated runtime config.")
     setup.add_argument("--dependency-root", help="External runtime directory; defaults to <project>/.amcf-runtime.")
@@ -199,8 +201,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     setup.add_argument("--clone-repositories", action="store_true", help="Clone/update pinned external research repositories.")
     setup.add_argument("--download-checkpoints", action="store_true", help="Download and checksum declared checkpoints.")
+    setup.add_argument("--download-hoot", action="store_true", help="Download and checksum the declared HOOT proof vector dataset.")
     setup.add_argument("--accept-upstream-licenses", action="store_true", help="Confirm that upstream repository/checkpoint terms were reviewed.")
     setup.add_argument("--accept-noncommercial", action="store_true", help="Confirm the CoTracker non-commercial/research boundary.")
+    setup.add_argument("--accept-hoot-terms", action="store_true", help="Confirm that the HOOT dataset terms were reviewed and permit the intended use.")
     setup.add_argument("--force", action="store_true", help="Redownload an existing checkpoint after checksum verification is bypassed.")
     setup.add_argument("--config-output", help="Generated runtime config path.")
     setup.add_argument("--report-output", help="Optional JSON setup report path.")

@@ -27,6 +27,8 @@ class AmcfSetupTests(unittest.TestCase):
         resources = {row["id"]: row for row in manifest["resources"]}
         self.assertEqual(resources["samurai_sam2"]["ref"], "76ba195984892b0d1e3db5d9c9f90bb62175680a")
         self.assertTrue(resources["cotracker"]["requires_noncommercial_acceptance"])
+        self.assertEqual(resources["hoot_potted_plant_008"]["kind"], "dataset")
+        self.assertTrue(resources["hoot_potted_plant_008"]["requires_hoot_terms"])
         self.assertTrue(manifest["claim_boundary"]["core_archive"])
 
     def test_runtime_config_is_relative_and_points_at_external_resources(self) -> None:
@@ -62,6 +64,17 @@ class AmcfSetupTests(unittest.TestCase):
         self.assertFalse(report["ok"])
         self.assertIn("--accept-noncommercial", " ".join(report["errors"]))
         self.assertFalse((self.tmp / ".amcf-runtime" / "repositories").exists())
+
+    def test_hoot_terms_gate_blocks_dataset_prepare_without_mutating_resources(self) -> None:
+        report = run_setup(
+            manifest_path=PACKAGE / "amcf_dependency_manifest.json",
+            project_root=self.tmp,
+            dependency_root=self.tmp / ".amcf-runtime",
+            download_hoot=True,
+        )
+        self.assertFalse(report["ok"])
+        self.assertIn("--accept-hoot-terms", " ".join(report["errors"]))
+        self.assertFalse((self.tmp / ".amcf-runtime" / "datasets").exists())
 
 
 if __name__ == "__main__":

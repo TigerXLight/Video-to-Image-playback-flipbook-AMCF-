@@ -62,6 +62,16 @@ cmd\RUN_AMCF_SETUP.cmd --install-deep --accept-upstream-licenses --accept-noncom
    `.amcf-runtime/checkpoints/`.
 5. Verifies the declared SHA-256 values and emits a runtime config.
 
+To fetch the bounded HOOT proof vector without bundling it:
+
+```text
+cmd\RUN_AMCF_SETUP.cmd --download-hoot --accept-hoot-terms
+```
+
+This downloads `potted_plant/008.zip` to `.amcf-runtime/datasets/HOOT/`,
+verifies its declared SHA-256, and leaves the archive outside the repository.
+It is not included in `--install-deep` automatically.
+
 The repository and checkpoint bytes are not copied into `Main` or the public
 GitHub checkout.  CoTracker has a non-commercial/research licence boundary,
 so the explicit `--accept-noncommercial` confirmation is required before its
@@ -74,9 +84,10 @@ FFmpeg is checked but not downloaded automatically.  A Windows build has its
 own LGPL/GPL selection and notice obligations; users should install a build
 they are permitted to use and place `ffmpeg.exe` and `ffprobe.exe` on `PATH`.
 
-The HOOT dataset is also user-supplied.  Setup does not download or redistribute
-it.  After the deep runtime is ready, pass the generated config to the bounded
-adapter, for example:
+The HOOT dataset may be supplied by the user or fetched explicitly with
+`--download-hoot --accept-hoot-terms`; setup never downloads it implicitly or
+redistributes it. After the deep runtime is ready, pass the generated config to
+the bounded adapter, for example:
 
 ```text
 cmd\RUN_AMCF_VNEXT.cmd deep-inference --config amcf_runtime_config.json --input input.mp4 --output output/deep_evidence

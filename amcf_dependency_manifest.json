@@ -56,12 +56,22 @@
       "sha256": "DA09BBAC871F7398E5B29C4DE5213652658949737BC158840B101678BA8AD1DF",
       "license": "CC-BY-NC-4.0 / upstream model terms; research and non-commercial boundary",
       "requires_noncommercial_acceptance": true
+    },
+    {
+      "id": "hoot_potted_plant_008",
+      "kind": "dataset",
+      "url": "https://data.hootbenchmark.org/v1_0/HD/potted_plant/008.zip",
+      "relative_path": "datasets/HOOT/potted_plant_008.zip",
+      "sha256": "22E1DCABE46F6538B4679DC1AF5778C997C55A7B0790E824B6D3A8150C0E9D36",
+      "license": "HOOT Benchmark dataset terms; inspect and accept the upstream terms before use",
+      "requires_hoot_terms": true,
+      "required_for_deep_inference": false
     }
   ],
   "claim_boundary": {
     "core_archive": "Deep tools are not required for source-independent AMCF archive playback.",
     "deep_inference": "SAM2/CoTracker are optional external research adapters and must retain upstream terms.",
-    "hoot": "HOOT data and checkpoints are user-supplied; no dataset is silently downloaded or redistributed.",
+    "hoot": "HOOT data is optional and may be explicitly downloaded after accepting its dataset terms; it is never silently downloaded or redistributed.",
     "physical": "No hardware, printer, reader, scanner, or manufactured-player validation is claimed."
   }
 }
