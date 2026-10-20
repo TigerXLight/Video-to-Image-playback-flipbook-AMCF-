@@ -16,7 +16,7 @@ They are a progression: source acquisition and ranking, controlled proof, then d
 | --- | ---: | --- | --- | --- |
 | Real-world source acquisition | 528 | one OpenCV/NumPy/Pillow acquisition-and-ranking runner plus audit/status docs | downloaded AVI clips, sampled JPEGs, contact sheets, manifests | `LOCAL_ONLY` runner; source-acquisition result represented as historical evidence |
 | Controlled lost/recovered proof | 501 | one deterministic OpenCV/NumPy/Pillow generator/validator with synthetic MP4, masks, overlays, and semantic sidecar | 160-frame MP4, PNG frame/mask/overlay sets, reports, CSV/JSON | accepted proof scope represented publicly; original generator not copied |
-| HOOT lost/recovered solver | 163 | one network/SAM2/OpenCV/NumPy/Pillow runner with official annotation parsing, event selection, masks, overlays, and sidecar construction | downloaded dataset ZIP, extracted frames, masks, overlays, sheets, reports, CSV/JSON | accepted proof scope represented publicly; external runner/data not copied |
+| HOOT lost/recovered solver | 163 | one network/SAM2/OpenCV/NumPy/Pillow runner with official annotation parsing, event selection, masks, overlays, and sidecar construction | downloaded dataset ZIP, extracted frames, masks, overlays, sheets, reports, CSV/JSON | bounded runtime reproduced by `src/amcf_hoot_level5_inference.py`; external runner/data not copied |
 
 The three folders contain 1,192 files in total. The large majority are generated media, downloaded source data, or run-specific reports. The source runners were read and classified; they are not being treated as source merely because they are Python files.
 
@@ -32,11 +32,11 @@ The controlled runner generated a deterministic synthetic sequence, stable objec
 
 ### HOOT proof
 
-The HOOT runner parsed official frame-level annotations, selected a visible-present -> full-occlusion -> visible-present event, generated visible-frame SAM2 masks, and wrote a semantic sidecar. Its final claim was limited to that dataset-annotated vector and explicitly excluded unrelated videos. It requires network access, downloaded data, SAM2 checkpoints, OpenCV, NumPy, and Pillow. Those requirements are intentionally outside the standard-library public core.
+The HOOT runner parsed official frame-level annotations, selected a visible-present -> full-occlusion -> visible-present event, generated visible-frame SAM2 masks, and wrote a semantic sidecar. Its final claim was limited to that dataset-annotated vector and explicitly excluded unrelated videos. Main now reproduces this behavior through `src/amcf_hoot_level5_inference.py` using a supplied extracted sequence or explicit ZIP, SAM2 checkpoint, OpenCV, NumPy, and Pillow. Network download remains opt-in/outside the adapter so the run is deterministic from supplied input.
 
 ## Public Mapping
 
-The reusable public mapping is `src/amcf_semantic_level5_proof.py` with its tests, demo, and report. It preserves:
+The reusable public mapping is `src/amcf_semantic_level5_proof.py` with its tests, demo, and report, supplemented by the executable deep adapters. It preserves:
 
 - the two accepted vector identities;
 - the distinction between acquisition, candidate, controlled, and dataset-annotated evidence;
@@ -45,7 +45,7 @@ The reusable public mapping is `src/amcf_semantic_level5_proof.py` with its test
 - `unsafe_acceptance_count: 0`;
 - false physical hardware, physical Level 5, and manufactured-player flags.
 
-The public mapping is a claim-safe evidence/proof index, not a replacement for the original deep-tool runners. The original runners are therefore classified as `LOCAL_ONLY` / `NEEDS_MANUAL_REVIEW` for any future optional semantic-toolchain package.
+The public mapping remains a claim-safe evidence/proof index, while the deep adapters provide the accepted SAM2/CoTracker and HOOT execution paths without copying the upstream repositories or generated evidence.
 
 ## What Must Not Be Copied as Public Core
 
@@ -59,7 +59,7 @@ The public mapping is a claim-safe evidence/proof index, not a replacement for t
 
 ## Parity Decision
 
-The accepted semantic/object proof *scope* is represented and tested publicly. The exact deep-tool execution and its source/generated outputs are not ported. This is an intentional dependency/data boundary, not an accidental omission. If full local semantic-runner parity is later required, it needs a separate optional-dependency phase with explicit provenance, checkpoint configuration, bounded fixtures, and tests; it should not be folded into the default CLI or public standard-library path.
+The accepted semantic/object proof *scope* is represented and tested publicly. The SAM2/CoTracker and bounded HOOT execution paths are now ported as explicit optional-dependency adapters with provenance, checkpoint configuration, bounded inputs, and tests. They are not folded into the standard-library-only path and do not make a universal arbitrary-video Level-5 claim.
 
 ## Claim Boundary
 

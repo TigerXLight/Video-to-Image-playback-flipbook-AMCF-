@@ -49,7 +49,7 @@ def semantic_proof_runs() -> list[SemanticProofRun]:
             proof_scope="local_optional_deep_tools",
             status="SMOKE_READY_NO_LEVEL5_CLAIM",
             local_run_timestamp="20261009_164833",
-            notes="SAM2/CoTracker smoke bridge evidence stayed local and optional.",
+            notes="SAM2/CoTracker execution is available through the external-runtime deep-inference adapter; this historical row remains a pre-Level-5 smoke record.",
         ),
         SemanticProofRun(
             run_name="AMCF_DEEP_SEMANTIC_OBJECT_LEVEL5_RETRY_WITH_SAM2_COTRACKER",

@@ -2,9 +2,22 @@
 
 No third-party deep-tool repositories, checkpoints, model weights, or cloned research projects are bundled in this clean core package.
 
-Optional future adapters may reference tools such as SAM2, SAMURAI, CoTracker, AOT, Cutie, DEVA, RAFT, XMem, TAPNet, or Track-Anything, but those integrations are not included here.
+The current external-runtime adapters for SAM2/SAMURAI and CoTracker are
+implemented in `src/amcf_deep_semantic_inference.py`; the bounded HOOT
+annotated proof is implemented in `src/amcf_hoot_level5_inference.py`. They
+load user-supplied repositories, checkpoints, and dataset input at runtime.
+They are executable integrations, but their upstream code, weights, and data
+remain outside this package.
 
-If optional adapters are added later, each adapter must preserve its own licence boundary. Non-commercial tooling must remain visibly labelled as source-available non-commercial or research-use where applicable. AGPL/copyleft-heavy tooling should not be copied into the clean core package unless that licence consequence is explicitly accepted.
+Other tools such as AOT, Cutie, DEVA, RAFT, XMem, TAPNet, and
+Track-Anything remain reference/future adapters. Their full repositories are
+not included here.
+
+Each adapter must preserve its own licence boundary. Non-commercial tooling
+must remain visibly labelled as source-available non-commercial or
+research-use where applicable. AGPL/copyleft-heavy tooling should not be
+copied into the clean core package unless that licence consequence is
+explicitly accepted.
 
 ## Asset and adapter boundaries
 
