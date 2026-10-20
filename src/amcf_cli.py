@@ -13,6 +13,7 @@ from amcf_quality_metrics import compare_ppm_frame_folders
 from amcf_video_pipeline import decode_amcf_to_frames, decode_amcf_to_video, encode_video_to_amcf
 from amcf_digital_encoder import encode_source_frames
 from amcf_digital_validator import validate_amcf_archive
+from amcf_setup import run_setup
 
 
 def _print_result(result: dict[str, Any]) -> int:
@@ -25,7 +26,7 @@ def cmd_status(_: argparse.Namespace) -> int:
         {
             "ok": True,
             "app": "AMCF public workflow CLI",
-            "commands": ["status", "encode", "component-archive", "decode", "print-plan"],
+            "commands": ["status", "encode", "component-archive", "decode", "print-plan", "setup"],
             "hardware_validation_claimed": False,
             "physical_level_5_claimed": False,
             "manufactured_player_claimed": False,
@@ -112,6 +113,32 @@ def cmd_print_plan(args: argparse.Namespace) -> int:
     return _print_result(result)
 
 
+def cmd_setup(args: argparse.Namespace) -> int:
+    result = run_setup(
+        manifest_path=args.manifest,
+        project_root=args.project_root,
+        dependency_root=args.dependency_root,
+        python_executable=args.python_executable,
+        existing_config=args.existing_config,
+        install_research=args.install_research,
+        install_deep=args.install_deep,
+        clone_repositories=args.clone_repositories,
+        download_checkpoints=args.download_checkpoints,
+        accept_upstream_licenses=args.accept_upstream_licenses,
+        accept_noncommercial=args.accept_noncommercial,
+        force=args.force,
+        config_output=args.config_output,
+        report_output=args.report_output,
+    )
+    action_requested = any(
+        getattr(args, name)
+        for name in ("install_research", "install_deep", "clone_repositories", "download_checkpoints")
+    )
+    if not action_requested:
+        result = {**result, "ok": True, "check_only": True}
+    return _print_result(result)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="AMCF public workflow CLI.")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -157,6 +184,28 @@ def build_parser() -> argparse.ArgumentParser:
     print_plan.add_argument("--input", required=True)
     print_plan.add_argument("--output", required=True)
     print_plan.set_defaults(func=cmd_print_plan)
+
+    setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, and checkpoint resources.")
+    setup.add_argument("--manifest", help="Dependency manifest JSON.")
+    setup.add_argument("--project-root", help="Repository root receiving the generated runtime config.")
+    setup.add_argument("--dependency-root", help="External runtime directory; defaults to <project>/.amcf-runtime.")
+    setup.add_argument("--python", dest="python_executable", help="Python executable used for pip and runtime config.")
+    setup.add_argument("--existing-config", help="Optional existing AMCF config to include in the status report.")
+    setup.add_argument("--install-research", action="store_true", help="Install the pinned base research requirements.txt.")
+    setup.add_argument(
+        "--install-deep",
+        action="store_true",
+        help="Install deep Python packages, clone pinned SAMURAI/CoTracker trees, and download their checkpoints.",
+    )
+    setup.add_argument("--clone-repositories", action="store_true", help="Clone/update pinned external research repositories.")
+    setup.add_argument("--download-checkpoints", action="store_true", help="Download and checksum declared checkpoints.")
+    setup.add_argument("--accept-upstream-licenses", action="store_true", help="Confirm that upstream repository/checkpoint terms were reviewed.")
+    setup.add_argument("--accept-noncommercial", action="store_true", help="Confirm the CoTracker non-commercial/research boundary.")
+    setup.add_argument("--force", action="store_true", help="Redownload an existing checkpoint after checksum verification is bypassed.")
+    setup.add_argument("--config-output", help="Generated runtime config path.")
+    setup.add_argument("--report-output", help="Optional JSON setup report path.")
+    setup.add_argument("--check", action="store_true", help="Perform an availability check; this is the default when no action flag is used.")
+    setup.set_defaults(func=cmd_setup)
     return parser
 
 

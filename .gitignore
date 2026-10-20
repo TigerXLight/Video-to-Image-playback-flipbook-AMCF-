@@ -1,6 +1,9 @@
 __pycache__/
 *.pyc
 output/
+build/
+dist/
+*.egg-info/
 demo/output/
 *.log
 .env
@@ -12,3 +15,9 @@ checkpoints/
 models/
 weights/
 Tests/
+!/tests/
+!/tests/**
+tests/**/__pycache__/
+tests/**/*.pyc
+.amcf-runtime/
+amcf_runtime_config.json

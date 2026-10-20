@@ -73,6 +73,7 @@ py-modules = [
   "amcf_residual_visual_acceptance",
   "amcf_semantic_level5_proof",
   "amcf_semantic_sidecar_overlay",
+  "amcf_setup",
   "amcf_source_compatible_package",
   "amcf_shared_package_model",
   "amcf_software_io_fixtures",

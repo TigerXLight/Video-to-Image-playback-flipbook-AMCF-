@@ -1,0 +1,67 @@
+{
+  "schema": "amcf_dependency_manifest_v1",
+  "base_requirements": "requirements.txt",
+  "deep_python_packages": [
+    "torch>=2.3.1",
+    "torchvision>=0.18.1",
+    "hydra-core>=1.3.2",
+    "iopath>=0.1.10",
+    "tqdm>=4.66.1"
+  ],
+  "external_tools": {
+    "ffmpeg": {
+      "executables": ["ffmpeg", "ffprobe"],
+      "required_for": ["MP4 input", "MP4 export", "video diagnostics"],
+      "automatic_download": false,
+      "reason": "Use a user-selected Windows build and preserve its LGPL/GPL notices."
+    }
+  },
+  "resources": [
+    {
+      "id": "samurai_sam2",
+      "kind": "repository",
+      "url": "https://github.com/yangchris11/samurai.git",
+      "ref": "76ba195984892b0d1e3db5d9c9f90bb62175680a",
+      "relative_path": "repositories/SAMURAI",
+      "adapter_path": "sam2",
+      "license": "Apache-2.0; retain upstream notices and embedded SAM2 notices",
+      "requires_noncommercial_acceptance": false,
+      "install_paths": ["sam2"]
+    },
+    {
+      "id": "cotracker",
+      "kind": "repository",
+      "url": "https://github.com/facebookresearch/co-tracker.git",
+      "ref": "82e02e8029753ad4ef13cf06be7f4fc5facdda4d",
+      "relative_path": "repositories/co-tracker",
+      "adapter_path": ".",
+      "license": "CC-BY-NC-4.0 for the majority of the repository; inspect per-file notices",
+      "requires_noncommercial_acceptance": true,
+      "install_paths": ["."]
+    },
+    {
+      "id": "sam2_tiny_checkpoint",
+      "kind": "checkpoint",
+      "url": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt",
+      "relative_path": "checkpoints/sam2.1_hiera_tiny.pt",
+      "sha256": "7402E0D864FA82708A20FBD15BC84245C2F26DFF0EB43A4B5B93452DEB34BE69",
+      "license": "Upstream SAM2/SAMURAI checkpoint terms; retain attribution and notices",
+      "requires_noncommercial_acceptance": false
+    },
+    {
+      "id": "cotracker_baseline_offline_checkpoint",
+      "kind": "checkpoint",
+      "url": "https://huggingface.co/facebook/cotracker3/resolve/main/baseline_offline.pth",
+      "relative_path": "checkpoints/baseline_offline.pth",
+      "sha256": "DA09BBAC871F7398E5B29C4DE5213652658949737BC158840B101678BA8AD1DF",
+      "license": "CC-BY-NC-4.0 / upstream model terms; research and non-commercial boundary",
+      "requires_noncommercial_acceptance": true
+    }
+  ],
+  "claim_boundary": {
+    "core_archive": "Deep tools are not required for source-independent AMCF archive playback.",
+    "deep_inference": "SAM2/CoTracker are optional external research adapters and must retain upstream terms.",
+    "hoot": "HOOT data and checkpoints are user-supplied; no dataset is silently downloaded or redistributed.",
+    "physical": "No hardware, printer, reader, scanner, or manufactured-player validation is claimed."
+  }
+}

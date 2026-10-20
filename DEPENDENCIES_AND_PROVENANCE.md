@@ -38,6 +38,14 @@ research boundary. The AMCF project does not apply a single licence to those
 upstream files and does not describe the full mixed repository as strict OSI
 open source.
 
+The tracked `amcf_dependency_manifest.json` and `src/amcf_setup.py` provide a
+reproducible opt-in bootstrap. They install ordinary Python requirements,
+clone pinned external trees, download the selected checkpoints, verify their
+SHA-256 values, and write a local runtime config. The bootstrap keeps those
+bytes outside the project checkout, requires explicit upstream/non-commercial
+acceptance, does not download HOOT data, and does not silently download an
+FFmpeg build whose distribution/licence choice belongs to the user.
+
 ## Media
 
 The source video is `Free Waterfall 4k Videoclip | Nature Videos | Youstock`, URL recorded in the handoff as https://www.youtube.com/watch?v=w6uX9jamcwQ. This test does not grant redistribution rights beyond the local experiment.

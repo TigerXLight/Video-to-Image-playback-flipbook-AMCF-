@@ -121,6 +121,16 @@ The package also includes a first public workflow CLI module in `src/amcf_cli.py
 
 The CLI now has a `pyproject.toml` package boundary with the console command `amcf`. The base package has no Python runtime dependencies; optional research packages are declared under the `research` extra. MP4 input/export still requires external FFmpeg/FFprobe tools. See `docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`.
 
+The optional deep runtime now has a reproducible bootstrap path. `amcf setup --check`
+reports Python modules, FFmpeg, pinned SAMURAI/SAM2 and CoTracker paths, and
+checkpoint hashes. `amcf setup --install-deep --accept-upstream-licenses
+--accept-noncommercial` installs the declared deep packages, clones the pinned
+external repositories, downloads the selected checkpoints, and writes an
+ignored `amcf_runtime_config.json`. The Windows equivalent is
+`cmd\RUN_AMCF_SETUP.cmd`. External source, checkpoints, and HOOT data remain
+outside the public checkout and retain their own licence boundaries. See
+`docs/AMCF_SETUP_AND_DEPENDENCY_BOOTSTRAP.md`.
+
 The local-Main-style deliverable package path in `src/amcf_deliverable_package.py` can bundle a component-event archive, decoded-frame comparison frames, optional FFmpeg comparison video, static viewer files, quality report, and track-taxonomy manifest into a deterministic zip under `output/`. Generated deliverable zips are local output and are not committed.
 
 The archive writer/reader parity layer in `src/amcf_archive_writer_reader.py` ports the useful local archive fixture surface for `.amcfvnext.zip` files: manifest, claim boundaries, component and semantic sidecars, payload references, checksums, fail-closed validation, and intentionally invalid archive examples. It is exercised by `demo/run_amcf_archive_writer_reader_demo.py` and `tests/test_amcf_archive_writer_reader.py`. It does not copy generated local archives or claim semantic Level 5, hardware validation, or physical-player proof.

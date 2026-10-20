@@ -54,8 +54,17 @@ REQUIRED_DOCS = [
 ]
 
 ALLOWED_TAG_PREP_DIRTY_PATHS = {
+    ".gitignore",
+    "DEPENDENCIES_AND_PROVENANCE.md",
+    "QUICKSTART.md",
+    "amcf_dependency_manifest.json",
+    "cmd/RUN_AMCF_SETUP.cmd",
     "README.md",
+    "docs/AMCF_SETUP_AND_DEPENDENCY_BOOTSTRAP.md",
     "demo/run_public_release_tag_prep.py",
+    "pyproject.toml",
+    "src/amcf_cli.py",
+    "src/amcf_setup.py",
     "docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md",
     "docs/AMCF_PHYSICAL_PLAYER_DOCS_MAP.md",
     "docs/AMCF_PUBLIC_RELEASE_NOTES_DRAFT.md",
@@ -63,6 +72,9 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "docs/AMCF_PUBLIC_RELEASE_TAG_PREP.md",
     "docs/AMCF_PUBLIC_RELEASE_TAG_PREP_AUDIT.md",
     "site/index.html",
+    "tests/test_amcf_cli.py",
+    "tests/test_amcf_cli_packaging.py",
+    "tests/test_amcf_setup.py",
     "tests/test_public_release_tag_prep.py",
 }
 

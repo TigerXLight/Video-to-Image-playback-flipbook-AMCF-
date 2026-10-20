@@ -31,6 +31,19 @@ amcf status
 The editable install command is a developer/package check, not a Windows EXE
 build. FFmpeg/FFprobe remain external optional tools for MP4 input/export.
 
+To inspect or prepare the optional deep semantic runtime:
+
+```cmd
+cmd\RUN_AMCF_SETUP.cmd --check --existing-config amcf_config.example.json
+cmd\RUN_AMCF_SETUP.cmd --install-deep --accept-upstream-licenses --accept-noncommercial
+```
+
+The second command installs the declared deep Python packages, clones pinned
+SAMURAI/SAM2 and CoTracker trees into `.amcf-runtime`, downloads checksummed
+checkpoints, and writes the ignored `amcf_runtime_config.json`. CoTracker is
+research/non-commercial bounded. FFmpeg is checked but remains a user-selected
+external installation; HOOT data remains user-supplied.
+
 ## 2. Run virtual hardware demo
 
 ```cmd
