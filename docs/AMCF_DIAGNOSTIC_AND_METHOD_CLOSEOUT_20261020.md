@@ -97,7 +97,7 @@ sensor, manufactured carrier, or physical Level 5 validation is claimed.
   closure protects uncovered changed pixels.
 - Main has an installable `amcf` CLI with encode, component-archive, decode,
   print-plan, and status paths; wheel build/install smoke passed.
-- The maintained Main suite passes when run from the package root: 519 tests.
+- The maintained Main suite passes when run from the package root: 520 tests.
 - The Windows EXE was built and smoke-tested: `Main/output/amcf_cli_exe_20261020/amcf.exe`.
 
 ## Still Open Before Public GitHub Closeout

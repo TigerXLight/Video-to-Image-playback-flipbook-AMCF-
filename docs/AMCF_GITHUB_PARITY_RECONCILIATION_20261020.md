@@ -27,7 +27,7 @@ The public checkout passes the maintained suite from its package root after
 the 12B diagnostic profile is included:
 
 ```text
-Ran 519 tests
+Ran 520 tests
 OK
 ```
 
