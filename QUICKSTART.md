@@ -74,6 +74,17 @@ external installation. HOOT data remains outside the checkout; the optional
 download command above fetches the declared `potted_plant/008` proof vector
 only after explicit terms acceptance.
 
+The workflow CLI also exposes the process and physical-adapter checks:
+
+```cmd
+amcf diagnostics --input-video "path\to\source.mp4" --output "output\diagnostics"
+amcf physical-roundtrip --project-root . --output "output\physical_roundtrip"
+```
+
+The first writes the 03M zone-motion overlay, 08E motion heat, and a JSON
+report. The second exercises the no-hardware PC-to-printer, reader-to-PC, and
+player-to-PC software contracts. Neither command claims physical validation.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

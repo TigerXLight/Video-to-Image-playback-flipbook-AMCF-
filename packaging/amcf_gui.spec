@@ -3,12 +3,22 @@ from pathlib import Path
 
 PROJECT = Path.cwd().resolve()
 SRC = PROJECT / "src"
+PYTHON_HOME = Path(__import__("sys").base_prefix)
+TCL_ROOT = PYTHON_HOME / "tcl"
+DLL_ROOT = PYTHON_HOME / "DLLs"
 
 a = Analysis(
     [str(SRC / "amcf_gui.py")],
     pathex=[str(SRC)],
-    binaries=[],
-    datas=[],
+    binaries=[
+        (str(DLL_ROOT / "_tkinter.pyd"), "."),
+        (str(DLL_ROOT / "tcl86t.dll"), "."),
+        (str(DLL_ROOT / "tk86t.dll"), "."),
+    ],
+    datas=[
+        (str(TCL_ROOT / "tcl8.6"), "tcl/tcl8.6"),
+        (str(TCL_ROOT / "tk8.6"), "tk/tk8.6"),
+    ],
     hiddenimports=[
         "amcf_diagnostic_profiles",
         "amcf_diagnostic_state",
@@ -16,11 +26,15 @@ a = Analysis(
         "amcf_component_size_ceiling",
         "amcf_temporal_component_codec",
         "amcf_source_seeded_event_materializer",
+        "tkinter",
+        "_tkinter",
     ],
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
-    excludes=[],
+    runtime_hooks=[str(PROJECT / "packaging" / "tkinter_runtime_hook.py")],
+    # The GUI launches the explicit setup command for deep inference; those
+    # research runtimes are not embedded in the workflow executable.
+    excludes=["torch", "torchvision", "sam2", "cotracker", "hydra", "iopath"],
     noarchive=False,
 )
 
@@ -28,8 +42,7 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
+    [],
     [],
     name="amcf_gui",
     debug=False,
@@ -37,5 +50,15 @@ exe = EXE(
     strip=False,
     upx=False,
     console=False,
+    exclude_binaries=True,
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=False,
+    name="amcf_gui",
 )
 

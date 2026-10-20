@@ -25,7 +25,10 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    # Deep SAM2/CoTracker runtimes are installed into .amcf-runtime by the
+    # explicit setup command; they are intentionally not embedded in the
+    # core CLI executable.
+    excludes=["torch", "torchvision", "sam2", "cotracker", "hydra", "iopath"],
     noarchive=False,
 )
 

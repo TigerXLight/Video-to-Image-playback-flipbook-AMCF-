@@ -118,7 +118,7 @@ For the bounded 14H WebP archive contract, `demo/run_amcf_14h_video_roundtrip_de
 
 The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation and optical-flow track reporting when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
-The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, and `print-plan` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; they are not real printer/scanner/player integrations or hardware validation claims.
+The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, `diagnostics`, `print-plan`, `physical-roundtrip`, and `setup` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; they are not real printer/scanner/player integrations or hardware validation claims.
 
 The maintained CLI also exposes `seeded-materializer`. This is the compact 4K
 source-seeded AMCF event-materializer profile: it retains the canonical event
@@ -142,8 +142,24 @@ amcf seeded-materializer --input-archive <archive.amcf.zip> --output <report-dir
 
 The Windows packaging now provides `packaging/build_amcf_release_bundle.ps1`,
 which builds both `amcf.exe` (CLI) and `amcf_gui.exe` (small workflow UI) into a
-ZIP. The GUI is a front end for software/virtual workflows, not physical-device
-validation.
+ZIP. The GUI provides source/archive selection, source-to-AMCF, archive-to-video,
+seeded validation, the maintained 03M zone-motion plus 08E heat diagnostics,
+dependency checks/setup, and the deterministic printer/reader/player software
+corridor check. The bundle includes the small physical-I/O fixture set so that
+the corridor check remains runnable after extraction. It is still a front end
+for software/virtual workflows, not physical-device validation.
+
+The physical software-adapter phase is represented by `physical-roundtrip`. It
+checks the shared package/manifest contract across PC-to-printer/carrier,
+reader/scanner-to-PC recovery, and player-to-PC status/control. It is a
+deterministic no-hardware fixture and explicitly does not claim a real printer,
+scanner, reader, motor, or manufactured player.
+
+The diagnostic process layer is available through `diagnostics` and preserves
+the project-specific distinction between 03M camera-compensated green zone
+motion, 08E Farneback/TURBO motion heat, and the separate historical proxy/crop
+review contracts recorded by the unified acceptance runner. Diagnostic output
+is process evidence; it is not silently inserted into the AMCF payload.
 
 The CLI now has a `pyproject.toml` package boundary with the console command `amcf`. The base package has no Python runtime dependencies; optional research packages are declared under the `research` extra. MP4 input/export and the seeded materializer require external FFmpeg/FFprobe tools. See `docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`.
 

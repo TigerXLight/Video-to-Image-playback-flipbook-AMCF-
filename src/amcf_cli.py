@@ -27,7 +27,17 @@ def cmd_status(_: argparse.Namespace) -> int:
         {
             "ok": True,
             "app": "AMCF public workflow CLI",
-            "commands": ["status", "encode", "component-archive", "decode", "seeded-materializer", "print-plan", "setup"],
+            "commands": [
+                "status",
+                "encode",
+                "component-archive",
+                "decode",
+                "seeded-materializer",
+                "diagnostics",
+                "print-plan",
+                "physical-roundtrip",
+                "setup",
+            ],
             "hardware_validation_claimed": False,
             "physical_level_5_claimed": False,
             "manufactured_player_claimed": False,
@@ -121,6 +131,73 @@ def cmd_seeded_materializer(args: argparse.Namespace) -> int:
     return _print_result(result)
 
 
+def cmd_diagnostics(args: argparse.Namespace) -> int:
+    """Render the maintained 03M zone-motion and 08E heat diagnostics."""
+    import cv2
+
+    from amcf_diagnostic_profiles import flow_magnitude_heatmap, render_zone_motion_video, waterfall_03m_zones
+    from amcf_motion_truth_diagnostics import analyze_pair
+
+    input_video = Path(args.input_video)
+    output = Path(args.output)
+    output.mkdir(parents=True, exist_ok=True)
+    capture = cv2.VideoCapture(str(input_video))
+    ok_a, previous = capture.read()
+    ok_b, current = capture.read()
+    capture.release()
+    if not ok_a or not ok_b or previous is None or current is None:
+        return _print_result({"ok": False, "error": "could not read two frames from the input video", "unsafe_acceptance_count": 0})
+
+    height, width = previous.shape[:2]
+    zones = waterfall_03m_zones(width, height)
+    pair_result, overlay = analyze_pair(previous, current, zones, frame_index=1)
+    overlay_path = output / "diagnostic_overlay.png"
+    heatmap_path = output / "diagnostic_motion_heatmap.png"
+    cv2.imwrite(str(overlay_path), overlay)
+    cv2.imwrite(str(heatmap_path), flow_magnitude_heatmap(previous, current))
+    zone_video = render_zone_motion_video(input_video, output / "diagnostic_zone_motion_overlay.mp4", zones=zones)
+    unsafe = int(pair_result.get("unsafe_acceptance_count", 0))
+    report = {
+        "ok": bool(overlay_path.exists() and heatmap_path.exists() and zone_video.get("status") == "PASS" and unsafe == 0),
+        "input_video": str(input_video.resolve()),
+        "diagnostic_profile": "03M_waterfall_zone_motion",
+        "heat_contract": "08E-compatible Farneback(0.5,3,15,3,5,1.2,0), per-frame NORM_MINMAX, TURBO",
+        "overlay_path": str(overlay_path),
+        "heatmap_path": str(heatmap_path),
+        "zone_motion_overlay_path": str(zone_video.get("output_video", "")),
+        "zone_count": len(pair_result.get("zones", [])),
+        "processed_frame_count": zone_video.get("frame_count"),
+        "translation_dx": pair_result.get("translation_dx"),
+        "translation_dy": pair_result.get("translation_dy"),
+        "unsafe_acceptance_count": unsafe,
+        "claim_boundary": {
+            "diagnostic_only": True,
+            "hardware_validation_claimed": False,
+            "physical_level_5_claimed": False,
+            "manufactured_player_claimed": False,
+        },
+    }
+    (output / "diagnostics_report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return _print_result(report)
+
+
+def cmd_physical_roundtrip(args: argparse.Namespace) -> int:
+    """Run the deterministic software-only printer/reader/player corridor fixture."""
+    from amcf_cross_corridor_roundtrip import write_cross_corridor_roundtrip_demo
+
+    project_root = Path(args.project_root).resolve() if args.project_root else Path(__file__).resolve().parents[1]
+    result = write_cross_corridor_roundtrip_demo(project_root, Path(args.output))
+    report = result["roundtrip_report"]
+    return _print_result(
+        {
+            "ok": bool(report.get("final_passed")),
+            "project_root": str(project_root),
+            "output_dir": result.get("output_dir", str(Path(args.output).resolve())),
+            **result,
+        }
+    )
+
+
 def cmd_print_plan(args: argparse.Namespace) -> int:
     result = generate_physical_carrier_from_amcf_archive(args.input, args.output)
     result["unsafe_acceptance_count"] = 0
@@ -208,10 +285,26 @@ def build_parser() -> argparse.ArgumentParser:
     seeded.add_argument("--render-video", action="store_true", help="Render the materialized component-composited review MP4.")
     seeded.set_defaults(func=cmd_seeded_materializer)
 
+    diagnostics = sub.add_parser(
+        "diagnostics",
+        help="Render the maintained 03M zone-motion overlay and 08E motion-heat diagnostics for a video.",
+    )
+    diagnostics.add_argument("--input-video", required=True)
+    diagnostics.add_argument("--output", required=True)
+    diagnostics.set_defaults(func=cmd_diagnostics)
+
     print_plan = sub.add_parser("print-plan", help="Create a no-hardware physical carrier / print-plan package.")
     print_plan.add_argument("--input", required=True)
     print_plan.add_argument("--output", required=True)
     print_plan.set_defaults(func=cmd_print_plan)
+
+    physical = sub.add_parser(
+        "physical-roundtrip",
+        help="Run the no-hardware PC-to-printer, reader-to-PC, and player-to-PC software corridor fixture.",
+    )
+    physical.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
+    physical.add_argument("--output", required=True)
+    physical.set_defaults(func=cmd_physical_roundtrip)
 
     setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, checkpoints, and the optional HOOT proof dataset.")
     setup.add_argument("--manifest", help="Dependency manifest JSON.")

@@ -68,6 +68,8 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "src/amcf_setup.py",
     "src/amcf_source_seeded_event_materializer.py",
     "packaging/amcf_gui.spec",
+    "packaging/amcf_cli.spec",
+    "packaging/tkinter_runtime_hook.py",
     "packaging/README_WINDOWS.md",
     "packaging/build_amcf_release_bundle.ps1",
     "docs/AMCF_SOURCE_SEEDED_EVENT_MATERIALIZER.md",

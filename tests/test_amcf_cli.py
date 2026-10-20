@@ -32,6 +32,8 @@ class AmcfCliTests(unittest.TestCase):
         self.assertIn("print-plan", help_text)
         self.assertIn("component-archive", help_text)
         self.assertIn("seeded-materializer", help_text)
+        self.assertIn("diagnostics", help_text)
+        self.assertIn("physical-roundtrip", help_text)
         self.assertIn("setup", help_text)
 
     def test_status_command_passes(self) -> None:
@@ -47,6 +49,15 @@ class AmcfCliTests(unittest.TestCase):
         self.assertTrue((decoded_dir / "decoded_frames").exists())
         self.assertEqual(cli_main(["print-plan", "--input", str(package_dir / "package.amcf.zip"), "--output", str(print_dir)]), 0)
         self.assertTrue((print_dir / "physical_carrier_manifest.json").exists())
+
+    def test_physical_adapter_roundtrip_command(self) -> None:
+        output = self.tmp / "physical_roundtrip"
+        self.assertEqual(
+            cli_main(["physical-roundtrip", "--project-root", str(PACKAGE), "--output", str(output)]),
+            0,
+        )
+        report = (output / "cross_corridor_roundtrip_report.json").read_text(encoding="utf-8")
+        self.assertIn('"final_passed": true', report)
 
     def test_component_archive_command(self) -> None:
         output = self.tmp / "component"
