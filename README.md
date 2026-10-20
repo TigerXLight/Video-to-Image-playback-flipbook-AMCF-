@@ -57,6 +57,19 @@ The clean core package does not bundle SAM2, SAMURAI, CoTracker, AOT, Cutie, DEV
 
 Future optional deep semantic adapters require their own licence and provenance boundaries. If commercial use is restricted for an adapter, describe that work as source-available non-commercial or non-commercial research software, not strict OSI open source.
 
+## Executable deep semantic inference
+
+Deep inference is part of the semantic AMCF processing path when semantic
+mask/tracking behaviour is required. Main provides an external-runtime adapter
+through `RUN_AMCF_VNEXT.cmd deep-inference`. It executes SAM2 box-prompt
+segmentation and CoTracker grid tracking, then writes sampled frames, masks,
+tracks, separate diagnostic overlays, a combined overlay, and a manifest with
+hashes and claim boundaries. The third-party repositories and checkpoints stay
+outside the package and retain their own licences; configure their paths in
+`amcf_config.example.json` or pass a project-specific config. This command
+produces diagnostic inference evidence, not a hidden full-video fallback or an
+automatic universal Level-5 claim. See `docs/AMCF_DEEP_INFERENCE_RUNTIME.md`.
+
 ## Claim boundaries
 
 This package does not claim physical proof, physical Level 5, hardware validation, manufacturing readiness, final UI, real scans, physical player proof, or a built prototype.

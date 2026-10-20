@@ -7,6 +7,7 @@
     "archive_writer_reader": "Tests/Test AMCF_ARCHIVE_WRITER_READER_INTEGRATION/20261009_150115"
   },
   "optional_deep_tools": {
+    "deep_python": ".venv-test03b-samurai-py311/Scripts/python.exe",
     "sam2_repo": "Github repos/SAMURAI/sam2",
     "sam2_checkpoint": "Tests/Test AMCF_LOCAL_DEEP_SEMANTIC_TOOLCHAIN_INTEGRATION/20261009_164833/02_CHECKPOINT_ACQUISITION/models/sam2.1_hiera_tiny.pt",
     "cotracker_repo": "Github repos/co-tracker",
@@ -19,6 +20,7 @@
         "repo_key": "sam2_repo",
         "checkpoint_key": "sam2_checkpoint",
         "required_for_core_archive_playback": false,
+              "required_for_core_semantic_processing": true,
         "required_for_semantic_level5_runs": true
       },
       "cotracker": {
@@ -26,6 +28,7 @@
         "repo_key": "cotracker_repo",
         "checkpoint_key": "cotracker_checkpoint",
         "required_for_core_archive_playback": false,
+              "required_for_core_semantic_processing": true,
         "required_for_semantic_level5_runs": true
       }
     },

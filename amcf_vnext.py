@@ -5,6 +5,7 @@ import csv
 import hashlib
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import zipfile
@@ -174,6 +175,20 @@ def config_optional_path(config: dict[str, Any], key: str) -> Path | None:
     if not value:
         return None
     return resolve_path(str(value), config_workspace(config))
+
+
+def config_deep_python(config: dict[str, Any]) -> Path:
+    configured = config_optional_path(config, "deep_python")
+    if configured:
+        return configured
+    return Path(sys.executable).resolve()
+
+
+def deep_runner_path() -> Path:
+    installed_path = MAIN / "amcf_deep_semantic_inference.py"
+    if installed_path.exists():
+        return installed_path
+    return MAIN / "src" / "amcf_deep_semantic_inference.py"
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:
@@ -373,20 +388,41 @@ def cmd_toolchain_status(args: argparse.Namespace) -> int:
                 "adapter_tier": "primary_semantic_adapter" if adapter_name else "configured_tool",
             }
         )
+    deep_python = config_deep_python(config)
     modules = []
     for module in ("sam2", "cotracker", "cv2", "PIL"):
         modules.append({"module": module, "import_resolvable": importlib.util.find_spec(module) is not None})
+    deep_runtime = {"path": str(deep_python), "exists": deep_python.exists(), "modules": [], "error": ""}
+    if deep_python.exists():
+        probe = subprocess.run(
+            [
+                str(deep_python),
+                "-c",
+                "import importlib.util; print({m: bool(importlib.util.find_spec(m)) for m in ('torch','sam2','cotracker','cv2','PIL')})",
+            ],
+            cwd=str(config_workspace(config)),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        deep_runtime["returncode"] = probe.returncode
+        deep_runtime["stdout"] = probe.stdout.strip()
+        deep_runtime["stderr"] = probe.stderr[-2000:].strip()
+    else:
+        deep_runtime["error"] = "configured deep Python does not exist"
     result = {
         "config_path": config["_config_path"],
         "optional_deep_tools_checked": True,
         "deep_tools_run": False,
+        "deep_inference_entrypoint": str(deep_runner_path()),
+        "deep_runtime": deep_runtime,
         "primary_semantic_adapters": primary,
         "future_optional_adapters": adapters.get("future_optional_adapters", {}),
         "tool_paths": tools,
         "python_modules": modules,
         "notes": [
             "This command checks path/import availability only.",
-            "It does not run SAM2, CoTracker, or any deep model inference.",
+            "Use deep-inference to execute the configured external adapters.",
         ],
     }
     if args.output:
@@ -396,6 +432,62 @@ def cmd_toolchain_status(args: argparse.Namespace) -> int:
         write_csv(out / "toolchain_modules.csv", modules)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
+
+
+def cmd_deep_inference(args: argparse.Namespace) -> int:
+    config = load_config(args.config)
+    runner = deep_runner_path()
+    deep_python = Path(args.deep_python).resolve() if args.deep_python else config_deep_python(config)
+    if not runner.exists():
+        print(json.dumps({"status": "failed", "error": f"missing deep inference runner: {runner}"}, indent=2))
+        return 2
+    if not deep_python.exists():
+        print(json.dumps({"status": "failed", "error": f"missing deep inference Python: {deep_python}"}, indent=2))
+        return 2
+    values = {
+        "sam2_repo": config_optional_path(config, "sam2_repo"),
+        "sam2_checkpoint": config_optional_path(config, "sam2_checkpoint"),
+        "cotracker_repo": config_optional_path(config, "cotracker_repo"),
+        "cotracker_checkpoint": config_optional_path(config, "cotracker_checkpoint"),
+    }
+    missing = [key for key, value in values.items() if value is None or not value.exists()]
+    if missing and not (args.skip_sam2 and args.skip_cotracker):
+        print(json.dumps({"status": "failed", "error": "missing configured deep resources", "missing": missing}, indent=2))
+        return 2
+    command = [
+        str(deep_python),
+        str(runner),
+        "--input",
+        str(Path(args.input).resolve()),
+        "--output",
+        str(Path(args.output).resolve()),
+        "--sam2-repo",
+        str(values["sam2_repo"] or ""),
+        "--sam2-checkpoint",
+        str(values["sam2_checkpoint"] or ""),
+        "--cotracker-repo",
+        str(values["cotracker_repo"] or ""),
+        "--cotracker-checkpoint",
+        str(values["cotracker_checkpoint"] or ""),
+        "--max-frames",
+        str(args.max_frames),
+        "--frame-step",
+        str(args.frame_step),
+        "--grid-size",
+        str(args.grid_size),
+        "--device",
+        args.device,
+    ]
+    if args.bbox:
+        command.extend(["--bbox", args.bbox])
+    if args.skip_sam2:
+        command.append("--skip-sam2")
+    if args.skip_cotracker:
+        command.append("--skip-cotracker")
+    env = dict(os.environ)
+    env["PYTHONUNBUFFERED"] = "1"
+    completed = subprocess.run(command, cwd=str(config_workspace(config)), env=env, text=True, check=False)
+    return int(completed.returncode)
 
 
 def cmd_config(args: argparse.Namespace) -> int:
@@ -414,6 +506,7 @@ def cmd_config(args: argparse.Namespace) -> int:
             key: str(config_optional_path(config, key) or "")
             for key in ("sam2_repo", "sam2_checkpoint", "cotracker_repo", "cotracker_checkpoint")
         },
+        "deep_python": str(config_deep_python(config)),
         "claim_boundary": config.get("claim_boundary", {}),
     }
     if args.output:
@@ -537,6 +630,20 @@ def build_parser() -> argparse.ArgumentParser:
     add_common_args(p)
     p.add_argument("--output", help="Optional output directory for toolchain status JSON/CSV.")
     p.set_defaults(func=cmd_toolchain_status)
+
+    p = sub.add_parser("deep-inference", help="Run external SAM2/CoTracker inference and write bounded AMCF diagnostic evidence.")
+    add_common_args(p)
+    p.add_argument("--input", required=True, help="Input video, image, or frame directory.")
+    p.add_argument("--output", required=True, help="Output directory for inference evidence.")
+    p.add_argument("--deep-python", help="Override configured Python runtime for deep inference.")
+    p.add_argument("--bbox", help="SAM2 box prompt x0,y0,x1,y1; defaults to a central box.")
+    p.add_argument("--max-frames", type=int, default=8)
+    p.add_argument("--frame-step", type=int, default=1)
+    p.add_argument("--grid-size", type=int, default=4)
+    p.add_argument("--device", default="cpu", choices=("cpu", "cuda"))
+    p.add_argument("--skip-sam2", action="store_true")
+    p.add_argument("--skip-cotracker", action="store_true")
+    p.set_defaults(func=cmd_deep_inference)
 
     p = sub.add_parser("github-manifest", help="Emit recommended GitHub include/exclude lists.")
     add_common_args(p)
