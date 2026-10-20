@@ -38,6 +38,7 @@ class AmcfCliTests(unittest.TestCase):
         self.assertIn("adapter-roundtrip", help_text)
         self.assertIn("hardware-plan", help_text)
         self.assertIn("hardware-providers", help_text)
+        self.assertIn("software-control", help_text)
         self.assertIn("setup", help_text)
 
     def test_status_command_passes(self) -> None:
@@ -100,6 +101,21 @@ class AmcfCliTests(unittest.TestCase):
         self.assertTrue(report["unverified_switch_blocked"])
         self.assertFalse(report["hardware_connected"])
         self.assertFalse(report["feedback"]["transition_allowed"])
+
+    def test_software_control_protocol_command(self) -> None:
+        output = self.tmp / "software_control"
+        self.assertEqual(
+            cli_main(["software-control", "--project-root", str(PACKAGE), "--output", str(output)]),
+            0,
+        )
+        report = json.loads((output / "software_control_protocol_report.json").read_text(encoding="utf-8"))
+        self.assertTrue(report["final_passed"])
+        self.assertGreater(report["command_count"], 10)
+        self.assertTrue(report["safety_probes"]["unverified_visible_switch_blocked"])
+        self.assertTrue(report["safety_probes"]["sequence_gap_blocked"])
+        self.assertEqual(report["unsafe_acceptance_count"], 0)
+        self.assertFalse(report["hardware_connected"])
+        self.assertTrue((output / "software_control_command_transcript.json").exists())
 
     def test_component_archive_command(self) -> None:
         output = self.tmp / "component"

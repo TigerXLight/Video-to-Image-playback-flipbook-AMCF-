@@ -118,6 +118,12 @@ command. It gives future Print Spooler, WIA/TWAIN/OpenCV, USB, or serial
 implementations a stable handshake and fail-closed status contract while
 remaining software-only.
 
+The versioned software-control protocol is available through the
+software-control command. It adds capability negotiation, ordered command
+envelopes, provider responses, bounded local seek/reverse, transcript output,
+and fail-closed rejection for unverified switches or sequence gaps. See
+`docs/AMCF_SOFTWARE_CONTROL_PROTOCOL.md`.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.

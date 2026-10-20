@@ -54,6 +54,7 @@ class AmcfApp(tk.Tk):
             "Run physical software adapter layer",
             "Plan physical device adapters",
             "Run virtual hardware provider layer",
+            "Run software control protocol",
             "Check dependencies",
             "Prepare deep dependencies",
             "Download HOOT proof dataset",
@@ -154,6 +155,8 @@ class AmcfApp(tk.Tk):
             args = ["hardware-plan", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Run virtual hardware provider layer":
             args = ["hardware-providers", "--project-root", self.project_root.get(), "--output", str(output_path)]
+        elif mode == "Run software control protocol":
+            args = ["software-control", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Check dependencies":
             args = [
                 "setup",

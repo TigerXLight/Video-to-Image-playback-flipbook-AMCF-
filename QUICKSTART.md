@@ -112,6 +112,14 @@ This runs the printer, reader, and player handshakes, including staged-section
 hash verification and an unverified-switch rejection check. It does not open
 hardware.
 
+Run the versioned software-only command/session protocol:
+
+    amcf software-control --project-root . --output output/software_control_protocol
+
+This adds capability negotiation, ordered command envelopes, bounded local
+seek/reverse, an auditable transcript, and sequence-gap/unverified-switch
+fail-closed probes. It does not open hardware.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

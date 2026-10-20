@@ -70,6 +70,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "src/amcf_physical_adapters.py",
     "src/amcf_hardware_adapter_planning.py",
     "src/amcf_hardware_provider_runtime.py",
+    "src/amcf_software_control_protocol.py",
     "packaging/amcf_gui.spec",
     "packaging/amcf_cli.spec",
     "packaging/tkinter_runtime_hook.py",
@@ -80,6 +81,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "docs/AMCF_PHYSICAL_SOFTWARE_ADAPTER_LAYER.md",
     "docs/AMCF_HARDWARE_ADAPTER_PLANNING_LAYER.md",
     "docs/AMCF_HARDWARE_PROVIDER_RUNTIME_LAYER.md",
+    "docs/AMCF_SOFTWARE_CONTROL_PROTOCOL.md",
     "docs/AMCF_SOFTWARE_IO_PUBLIC_SUMMARY.md",
     "docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md",
     "docs/AMCF_PHYSICAL_PLAYER_DOCS_MAP.md",
@@ -94,6 +96,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "tests/test_amcf_physical_adapters.py",
     "tests/test_amcf_hardware_adapter_planning.py",
     "tests/test_amcf_hardware_provider_runtime.py",
+    "tests/test_amcf_software_control_protocol.py",
     "tests/test_amcf_setup.py",
     "tests/test_public_release_tag_prep.py",
 }

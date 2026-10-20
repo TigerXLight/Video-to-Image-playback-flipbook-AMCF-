@@ -57,3 +57,12 @@ player interfaces against deterministic software fixtures. It includes a
 negative test that blocks an unverified visible-gate switch. Future device
 providers can implement these interfaces without changing the AMCF status or
 fail-closed contract.
+
+## Software Control Protocol
+
+The software-control command adds the versioned command/session layer above
+those providers. It negotiates capabilities, enforces session identity and
+sequence ordering, records all corridor commands and responses, bounds local
+seek/reverse, and rejects unverified visible switches. It remains software-only
+and keeps physical display and transition permissions disabled. See
+`docs/AMCF_SOFTWARE_CONTROL_PROTOCOL.md`.
