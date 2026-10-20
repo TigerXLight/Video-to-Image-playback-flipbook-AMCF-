@@ -29,6 +29,7 @@ if (-not (Test-Path (Join-Path $GuiAppDir "amcf_gui.exe"))) { throw "GUI EXE was
 New-Item -ItemType Directory -Force $BundleDir | Out-Null
 Copy-Item (Join-Path $CliDir "amcf.exe") (Join-Path $BundleDir "amcf.exe")
 Copy-Item $GuiAppDir (Join-Path $BundleDir "amcf_gui") -Recurse -Force
+Copy-Item (Join-Path $PSScriptRoot "RUN_AMCF_GUI.cmd") (Join-Path $BundleDir "RUN_AMCF_GUI.cmd")
 Copy-Item (Join-Path $PSScriptRoot "README_WINDOWS.md") (Join-Path $BundleDir "README_WINDOWS.md")
 Copy-Item (Join-Path $Root "QUICKSTART.md") (Join-Path $BundleDir "QUICKSTART.md")
 $FixtureSource = Join-Path $Root "tests\fixtures\amcf_software_io"
@@ -40,5 +41,5 @@ if (Test-Path (Join-Path $Root "amcf_dependency_manifest.json")) {
 }
 Compress-Archive -Path (Join-Path $BundleDir "*") -DestinationPath $ZipPath -CompressionLevel Optimal
 
-Write-Output (ConvertTo-Json @{ ok = $true; cli = (Join-Path $BundleDir "amcf.exe"); gui = (Join-Path $BundleDir "amcf_gui.exe"); zip = $ZipPath; unsafe_acceptance_count = 0 } -Compress)
+Write-Output (ConvertTo-Json @{ ok = $true; cli = (Join-Path $BundleDir "amcf.exe"); gui = (Join-Path $BundleDir "amcf_gui\amcf_gui.exe"); gui_launcher = (Join-Path $BundleDir "RUN_AMCF_GUI.cmd"); zip = $ZipPath; unsafe_acceptance_count = 0 } -Compress)
 

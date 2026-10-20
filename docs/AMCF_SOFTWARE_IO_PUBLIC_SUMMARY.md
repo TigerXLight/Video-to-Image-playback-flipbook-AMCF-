@@ -20,6 +20,7 @@ It also defines shared package, manifest, update-event, physical-section, report
 - simulated PC <-> Reader recovery fixture
 - simulated Player <-> PC control bridge
 - cross-corridor roundtrip
+- shared physical software-adapter contract with ordered status/feedback events
 - mutation safety tests
 
 ## Safety And Claims
@@ -35,6 +36,15 @@ The software I/O branch keeps:
 
 This branch does not claim real printer integration, real scanner or reader integration, real player communication, hardware validation, physical Level 5 completion, manufactured player completion, PDF/image/barcode support, or USB/serial/firmware support.
 
+## Physical Software Adapter Contract
+
+Run the adapter-roundtrip command to execute the printer/carrier, reader
+recovery, player control, and shared validator corridors under one fail-closed
+status contract. A passing run is software-only and keeps display and physical
+transition permissions disabled.
+
 ## Next Development Step
 
-Review the no-hardware baseline and decide whether the next work should remain in software fixtures or move to a separately approved adapter-planning phase.
+Select concrete printer, scanner/reader, and player device interfaces for a
+separate hardware-adapter planning phase. No physical validation is claimed by
+the current contract.

@@ -51,7 +51,7 @@ class AmcfApp(tk.Tk):
             "Encode source video to AMCF",
             "Render diagnostics (03M zone + 08E heat)",
             "Create physical print plan",
-            "Run physical adapter roundtrip",
+            "Run physical software adapter layer",
             "Check dependencies",
             "Prepare deep dependencies",
             "Download HOOT proof dataset",
@@ -131,7 +131,7 @@ class AmcfApp(tk.Tk):
         if input_required and not input_path.exists():
             messagebox.showerror("AMCF", "Choose an existing input file first.")
             return
-        if not output_path:
+        if not self.output_path.get().strip():
             messagebox.showerror("AMCF", "Choose an output folder first.")
             return
         if mode == "Validate seeded 4K AMCF":
@@ -146,8 +146,8 @@ class AmcfApp(tk.Tk):
             args = ["diagnostics", "--input-video", str(input_path), "--output", str(output_path)]
         elif mode == "Create physical print plan":
             args = ["print-plan", "--input", str(input_path), "--output", str(output_path)]
-        elif mode == "Run physical adapter roundtrip":
-            args = ["physical-roundtrip", "--project-root", self.project_root.get(), "--output", str(output_path)]
+        elif mode == "Run physical software adapter layer":
+            args = ["adapter-roundtrip", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Check dependencies":
             args = [
                 "setup",

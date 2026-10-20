@@ -102,6 +102,12 @@ A final single legal licence has not been selected for all project-owned materia
 
 Do not describe the whole repository as strict OSI open source.
 
+The physical software-adapter contract is available through the
+adapter-roundtrip CLI command. It combines the printer/carrier, reader
+recovery, player-control, and shared validation corridors into one ordered
+fail-closed status report. It remains software-only and does not claim real
+device validation. See the physical software-adapter layer document.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.

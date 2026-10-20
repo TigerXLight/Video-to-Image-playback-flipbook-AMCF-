@@ -85,6 +85,16 @@ The first writes the 03M zone-motion overlay, 08E motion heat, and a JSON
 report. The second exercises the no-hardware PC-to-printer, reader-to-PC, and
 player-to-PC software contracts. Neither command claims physical validation.
 
+## Physical software-adapter contract
+
+Run the shared no-hardware contract from the repository root:
+
+    amcf adapter-roundtrip --project-root . --output output/physical_adapter_layer
+
+The output contains ordered status events, feedback, and corridor reports for
+printer/carrier preparation, reader recovery, player control, and the shared
+validator. It keeps physical display and transition permissions disabled.
+
 ## 2. Run virtual hardware demo
 
 ```cmd
