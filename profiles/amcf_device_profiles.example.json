@@ -1,0 +1,82 @@
+{
+  "schema_version": "amcf-device-profile-bundle-v1",
+  "bundle_id": "amcf-device-profiles-software-default-v1",
+  "hardware_enable_policy": "requires_profile_request_and_explicit_cli_flag",
+  "hardware_validation_claimed": false,
+  "physical_level_5_claimed": false,
+  "profiles": [
+    {
+      "profile_id": "amcf-file-carrier-profile-v1",
+      "corridor": "pc_to_printer",
+      "backend": "file",
+      "device_name": "AMCF software carrier artifact",
+      "transport": "filesystem",
+      "connection": "none",
+      "capabilities": [
+        "carrier_artifact_generation",
+        "manifest_hash_acknowledgement",
+        "reprintable_artifact_path",
+        "fail_closed_print_gate"
+      ],
+      "safety_contract": [
+        "hash_check_before_acceptance",
+        "fail_closed_on_mismatch",
+        "no_physical_output_claim"
+      ],
+      "configuration": {},
+      "hardware_requested": false,
+      "hardware_validation_claimed": false,
+      "physical_level_5_claimed": false
+    },
+    {
+      "profile_id": "amcf-folder-reader-profile-v1",
+      "corridor": "reader_to_pc",
+      "backend": "folder",
+      "device_name": "AMCF software capture folder",
+      "transport": "filesystem",
+      "connection": "none",
+      "capabilities": [
+        "capture_file_resolution",
+        "registration_feedback",
+        "colour_registry_feedback",
+        "hash_feedback",
+        "rescan_request",
+        "fail_closed_reader_gate"
+      ],
+      "safety_contract": [
+        "registration_and_hash_required",
+        "rescan_on_failure",
+        "fail_closed_reader_gate"
+      ],
+      "configuration": {},
+      "hardware_requested": false,
+      "hardware_validation_claimed": false,
+      "physical_level_5_claimed": false
+    },
+    {
+      "profile_id": "amcf-loopback-player-profile-v1",
+      "corridor": "pc_to_player",
+      "backend": "loopback",
+      "device_name": "AMCF software control loopback",
+      "transport": "in_memory_loopback",
+      "connection": "none",
+      "capabilities": [
+        "manifest_load",
+        "prefetch_hidden_staging_gate",
+        "verify_staged_section",
+        "switch_visible_gate",
+        "bounded_seek_and_reverse",
+        "fail_closed_stop"
+      ],
+      "safety_contract": [
+        "verify_before_visible_switch",
+        "sequence_ordering",
+        "fail_closed_player_gate"
+      ],
+      "configuration": {},
+      "hardware_requested": false,
+      "hardware_validation_claimed": false,
+      "physical_level_5_claimed": false
+    }
+  ]
+}

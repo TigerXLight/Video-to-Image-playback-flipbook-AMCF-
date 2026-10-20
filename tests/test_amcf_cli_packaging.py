@@ -33,6 +33,7 @@ class AmcfCliPackagingTests(unittest.TestCase):
             "amcf_hardware_provider_runtime",
             "amcf_software_control_protocol",
             "amcf_device_provider_adapters",
+            "amcf_device_profiles",
             "amcf_quality_metrics",
             "amcf_setup",
             "amcf_temporal_component_codec",

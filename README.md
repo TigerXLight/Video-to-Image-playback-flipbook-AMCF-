@@ -131,6 +131,13 @@ Print Spooler, WIA, and serial transports are explicit opt-in hooks and remain
 fail-closed until a device profile and `--enable-hardware` are supplied. See
 `docs/AMCF_DEVICE_PROVIDER_ADAPTERS.md`.
 
+Device selection is profile-driven through the `device-profiles` command. It
+validates one profile for each physical corridor before running the selected
+providers. The built-in software profile is safe by default; hardware profiles
+require both `hardware_requested: true` and the explicit `--enable-hardware`
+flag. See `docs/AMCF_DEVICE_PROFILE_LAYER.md` and
+`profiles/amcf_device_profiles.example.json`.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.

@@ -31,6 +31,7 @@ a = Analysis(
         "amcf_hardware_provider_runtime",
         "amcf_software_control_protocol",
         "amcf_device_provider_adapters",
+        "amcf_device_profiles",
         "tkinter",
         "_tkinter",
     ],

@@ -75,3 +75,11 @@ serial adapters are explicit opt-in transport hooks. They require a selected
 device profile and `--enable-hardware`, and they reject missing dependencies,
 failed probes, invalid hashes, and malformed replies without authorizing a
 physical transition. See `docs/AMCF_DEVICE_PROVIDER_ADAPTERS.md`.
+
+## Device Profiles
+
+The `device-profiles` command validates one profile for each software corridor
+and then runs the selected adapters. The default bundle is file/folder/loopback
+and is safe without hardware. A hardware profile requires both profile intent
+and the explicit `--enable-hardware` flag. See
+`docs/AMCF_DEVICE_PROFILE_LAYER.md`.

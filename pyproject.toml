@@ -61,6 +61,7 @@ py-modules = [
   "amcf_hardware_provider_runtime",
   "amcf_software_control_protocol",
   "amcf_device_provider_adapters",
+  "amcf_device_profiles",
   "amcf_physical_io",
   "amcf_physical_medium_simulation",
   "amcf_physical_player_integrated_demo_reports",
