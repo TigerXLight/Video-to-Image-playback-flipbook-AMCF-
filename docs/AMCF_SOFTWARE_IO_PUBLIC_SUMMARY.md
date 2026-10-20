@@ -83,3 +83,11 @@ and then runs the selected adapters. The default bundle is file/folder/loopback
 and is safe without hardware. A hardware profile requires both profile intent
 and the explicit `--enable-hardware` flag. See
 `docs/AMCF_DEVICE_PROFILE_LAYER.md`.
+
+## Universal Conformance
+
+The `device-conformance` command runs the older fixture and adapter contracts
+together with the provider-neutral runtime, versioned control protocol,
+concrete providers, and profile-selected providers. It verifies the shared
+manifest, timestamped update events, hashes, status feedback, and fail-closed
+rules without opening hardware. See `docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md`.

@@ -138,6 +138,10 @@ require both `hardware_requested: true` and the explicit `--enable-hardware`
 flag. See `docs/AMCF_DEVICE_PROFILE_LAYER.md` and
 `profiles/amcf_device_profiles.example.json`.
 
+The `device-conformance` command combines the older fixture/adapter behavior
+with the current provider, profile, and software-control behavior in one
+transport-neutral report. See `docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md`.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.

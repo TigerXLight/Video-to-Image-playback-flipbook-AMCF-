@@ -137,6 +137,13 @@ Use `--profile <profile.json>` for a custom printer, reader, and player bundle.
 Hardware profiles require both `hardware_requested: true` and
 `--enable-hardware`. See `docs/AMCF_DEVICE_PROFILE_LAYER.md`.
 
+Run the universal software-only conformance report across the older fixture and
+adapter paths plus the current provider/profile/control paths:
+
+    amcf device-conformance --project-root . --output output/device_conformance
+
+See `docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md`.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

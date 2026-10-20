@@ -1,0 +1,34 @@
+{
+  "template_schema_version": "amcf-universal-device-interface-template-v1",
+  "profile_bundle_schema": "amcf-device-profile-bundle-v1",
+  "notes": "Template only. Replace placeholders and validate before enabling hardware.",
+  "hardware_validation_claimed": false,
+  "physical_level_5_claimed": false,
+  "corridors": {
+    "pc_to_printer": {
+      "backend": "${printer_backend}",
+      "device_name": "${printer_name}",
+      "transport": "${printer_transport}",
+      "artifact_format": "${artifact_format}"
+    },
+    "reader_to_pc": {
+      "backend": "${reader_backend}",
+      "device_name": "${reader_name}",
+      "transport": "${reader_transport}",
+      "capture_resolution": "${capture_resolution}"
+    },
+    "pc_to_player": {
+      "backend": "${player_backend}",
+      "device_name": "${player_name}",
+      "transport": "${player_transport}",
+      "audio_clock": "${audio_clock}"
+    }
+  },
+  "shared_requirements": [
+    "manifest_hash_acknowledgement",
+    "timestamped_update_events",
+    "registration_and_hash_feedback",
+    "verify_before_visible_switch",
+    "fail_closed_on_mismatch"
+  ]
+}
