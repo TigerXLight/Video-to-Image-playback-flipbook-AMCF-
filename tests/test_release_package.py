@@ -63,8 +63,13 @@ class ReleasePackageTests(unittest.TestCase):
             if ".git" in path.parts or "__pycache__" in path.parts or path.suffix == ".pyc":
                 continue
             if path.is_file():
+                relative_parts = path.relative_to(PACKAGE).parts
+                # output/ is generated evidence, not package source. Its size is
+                # governed by the generated-output policy rather than this check.
+                if "output" in relative_parts:
+                    continue
                 self.assertLess(path.stat().st_size, 5_000_000, str(path))
-                self.assertNotIn("Tests", path.relative_to(PACKAGE).parts)
+                self.assertNotIn("Tests", relative_parts)
 
 
 if __name__ == "__main__":

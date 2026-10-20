@@ -102,12 +102,12 @@ def git_lines(args: list[str]) -> list[str]:
 
 def current_head() -> str:
     lines = git_lines(["rev-parse", "HEAD"])
-    return lines[0] if lines else "unknown"
+    return lines[0] if lines else "unversioned-main-source-tree"
 
 
 def current_branch() -> str:
     lines = git_lines(["branch", "--show-current"])
-    return lines[0] if lines else "unknown"
+    return lines[0] if lines else "local-main-source"
 
 
 def existing_tags() -> list[str]:

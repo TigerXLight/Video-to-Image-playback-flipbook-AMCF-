@@ -86,11 +86,25 @@ The package also includes an FFmpeg-backed video pipeline demo in `demo/run_amcf
 
 This proves the clean package can create AMCF digital output from source frames and can exercise an MP4-to-AMCF-to-decoded-MP4 path when the optional FFmpeg tooling is available. The FFmpeg path is software-only and does not claim final GUI/EXE readiness.
 
+For the bounded 14H WebP archive contract, `demo/run_amcf_14h_video_roundtrip_demo.py` provides a source-video -> real `.amcfnative.zip` -> verified decoded-frame/MP4 roundtrip using the existing fail-closed reader. See `docs/AMCF_V2_14H_VIDEO_ENCODER_PARITY.md` for the contract and claim boundary.
+
 The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation and optical-flow track reporting when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
 The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, and `print-plan` commands over the existing clean public pipeline. The CLI is a software workflow entrypoint; it is not a GUI, EXE, real printer/scanner/player integration, or hardware validation claim.
 
+The CLI now has a `pyproject.toml` package boundary with the console command `amcf`. The base package has no Python runtime dependencies; optional research packages are declared under the `research` extra. MP4 input/export still requires external FFmpeg/FFprobe tools. See `docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`.
+
 The local-Main-style deliverable package path in `src/amcf_deliverable_package.py` can bundle a component-event archive, decoded-frame comparison frames, optional FFmpeg comparison video, static viewer files, quality report, and track-taxonomy manifest into a deterministic zip under `output/`. Generated deliverable zips are local output and are not committed.
+
+The archive writer/reader parity layer in `src/amcf_archive_writer_reader.py` ports the useful local archive fixture surface for `.amcfvnext.zip` files: manifest, claim boundaries, component and semantic sidecars, payload references, checksums, fail-closed validation, and intentionally invalid archive examples. It is exercised by `demo/run_amcf_archive_writer_reader_demo.py` and `tests/test_amcf_archive_writer_reader.py`. It does not copy generated local archives or claim semantic Level 5, hardware validation, or physical-player proof.
+
+The local `Main` folder was synchronized with the tracked public source/docs/demo/test package as a superset mirror. See `docs/AMCF_MAIN_PUBLIC_MIRROR_SYNC.md` for the copy boundary and the separate public-checkout test-context requirement.
+
+The accepted progression coverage checkpoint through the HOOT semantic/object vector is recorded in `docs/AMCF_HOOT_PROGRESSION_COVERAGE.md` and can be rerun with `demo/run_amcf_hoot_progression_coverage.py`.
+
+The matched 07A/Main/13C3 media acceptance checkpoint is recorded in `docs/AMCF_MAIN_MATCHED_MEDIA_ACCEPTANCE.md`. It compares each candidate only with the truth baseline from the same source clip.
+
+The unified Main digital acceptance runner is `demo/run_amcf_main_unified_digital_acceptance.py`. Run it with the maintained Python environment to connect the source-video, component, diagnostics, native/residual evidence, and decoded-video checks. Its bounded report is written under `output/amcf_main_unified_digital_acceptance/`; generated evidence is not copied into source or release files. A passing bounded run does not mark Main complete while the canonical component size/visual gate and generated residual/native/V2 pipeline remain open.
 
 This smoke path does not claim physical proof, hardware validation, final UI status, manufacturing readiness, or a built physical prototype.
 

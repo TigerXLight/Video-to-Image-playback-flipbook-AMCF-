@@ -2,7 +2,11 @@
 
 ## 1. Purpose
 
-`AMCF_APP_WORKFLOW_SPEC_V1` defines the first user-facing AMCF workflow. The repo now has an initial public CLI module for this workflow, but it still has no GUI, executable, installer, or hardware adapter.
+`AMCF_APP_WORKFLOW_SPEC_V1` defines the first user-facing AMCF workflow. The
+repo now has an installable `amcf` console CLI for this workflow, while GUI,
+installer, and hardware adapters remain separate boundaries. A reproducible
+Windows EXE build specification is present, but an EXE is only claimed after
+the PyInstaller build and smoke check pass.
 
 The app should first be understood as an AMCF conversion workbench:
 
@@ -25,7 +29,8 @@ The first intended user is a technically curious creator, researcher, or maintai
 - decode or recover AMCF output back to frames
 - understand what is proven in software and what remains future hardware work
 
-The first app should be usable from a command line before a GUI or Windows executable is attempted.
+The first app is usable from a command line; a GUI or Windows executable is a
+packaging layer around that command-line contract.
 
 ## 3. Core User-Facing Workflow
 
@@ -430,14 +435,20 @@ Recommended next implementation phase:
 AMCF_LOCAL_MAIN_DEPENDENCY_AND_PACKAGING_POLICY_V1
 ```
 
-That phase should define how FFmpeg/Pillow/OpenCV/NumPy/scikit-image are declared for users and how the current module CLI becomes an installed command before any EXE work.
+That phase is now represented by `pyproject.toml`,
+`docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`, and
+`tests/test_amcf_cli_packaging.py`. It defines the `amcf` console entry point,
+keeps the base package dependency-free, declares optional research packages,
+and documents external FFmpeg/FFprobe requirements. A clean isolated install
+check remains before any EXE work.
 
 ## Readiness Summary
 
 - EXE ready now: no
 - GUI ready now: no
 - first CLI baseline implemented: yes
-- recommended next phase: `AMCF_LOCAL_MAIN_DEPENDENCY_AND_PACKAGING_POLICY_V1`
+- CLI package metadata declared: yes
+- recommended next phase: isolated package build/install validation
 - generated output committed: no
 - hardware validation claimed: false
 - physical Level 5 claimed: false

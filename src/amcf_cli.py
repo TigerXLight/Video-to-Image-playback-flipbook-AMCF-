@@ -62,6 +62,8 @@ def cmd_component_archive(args: argparse.Namespace) -> int:
         archive_path,
         prefer_webp=not args.no_webp,
         segmentation_mode=args.segmentation_mode,
+        diagnostic_state_manifest_path=args.diagnostic_state,
+        use_diagnostic_components=args.use_diagnostic_components,
     )
     decoded = decode_component_event_archive(archive_path, output / "decoded")
     quality = compare_ppm_frame_folders(Path(args.input_frames_manifest).parent / "frames", Path(decoded["decoded_frames_dir"]))
@@ -132,6 +134,16 @@ def build_parser() -> argparse.ArgumentParser:
     component.add_argument("--output", required=True)
     component.add_argument("--segmentation-mode", choices=["changed_region", "opencv_changed_region"], default="changed_region")
     component.add_argument("--no-webp", action="store_true")
+    component.add_argument(
+        "--diagnostic-state",
+        type=Path,
+        help="Normalized AMCF diagnostic state or a historical Test 02 tracks_manifest.json.",
+    )
+    component.add_argument(
+        "--use-diagnostic-components",
+        action="store_true",
+        help="Use contour-backed diagnostic tracks for component events and close uncovered pixels exactly.",
+    )
     component.set_defaults(func=cmd_component_archive)
 
     decode = sub.add_parser("decode", help="Decode an AMCF archive.")

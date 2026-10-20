@@ -14,7 +14,7 @@ Public destination root: `<public-repo>`
 
 This report compares the already-working local AMCF `Main` project against the public GitHub repo and identifies what must be ported for full user-facing parity. It does not copy generated output, caches, local paths, private media, virtual environments, or machine-specific launch scripts into the public repo.
 
-This report now records six parity ports. It did not bulk-copy generated/local artifacts from the local `Main` tree, but it added a public FFmpeg-backed video pipeline, a public component-event archive layer, optional media parity hooks for WebP/OpenCV/SSIM/static viewer output, an optional optical-flow tracking report, an initial public workflow CLI, and deterministic deliverable/viewer package output while preserving the newer public software I/O and physical-player architecture.
+This report now records seven parity ports. It did not bulk-copy generated/local artifacts from the local `Main` tree, but it added a public FFmpeg-backed video pipeline, a public component-event archive layer, optional media parity hooks for WebP/OpenCV/SSIM/static viewer output, an optional optical-flow tracking report, an initial public workflow CLI, deterministic deliverable/viewer package output, and a public archive writer/reader fixture layer while preserving the newer public software I/O and physical-player architecture.
 
 ## 1. Public Repo Current HEAD
 
@@ -289,6 +289,18 @@ Behaviour added:
 - Optional FFmpeg comparison video when FFmpeg is available.
 - Viewer, quality report, taxonomy manifest, component archive, and summary bundled into a deterministic zip under `output/`.
 - Tests for taxonomy claim boundaries, comparison frames, viewer inclusion, and zip contents.
+
+### AMCF_ARCHIVE_WRITER_READER_PARITY_PORT_V1
+
+Behaviour added:
+
+- Public `.amcfvnext.zip` archive fixture writer and reader.
+- Manifest, claim-boundary, component-sidecar, semantic-sidecar, payload, mask, polygon, and checksum members.
+- Archive inspection, JSON member reading, frame listing, component listing, and semantic-object listing.
+- Checksum verification.
+- Fail-closed validation for missing payloads, checksum issues, fake Level 5 claims, and fake user approval.
+- Valid and intentionally invalid demo archives under `output/amcf_archive_writer_reader_demo/`.
+- Tests proving `unsafe_acceptance_count` stays 0 and claim-boundary flags remain false.
 
 Remaining parity gap:
 

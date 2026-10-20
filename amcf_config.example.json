@@ -1,0 +1,53 @@
+{
+  "workspace_root": "..",
+  "proof_runs": {
+    "controlled_level5": "Tests/Test AMCF_CONTROLLED_LOST_RECOVERED_LEVEL5_PROOF/20261009_213727",
+    "hoot_level5": "Tests/Test AMCF_HOOT_REAL_WORLD_LOST_RECOVERED_LEVEL5_SOLVER/20261009_220908",
+    "acceptance": "Tests/Test AMCF_ACCEPTANCE_HARNESS_AND_CI_STYLE_REGRESSION/20261009_144608",
+    "archive_writer_reader": "Tests/Test AMCF_ARCHIVE_WRITER_READER_INTEGRATION/20261009_150115"
+  },
+  "optional_deep_tools": {
+    "sam2_repo": "Github repos/SAMURAI/sam2",
+    "sam2_checkpoint": "Tests/Test AMCF_LOCAL_DEEP_SEMANTIC_TOOLCHAIN_INTEGRATION/20261009_164833/02_CHECKPOINT_ACQUISITION/models/sam2.1_hiera_tiny.pt",
+    "cotracker_repo": "Github repos/co-tracker",
+    "cotracker_checkpoint": "Tests/Test AMCF_LOCAL_DEEP_SEMANTIC_TOOLCHAIN_INTEGRATION/20261009_164833/02_CHECKPOINT_ACQUISITION/models/baseline_offline.pth"
+  },
+  "adapters": {
+    "primary_semantic_adapters": {
+      "sam2": {
+        "role": "high_precision_object_segmentation",
+        "repo_key": "sam2_repo",
+        "checkpoint_key": "sam2_checkpoint",
+        "required_for_core_archive_playback": false,
+        "required_for_semantic_level5_runs": true
+      },
+      "cotracker": {
+        "role": "persistent_point_and_identity_tracking",
+        "repo_key": "cotracker_repo",
+        "checkpoint_key": "cotracker_checkpoint",
+        "required_for_core_archive_playback": false,
+        "required_for_semantic_level5_runs": true
+      }
+    },
+    "future_optional_adapters": {
+      "aot": "temporal_mask_propagation_candidate",
+      "cutie": "temporal_mask_propagation_candidate",
+      "xmem": "memory_based_video_object_segmentation_candidate",
+      "xmem2": "memory_based_video_object_segmentation_candidate",
+      "deva": "detection_plus_tracking_candidate",
+      "raft": "dense_optical_flow_candidate",
+      "tapnet": "point_tracking_candidate",
+      "track_anything": "sam_track_integration_candidate"
+    }
+  },
+  "claim_boundary": {
+    "level5_scope": "Level 5 is claimed for controlled canonical and HOOT dataset-annotated proof vectors only.",
+    "new_video_policy": "New videos must pass the same gates before receiving Level 5."
+  },
+  "github_upload_policy": {
+    "exclude_large_media": true,
+    "exclude_model_checkpoints": true,
+    "exclude_generated_frame_floods": true,
+    "exclude_venvs": true
+  }
+}

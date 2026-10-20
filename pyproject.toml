@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "amcf-public-workflow"
+version = "0.1.0"
+description = "AMCF digital workflow and software-control research package"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+research = [
+  "numpy",
+  "Pillow",
+  "opencv-python",
+  "scikit-image",
+  "scipy",
+  "imageio",
+  "networkx",
+  "tifffile",
+  "lazy-loader",
+]
+
+[project.scripts]
+amcf = "amcf_cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = [
+  "amcf_adaptive_component_scheduler",
+  "amcf_archive_writer_reader",
+  "amcf_cli",
+  "amcf_component_event_archive",
+  "amcf_component_event_viewer",
+  "amcf_component_ffv1_temporal",
+  "amcf_component_size_ceiling",
+  "amcf_cross_corridor_reporting",
+  "amcf_cross_corridor_roundtrip",
+  "amcf_deliverable_package",
+  "amcf_diagnostic_profiles",
+  "amcf_diagnostic_state",
+  "amcf_digital_encoder",
+  "amcf_digital_validator",
+  "amcf_full_workspace_parity_ledger",
+  "amcf_local_main_archive_decode_check",
+  "amcf_local_main_strict_parity",
+  "amcf_local_main_test02",
+  "amcf_local_main_tracking_test03a",
+  "amcf_local_tests_progression_integration_ledger",
+  "amcf_material_coupon_analysis",
+  "amcf_mechanical_optical_player",
+  "amcf_motion_truth_diagnostics",
+  "amcf_optical_flow_tracking",
+  "amcf_physical_carrier",
+  "amcf_physical_io",
+  "amcf_physical_medium_simulation",
+  "amcf_physical_player_integrated_demo_reports",
+  "amcf_physical_player_mechanism_profile_reports",
+  "amcf_physical_player_mechanism_profiles",
+  "amcf_physical_player_state_machine",
+  "amcf_physical_player_state_machine_reports",
+  "amcf_playback_index_planner",
+  "amcf_player_pc_runtime",
+  "amcf_player_ui_state",
+  "amcf_print_layout",
+  "amcf_quality_metrics",
+  "amcf_reader_recovery",
+  "amcf_release_candidate_acceptance",
+  "amcf_residual_visual_acceptance",
+  "amcf_semantic_level5_proof",
+  "amcf_semantic_sidecar_overlay",
+  "amcf_source_compatible_package",
+  "amcf_shared_package_model",
+  "amcf_software_io_fixtures",
+  "amcf_software_io_repo_audit",
+  "amcf_temporal_component_codec",
+  "amcf_test02_diagnostic_viewer",
+  "amcf_v2_14h_archive",
+  "amcf_v2_sidecar_metadata",
+  "amcf_video_pipeline",
+  "amcf_virtual_carrier_reader",
+  "amcf_virtual_hardware",
+  "amcf_vnext",
+  "amcf_workspace_tests_functionality_inventory",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

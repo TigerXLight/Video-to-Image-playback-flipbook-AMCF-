@@ -320,7 +320,19 @@ def git_bool(repo_root: Path, args: list[str]) -> bool:
 
 
 def tracked_files(repo_root: Path) -> list[str]:
-    return sorted(line.replace("\\", "/") for line in git_lines(repo_root, ["ls-files"]))
+    lines = git_lines(repo_root, ["ls-files"])
+    if lines:
+        return sorted(line.replace("\\", "/") for line in lines)
+    # Main is a maintained source tree but is intentionally not itself a Git checkout.
+    # Audit its source-shaped files without treating generated output as source truth.
+    fallback: list[str] = []
+    for path in repo_root.rglob("*"):
+        if not path.is_file() or any(part in SKIP_PARTS for part in path.relative_to(repo_root).parts):
+            continue
+        relative = path.relative_to(repo_root).as_posix()
+        if path.suffix.lower() in SOURCE_SUFFIXES and is_source_truth_path(relative):
+            fallback.append(relative)
+    return sorted(fallback)
 
 
 def readable_text(repo_root: Path, rel_path: str, max_chars: int = 120_000) -> str:

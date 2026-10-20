@@ -12,6 +12,25 @@ Main\RUN_AMCF_VNEXT.cmd smoke --output "Tests\Main vnext smoke"
 
 In this release package, `src/amcf_vnext.py` is included for review/demo context.
 
+## 1A. Run the workflow CLI from source
+
+From the repository root, before installing a package:
+
+```text
+python src/amcf_cli.py status
+python src/amcf_cli.py --help
+```
+
+The repository also declares an installable console command in `pyproject.toml`:
+
+```text
+python -m pip install -e .
+amcf status
+```
+
+The editable install command is a developer/package check, not a Windows EXE
+build. FFmpeg/FFprobe remain external optional tools for MP4 input/export.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

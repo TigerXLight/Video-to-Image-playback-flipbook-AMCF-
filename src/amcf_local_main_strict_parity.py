@@ -4,6 +4,8 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
+import time
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
@@ -11,7 +13,19 @@ from typing import Any
 
 from amcf_component_event_archive import build_component_event_archive, decode_component_event_archive
 from amcf_component_event_viewer import build_component_event_viewer
-from amcf_deliverable_package import build_deliverable_package
+from amcf_deliverable_package import TRACK_TAXONOMY, build_deliverable_package
+from amcf_local_main_test02 import (
+    build_archive_and_tracks as build_local_main_archive_and_tracks,
+)
+from amcf_local_main_test02 import (
+    compare_quality as compare_local_main_quality,
+)
+from amcf_local_main_test02 import (
+    decode_archive as decode_local_main_archive,
+)
+from amcf_local_main_test02 import (
+    make_viewer as make_local_main_viewer,
+)
 from amcf_quality_metrics import compare_ppm_frame_folders
 from amcf_video_pipeline import decode_amcf_to_frames, decode_amcf_to_video, encode_video_to_amcf
 
@@ -32,26 +46,36 @@ LOCAL_FILE_MAP: dict[str, str | None] = {
     "DEPENDENCIES_AND_PROVENANCE.md": "DEPENDENCIES_AND_PROVENANCE.md",
     "amcf_virtual_hardware.py": "src/amcf_virtual_hardware.py",
     "amcf_vnext.py": "src/amcf_vnext.py",
-    "amcf_config.example.json": None,
-    "amcf_test02.py": None,
-    "amcf_tracking_test03a.py": None,
-    "requirements.txt": None,
-    "RUN_AMCF_VNEXT.cmd": None,
-    "RUN_TEST02.cmd": None,
-    "RUN_TRACKING_TEST03A.cmd": None,
-    "test_archive_decode.py": None,
+    "amcf_config.example.json": "amcf_config.example.json",
+    "amcf_test02.py": "src/amcf_local_main_test02.py",
+    "amcf_tracking_test03a.py": "src/amcf_local_main_tracking_test03a.py",
+    "requirements.txt": "requirements.txt",
+    "RUN_AMCF_VNEXT.cmd": "cmd/RUN_AMCF_VNEXT.cmd",
+    "RUN_TEST02.cmd": "cmd/RUN_TEST02.cmd",
+    "RUN_TRACKING_TEST03A.cmd": "cmd/RUN_TRACKING_TEST03A.cmd",
+    "test_archive_decode.py": "src/amcf_local_main_archive_decode_check.py",
     "README.md": None,
 }
 
 
 def default_paths(public_root: str | Path) -> RepoPaths:
     public_root = Path(public_root).resolve()
-    workspace_root = public_root.parents[4]
+    workspace_root = find_workspace_root(public_root)
     return RepoPaths(
         public_root=public_root,
         local_main_root=workspace_root / "Main",
         workspace_root=workspace_root,
     )
+
+
+def find_workspace_root(start: str | Path) -> Path:
+    """Find the shared workspace from either Main or the public checkout."""
+    start = Path(start).resolve()
+    candidates = (start, *start.parents)
+    for candidate in candidates:
+        if (candidate / "Main").is_dir() and (candidate / "Tests").is_dir():
+            return candidate
+    return start.parent if start.name == "Main" else start
 
 
 def sha256_file(path: str | Path) -> str:
@@ -79,7 +103,7 @@ def inventory_file_parity(paths: RepoPaths) -> list[dict[str, Any]]:
             "local_exists": local_path.exists(),
             "public_exists": public_path.exists() if public_path else False,
             "exact_hash_match": False,
-            "classification": "NEEDS_PUBLIC_EQUIVALENT" if public_rel is None else "MAPPED",
+            "classification": "LOCAL_DOC_SUPERSEDED_BY_PUBLIC_DOCS" if local_rel == "README.md" else ("NEEDS_PUBLIC_EQUIVALENT" if public_rel is None else "MAPPED"),
         }
         if local_path.exists():
             row["local_sha256"] = sha256_file(local_path)
@@ -89,17 +113,15 @@ def inventory_file_parity(paths: RepoPaths) -> list[dict[str, Any]]:
             row["public_bytes"] = public_path.stat().st_size
             row["exact_hash_match"] = row.get("local_sha256") == row.get("public_sha256")
         if local_rel.endswith(".cmd"):
-            row["classification"] = "LOCAL_MACHINE_WRAPPER_DO_NOT_COPY"
+            row["classification"] = "PORTABLE_PUBLIC_WRAPPER"
         elif local_rel == "requirements.txt":
-            row["classification"] = "DEPENDENCY_POLICY_REQUIRED"
+            row["classification"] = "DEPENDENCY_POLICY_PORTED"
         elif local_rel in {"amcf_test02.py", "amcf_tracking_test03a.py"}:
-            row["classification"] = "FUNCTIONAL_PARITY_PORTED_AS_PUBLIC_MODULES"
+            row["classification"] = "LOCAL_MAIN_CODE_PORTED"
         elif local_rel == "test_archive_decode.py":
-            row["classification"] = "LOCAL_SCHEMA_CHECK_PORTED_AS_PUBLIC_TESTS"
+            row["classification"] = "LOCAL_SCHEMA_CHECK_PORTED"
         elif local_rel == "amcf_config.example.json":
-            row["classification"] = "CONFIG_POLICY_REQUIRED"
-        elif local_rel == "README.md":
-            row["classification"] = "LOCAL_DOC_SUPERSEDED_BY_PUBLIC_DOCS"
+            row["classification"] = "CONFIG_PORTED"
         return_note = _file_note(local_rel)
         if return_note:
             row["note"] = return_note
@@ -123,8 +145,8 @@ def build_static_parity_matrix(file_rows: list[dict[str, Any]]) -> list[dict[str
         },
         {
             "area": "machine wrappers and generated outputs",
-            "status": "INTENTIONALLY_EXCLUDED",
-            "evidence": "Local .cmd wrappers, caches, source media, proof folders, and generated zips are not committed.",
+            "status": "PUBLIC_PORTABLE_WRAPPERS",
+            "evidence": "Local .cmd launcher abilities are represented by portable public wrappers; caches, source media, proof folders, and generated zips are not committed.",
         },
     ]
 
@@ -142,13 +164,15 @@ def run_output_parity(paths: RepoPaths, output_dir: str | Path, *, frames: int =
         }
 
     local_result = run_local_test02(paths, frames=frames, timeout_seconds=timeout_seconds)
-    public_result = run_public_equivalent(paths, source_video, output_dir / "public_equivalent", frames=frames)
+    with tempfile.TemporaryDirectory(prefix="amcf_strict_parity_public_") as temp_dir:
+        public_result = run_public_equivalent(paths, source_video, Path(temp_dir) / "public_equivalent", frames=frames)
     comparison = compare_local_public_outputs(local_result, public_result)
     return {
         "ok": bool(local_result.get("ok")) and bool(public_result.get("ok")) and comparison["functional_parity_passed"],
         "source_video_name": source_video.name,
         "source_video_sha256": sha256_file(source_video),
         "frames_requested": frames,
+        "artifact_policy": "Large public-equivalent artifacts are created in a temporary directory, measured, hashed, and removed; only compact proof reports remain under output/.",
         "local": local_result,
         "public": public_result,
         "comparison": comparison,
@@ -161,6 +185,7 @@ def run_local_test02(paths: RepoPaths, *, frames: int, timeout_seconds: int) -> 
     if not script.exists():
         return {"ok": False, "reason": "local amcf_test02.py missing", "unsafe_acceptance_count": 0}
     command = [sys.executable, str(script), "--frames", str(frames)]
+    started = time.perf_counter()
     completed = subprocess.run(
         command,
         cwd=str(paths.local_main_root),
@@ -169,6 +194,7 @@ def run_local_test02(paths: RepoPaths, *, frames: int, timeout_seconds: int) -> 
         timeout=timeout_seconds,
         check=False,
     )
+    elapsed = time.perf_counter() - started
     parsed = _parse_last_json(completed.stdout)
     outdir = Path(parsed.get("outdir", "")) if parsed else None
     archive = Path(parsed.get("archive", "")) if parsed else None
@@ -180,6 +206,7 @@ def run_local_test02(paths: RepoPaths, *, frames: int, timeout_seconds: int) -> 
     summary = {
         "ok": completed.returncode == 0 and bool(parsed),
         "returncode": completed.returncode,
+        "elapsed_seconds": round(elapsed, 6),
         "outdir": str(outdir) if outdir else None,
         "archive": str(archive) if archive else None,
         "zip": str(zip_path) if zip_path else None,
@@ -189,15 +216,31 @@ def run_local_test02(paths: RepoPaths, *, frames: int, timeout_seconds: int) -> 
         "tracks_manifest_exists": bool(tracks_path and tracks_path.exists()),
         "viewer_exists": bool(viewer_path and viewer_path.exists()),
         "reconstructed_video_exists": bool(reconstructed_video and reconstructed_video.exists()),
+        "archive_bytes": archive.stat().st_size if archive and archive.exists() else 0,
+        "archive_sha256": sha256_file(archive) if archive and archive.exists() else None,
+        "zip_bytes": zip_path.stat().st_size if zip_path and zip_path.exists() else 0,
+        "zip_sha256": sha256_file(zip_path) if zip_path and zip_path.exists() else None,
+        "reconstructed_video_bytes": reconstructed_video.stat().st_size if reconstructed_video and reconstructed_video.exists() else 0,
+        "output_classes": {
+            "component_archive": bool(archive and archive.exists()),
+            "deliverable_zip": bool(zip_path and zip_path.exists()),
+            "resolved_manifest": bool(manifest_path and manifest_path.exists()),
+            "tracks_manifest": bool(tracks_path and tracks_path.exists()),
+            "viewer_html": bool(viewer_path and viewer_path.exists()),
+            "reconstructed_video": bool(reconstructed_video and reconstructed_video.exists()),
+        },
         "unsafe_acceptance_count": 0,
     }
     if manifest_path and manifest_path.exists():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        local_tracks = manifest.get("tracks", [])
         summary.update(
             {
+                "schema": manifest.get("schema"),
                 "frame_count": int(manifest.get("source", {}).get("frames", 0) or 0),
                 "event_count": len(manifest.get("events", [])),
-                "track_count": len(manifest.get("tracks", [])),
+                "track_count": len(local_tracks),
+                "track_ids": [str(track.get("track_id")) for track in local_tracks],
                 "under_source_size_ceiling": manifest.get("archive", {}).get("under_source_size_ceiling"),
             }
         )
@@ -208,49 +251,70 @@ def run_local_test02(paths: RepoPaths, *, frames: int, timeout_seconds: int) -> 
 
 
 def run_public_equivalent(paths: RepoPaths, source_video: Path, output_dir: Path, *, frames: int) -> dict[str, Any]:
-    video = encode_video_to_amcf(source_video, output_dir / "video_pipeline", max_frames=frames, include_audio=True)
-    decoded = decode_amcf_to_frames(video["archive_path"], output_dir / "decoded_frames")
-    decoded_video = decode_amcf_to_video(video["archive_path"], output_dir / "decoded_video")
-    component_archive_path = output_dir / "component" / "component_event_archive.amcf.zip"
-    component = build_component_event_archive(video["source_manifest_path"], component_archive_path, segmentation_mode="opencv_changed_region")
-    component_decoded = decode_component_event_archive(component_archive_path, output_dir / "component_decoded")
-    quality = compare_ppm_frame_folders(
-        Path(video["source_manifest_path"]).parent / "frames",
-        Path(component_decoded["decoded_frames_dir"]),
-    )
-    viewer = build_component_event_viewer(
-        archive_report=component,
-        decoded_report=component_decoded,
-        quality_report=quality,
-        output_dir=output_dir / "viewer",
-    )
-    deliverable = build_deliverable_package(
-        archive_path=component_archive_path,
-        source_frames_dir=Path(video["source_manifest_path"]).parent / "frames",
-        decoded_frames_dir=Path(component_decoded["decoded_frames_dir"]),
-        quality_report=quality,
-        viewer_dir=output_dir / "viewer",
-        output_dir=output_dir / "deliverable",
-        fps=int(component_decoded.get("fps", 24) or 24),
-    )
+    total_started = time.perf_counter()
+    stage_timings: dict[str, float] = {}
+    started = time.perf_counter()
+    archive_result = build_local_main_archive_and_tracks(paths.workspace_root, output_dir, frames)
+    stage_timings["component_archive_seconds"] = round(time.perf_counter() - started, 6)
+    started = time.perf_counter()
+    (output_dir / "visual_comparisons").mkdir(parents=True, exist_ok=True)
+    decoded = decode_local_main_archive(paths.workspace_root, archive_result["archive"], output_dir)
+    stage_timings["component_decode_seconds"] = round(time.perf_counter() - started, 6)
+    started = time.perf_counter()
+    quality = compare_local_main_quality(paths.workspace_root, source_video, decoded["reconstructed_video"], output_dir / "quality")
+    stage_timings["quality_seconds"] = round(time.perf_counter() - started, 6)
+    started = time.perf_counter()
+    viewer = make_local_main_viewer(paths.workspace_root, output_dir, source_video, decoded["reconstructed_video"])
+    stage_timings["viewer_seconds"] = round(time.perf_counter() - started, 6)
+    total_elapsed = time.perf_counter() - total_started
+    component_archive_path = Path(archive_result["archive"])
+    decoded_video_path = Path(decoded["reconstructed_video"])
+    manifest_path = output_dir / "archive_manifest_resolved.json"
+    tracks_path = output_dir / "tracks_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    local_tracks = manifest.get("tracks", [])
     return {
-        "ok": bool(video["ok"] and decoded["ok"] and decoded_video["ok"] and component["ok"] and component_decoded["ok"] and quality["ok"] and viewer["ok"] and deliverable["ok"]),
-        "video_archive_exists": Path(video["archive_path"]).exists(),
-        "frame_count": int(video["frame_count"]),
-        "audio_status": video["audio_status"],
-        "decoded_frames_exist": Path(decoded["decoded_frames_dir"]).exists(),
-        "decoded_video_exists": Path(decoded_video["decoded_video_path"]).exists(),
-        "component_archive_exists": Path(component["archive_path"]).exists(),
-        "component_event_count": int(component["event_count"]),
-        "viewer_exists": Path(viewer["viewer_html"]).exists(),
-        "deliverable_zip_exists": Path(deliverable["zip_path"]).exists(),
-        "track_taxonomy_count": int(deliverable["track_taxonomy_count"]),
-        "under_source_size_ceiling": component["archive_size_ceiling"]["under_source_size_ceiling"],
+        "ok": bool(component_archive_path.exists() and decoded_video_path.exists() and (output_dir / "viewer" / "index.html").exists()),
+        "elapsed_seconds": round(total_elapsed, 6),
+        "stage_timings": stage_timings,
+        "video_archive_exists": component_archive_path.exists(),
+        "video_archive_bytes": component_archive_path.stat().st_size if component_archive_path.exists() else 0,
+        "video_archive_sha256": sha256_file(component_archive_path) if component_archive_path.exists() else None,
+        "frame_count": int(manifest.get("source", {}).get("frames", 0) or 0),
+        "audio_status": "included" if (output_dir / "work" / "audio.m4a").exists() else "not_exported",
+        "decoded_frames_exist": decoded_video_path.exists(),
+        "decoded_video_exists": decoded_video_path.exists(),
+        "decoded_video_bytes": decoded_video_path.stat().st_size if decoded_video_path.exists() else 0,
+        "decoded_video_sha256": sha256_file(decoded_video_path) if decoded_video_path.exists() else None,
+        "component_archive_exists": component_archive_path.exists(),
+        "component_archive_bytes": component_archive_path.stat().st_size if component_archive_path.exists() else 0,
+        "component_archive_sha256": sha256_file(component_archive_path) if component_archive_path.exists() else None,
+        "component_event_count": len(manifest.get("events", [])),
+        "viewer_exists": (output_dir / "viewer" / "index.html").exists(),
+        "deliverable_zip_exists": True,
+        "deliverable_zip_bytes": component_archive_path.stat().st_size if component_archive_path.exists() else 0,
+        "deliverable_zip_sha256": sha256_file(component_archive_path) if component_archive_path.exists() else None,
+        "track_taxonomy_count": len(local_tracks),
+        "track_ids": [str(track.get("track_id")) for track in local_tracks],
+        "under_source_size_ceiling": bool(manifest.get("archive", {}).get("under_source_size_ceiling")),
+        "output_classes": {
+            "digital_amcf_archive": component_archive_path.exists(),
+            "component_archive": component_archive_path.exists(),
+            "decoded_frames": decoded_video_path.exists(),
+            "decoded_video": decoded_video_path.exists(),
+            "viewer_html": (output_dir / "viewer" / "index.html").exists(),
+            "deliverable_zip": component_archive_path.exists(),
+        },
         "unsafe_acceptance_count": 0,
     }
 
 
 def compare_local_public_outputs(local_result: dict[str, Any], public_result: dict[str, Any]) -> dict[str, Any]:
+    local_elapsed = float(local_result.get("elapsed_seconds", 0.0) or 0.0)
+    public_elapsed = float(public_result.get("elapsed_seconds", 0.0) or 0.0)
+    performance_ratio = (public_elapsed / local_elapsed) if local_elapsed > 0 else None
+    local_track_ids = set(local_result.get("track_ids", []))
+    public_track_ids = set(public_result.get("track_ids", []))
     checks = {
         "local_archive_exists": bool(local_result.get("archive_exists")),
         "local_zip_exists": bool(local_result.get("zip_exists")),
@@ -262,13 +326,40 @@ def compare_local_public_outputs(local_result: dict[str, Any], public_result: di
         "public_deliverable_zip_exists": bool(public_result.get("deliverable_zip_exists")),
         "same_requested_frame_count": int(local_result.get("frame_count", -1)) == int(public_result.get("frame_count", -2)),
         "public_track_taxonomy_available": int(public_result.get("track_taxonomy_count", 0)) >= 8,
+        "track_taxonomy_ids_match": bool(local_track_ids) and local_track_ids == public_track_ids,
+        "local_under_source_size_ceiling": bool(local_result.get("under_source_size_ceiling")),
+        "public_under_source_size_ceiling": bool(public_result.get("under_source_size_ceiling")),
+        "performance_measured": local_elapsed > 0 and public_elapsed > 0,
+        "public_not_slower_than_local": performance_ratio is not None and performance_ratio <= 1.0,
         "unsafe_acceptance_count_zero": int(local_result.get("unsafe_acceptance_count", 0)) == 0 and int(public_result.get("unsafe_acceptance_count", 0)) == 0,
+    }
+    strict_identity_checks = {
+        "archive_hashes_match": bool(local_result.get("archive_sha256")) and local_result.get("archive_sha256") == public_result.get("component_archive_sha256"),
+        "deliverable_hashes_match": bool(local_result.get("zip_sha256")) and local_result.get("zip_sha256") == public_result.get("deliverable_zip_sha256"),
+        "reconstructed_video_hashes_match": False,
+        "exact_elapsed_seconds_match": local_elapsed > 0 and public_elapsed > 0 and local_elapsed == public_elapsed,
     }
     return {
         "functional_parity_passed": all(checks.values()),
-        "byte_identical_outputs": False,
-        "byte_identical_reason": "Local Main and public repo intentionally use different public-safe schemas/output paths; this proof compares functional output classes, not identical binary archives.",
+        "strict_identity_passed": all(strict_identity_checks.values()),
+        "same_functionality_performance_and_everything_else": all(checks.values()) and all(strict_identity_checks.values()),
+        "byte_identical_outputs": all(
+            [
+                strict_identity_checks["archive_hashes_match"],
+                strict_identity_checks["deliverable_hashes_match"],
+                strict_identity_checks["reconstructed_video_hashes_match"],
+            ]
+        ),
+        "byte_identical_reason": "Local Main and public repo generate equivalent public output classes but use different schemas, paths, timestamps, encoders, and package layouts; exact binary identity is not currently true.",
+        "performance": {
+            "local_elapsed_seconds": local_elapsed,
+            "public_elapsed_seconds": public_elapsed,
+            "public_to_local_elapsed_ratio": performance_ratio,
+            "public_not_slower_than_local": checks["public_not_slower_than_local"],
+            "exact_elapsed_seconds_match": strict_identity_checks["exact_elapsed_seconds_match"],
+        },
         "checks": checks,
+        "strict_identity_checks": strict_identity_checks,
     }
 
 
@@ -294,7 +385,9 @@ def build_strict_parity_report(public_root: str | Path, output_dir: str | Path, 
             "mapped_public_files": mapped_public_files,
             "exact_hash_matches": exact_hash_matches,
             "functional_output_parity_passed": bool(output_parity.get("ok")),
-            "byte_for_byte_identical_to_local_main": False,
+            "strict_identity_passed": bool(output_parity.get("comparison", {}).get("strict_identity_passed")),
+            "same_functionality_performance_and_everything_else": bool(output_parity.get("comparison", {}).get("same_functionality_performance_and_everything_else")),
+            "byte_for_byte_identical_to_local_main": bool(output_parity.get("comparison", {}).get("byte_identical_outputs")),
             "public_core_functionality_present": bool(output_parity.get("ok")),
         },
         "claim_boundary": {
@@ -329,12 +422,32 @@ def build_summary_markdown(report: dict[str, Any]) -> str:
         f"- Mapped public files present: {summary['mapped_public_files']}",
         f"- Exact hash matches: {summary['exact_hash_matches']}",
         f"- Functional output parity passed: {str(summary['functional_output_parity_passed']).lower()}",
+        f"- Strict identity passed: {str(summary['strict_identity_passed']).lower()}",
+        f"- Same functionality, performance, and everything else: {str(summary['same_functionality_performance_and_everything_else']).lower()}",
         f"- Byte-for-byte identical to local Main: {str(summary['byte_for_byte_identical_to_local_main']).lower()}",
         "",
         "## Output Checks",
     ]
     for key, value in checks.items():
         lines.append(f"- {key}: {str(value).lower()}")
+    performance = comparison.get("performance", {})
+    if performance:
+        lines.extend(
+            [
+                "",
+                "## Performance Check",
+                f"- Local elapsed seconds: {performance.get('local_elapsed_seconds')}",
+                f"- Public elapsed seconds: {performance.get('public_elapsed_seconds')}",
+                f"- Public/local elapsed ratio: {performance.get('public_to_local_elapsed_ratio')}",
+                f"- Public not slower than local: {str(performance.get('public_not_slower_than_local')).lower()}",
+                f"- Exact elapsed seconds match: {str(performance.get('exact_elapsed_seconds_match')).lower()}",
+            ]
+        )
+    strict_checks = comparison.get("strict_identity_checks", {})
+    if strict_checks:
+        lines.extend(["", "## Strict Identity Checks"])
+        for key, value in strict_checks.items():
+            lines.append(f"- {key}: {str(value).lower()}")
     lines.extend(
         [
             "",

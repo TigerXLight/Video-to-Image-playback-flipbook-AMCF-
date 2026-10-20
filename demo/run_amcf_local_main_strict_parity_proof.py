@@ -31,6 +31,8 @@ def main() -> None:
                 "ok": report["summary"]["functional_output_parity_passed"],
                 "byte_for_byte_identical_to_local_main": report["summary"]["byte_for_byte_identical_to_local_main"],
                 "exact_hash_matches": report["summary"]["exact_hash_matches"],
+                "same_functionality_performance_and_everything_else": report["summary"]["same_functionality_performance_and_everything_else"],
+                "strict_identity_passed": report["summary"]["strict_identity_passed"],
                 "output_folder": str(OUTPUT_DIR),
                 "unsafe_acceptance_count": report["unsafe_acceptance_count"],
                 "hardware_validation_claimed": report["claim_boundary"]["hardware_validation_claimed"],

@@ -1,5 +1,33 @@
 # AMCF App Readiness and Gap Audit
 
+> **Current status correction (2026-10-20):** This document began as a
+> historical planning audit on 2026-10-12. Its older statements that no
+> `pyproject.toml`, package boundary, or stable CLI existed are superseded by
+> the current `Main/pyproject.toml`, `src/amcf_cli.py`, and the verified wheel
+> install smoke test recorded in
+> `docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`. The remaining gaps below
+> are retained as historical app/physical-I/O analysis; do not use those old
+> “no CLI/package” lines as the current status.
+
+Current verified state:
+
+- installable console command: `amcf`
+- verified commands: `status`, `--help`
+- digital workflow commands present: `encode`, `component-archive`, `decode`,
+  and `print-plan`
+- diagnostic coverage remains a source-checkout audit runner under
+  `demo/run_amcf_diagnostic_coverage_audit.py`
+- Windows console EXE built and smoke-tested at
+  `output/amcf_cli_exe_20261020/amcf.exe`; this is a CLI binary, not a GUI or
+  hardware runtime
+- real printer/scanner/player hardware remains unimplemented and unclaimed
+- named diagnostic families are covered by
+  `demo/run_amcf_diagnostic_coverage_audit.py`; see
+  `docs/AMCF_DIAGNOSTIC_AND_METHOD_CLOSEOUT_20261020.md`
+- the maintained Main suite passes with `518` tests from the `Main` package
+  root; running discovery from the workspace parent still has historical
+  `src.*` import-context failures
+
 ## Run Metadata
 
 - Run name: `AMCF_APP_READINESS_AND_GAP_AUDIT_V1`
@@ -9,7 +37,7 @@
 - Audit time: 2026-10-12 18:35:58 +01:00
 - Runtime behaviour changed: no
 - GUI implemented: no
-- executable built: no
+- executable built: yes, console CLI only
 - dependencies added: no
 - hardware validation claimed: false
 - physical Level 5 claimed: false
