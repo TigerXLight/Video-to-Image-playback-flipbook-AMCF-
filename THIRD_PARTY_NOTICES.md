@@ -11,3 +11,11 @@ If optional adapters are added later, each adapter must preserve its own licence
 The imported AMCF concept assets are included as AMCF project context references. Third-party materials remain excluded unless explicitly present and documented.
 
 No model weights, checkpoints, copied third-party repositories, or deep-tool code are included in this clean public upload package.
+
+## Canonical AMCF specification
+
+`AMCF_CANONICAL_CONCEPT.md`, `AMCF_PHYSICAL_MEDIUM_BOUNDARY.md`, and their
+maintained documentation copies are project-owned specification material.
+They define AMCF as a digital component/image flipbook process and define the
+physical carrier/reader as a later branch. They are not copied files from the
+upstream research repositories listed in the repository manifests.

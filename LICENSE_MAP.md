@@ -16,6 +16,8 @@ A final single legal licence has not been selected for all project-owned materia
 | `docs/` | Project-owned documentation unless a file states otherwise; final licence/publication terms still require a decision. |
 | `assets/` | Project-owned deterministic concept assets unless a file states otherwise; final licence/publication terms still require a decision. |
 | `viewer/` | Project-owned static viewer stub; final licence/publication terms still require a decision. |
+| Root project specification files | Project-owned AMCF methodology and design-boundary documents. This includes `AMCF_CANONICAL_CONCEPT.md`, `AMCF_PHYSICAL_MEDIUM_BOUNDARY.md`, `README.md`, and the licence/provenance notices. |
+| Canonical concept and physical-boundary docs under `docs/` | Project-owned specification text. These documents define the digital component/image flipbook process and keep the physical carrier/reader branch separate from the digital proof. |
 | Optional future adapters | Not included in this clean core package. Licence-specific notices are required if added later. |
 | Third-party materials | Not bundled in this clean core package. |
 | Generated outputs | Regenerated locally and ignored by default. |
@@ -23,6 +25,15 @@ A final single legal licence has not been selected for all project-owned materia
 | Copied third-party repos | Excluded. |
 
 If commercial use is restricted later, describe the relevant parts as source-available non-commercial or non-commercial research software, not strict OSI open source.
+
+The AMCF concept definition, component-event methodology, digital flipbook
+description, storage requirements, reconstruction requirements, and physical
+medium boundary are project-owned specification material. They are not copied
+files from SAMURAI, SAM2, OpenCV, or another reference repository. Examining
+or being influenced by an upstream research project does not by itself attach
+that project's licence to the AMCF specification; copied code, adapted code,
+data, weights, and direct quotations still require their own source and licence
+review.
 
 ## Public concept assets
 
