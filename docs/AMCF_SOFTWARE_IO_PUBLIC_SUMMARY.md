@@ -43,8 +43,9 @@ recovery, player control, and shared validator corridors under one fail-closed
 status contract. A passing run is software-only and keeps display and physical
 transition permissions disabled.
 
-## Next Development Step
+## Hardware Adapter Planning
 
-Select concrete printer, scanner/reader, and player device interfaces for a
-separate hardware-adapter planning phase. No physical validation is claimed by
-the current contract.
+The hardware-plan command records concrete Windows-facing printer/carrier,
+reader/scanner, and player-control interface contracts. It first reruns the
+software-only baseline and keeps display and transition permissions disabled.
+No physical validation is claimed by the plan.

@@ -37,6 +37,7 @@ def cmd_status(_: argparse.Namespace) -> int:
                 "print-plan",
                 "physical-roundtrip",
                 "adapter-roundtrip",
+                "hardware-plan",
                 "setup",
             ],
             "hardware_validation_claimed": False,
@@ -216,6 +217,23 @@ def cmd_adapter_roundtrip(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_hardware_plan(args: argparse.Namespace) -> int:
+    """Create the offline Windows printer, reader, and player adapter plan."""
+    from amcf_hardware_adapter_planning import run_hardware_adapter_plan
+
+    project_root = Path(args.project_root).resolve() if args.project_root else Path(__file__).resolve().parents[1]
+    result = run_hardware_adapter_plan(project_root, Path(args.output))
+    report = result["report"]
+    return _print_result(
+        {
+            "ok": bool(report.get("final_passed")),
+            "project_root": str(project_root),
+            "output_dir": result.get("output_dir", str(Path(args.output).resolve())),
+            **result,
+        }
+    )
+
+
 def cmd_print_plan(args: argparse.Namespace) -> int:
     result = generate_physical_carrier_from_amcf_archive(args.input, args.output)
     result["unsafe_acceptance_count"] = 0
@@ -331,6 +349,14 @@ def build_parser() -> argparse.ArgumentParser:
     adapter.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
     adapter.add_argument("--output", required=True)
     adapter.set_defaults(func=cmd_adapter_roundtrip)
+
+    hardware_plan = sub.add_parser(
+        "hardware-plan",
+        help="Validate the offline Windows printer, reader, and physical-player adapter plan.",
+    )
+    hardware_plan.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
+    hardware_plan.add_argument("--output", required=True)
+    hardware_plan.set_defaults(func=cmd_hardware_plan)
 
     setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, checkpoints, and the optional HOOT proof dataset.")
     setup.add_argument("--manifest", help="Dependency manifest JSON.")

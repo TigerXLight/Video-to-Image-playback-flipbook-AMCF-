@@ -95,6 +95,15 @@ The output contains ordered status events, feedback, and corridor reports for
 printer/carrier preparation, reader recovery, player control, and the shared
 validator. It keeps physical display and transition permissions disabled.
 
+Plan the next Windows-facing device layer without opening hardware:
+
+    amcf hardware-plan --project-root . --output output/hardware_adapter_plan
+
+This validates the software baseline and records the planned Print Spooler or
+print-to-file, WIA or TWAIN/OpenCV capture, and USB or serial player-control
+interfaces. It remains planning-only and keeps all physical transitions
+fail-closed.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

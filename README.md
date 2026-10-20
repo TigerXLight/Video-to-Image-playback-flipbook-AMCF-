@@ -108,6 +108,11 @@ recovery, player-control, and shared validation corridors into one ordered
 fail-closed status report. It remains software-only and does not claim real
 device validation. See the physical software-adapter layer document.
 
+The hardware-plan CLI command records the concrete Windows-facing Print Spooler
+or print-to-file, WIA or TWAIN/OpenCV, and USB or serial player-control
+boundaries. It reruns the software baseline but remains planning-only; no
+device is opened and no physical transition is authorized.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.

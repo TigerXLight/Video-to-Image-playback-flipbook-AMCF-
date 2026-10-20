@@ -68,6 +68,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "src/amcf_setup.py",
     "src/amcf_source_seeded_event_materializer.py",
     "src/amcf_physical_adapters.py",
+    "src/amcf_hardware_adapter_planning.py",
     "packaging/amcf_gui.spec",
     "packaging/amcf_cli.spec",
     "packaging/tkinter_runtime_hook.py",
@@ -76,6 +77,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "packaging/build_amcf_release_bundle.ps1",
     "docs/AMCF_SOURCE_SEEDED_EVENT_MATERIALIZER.md",
     "docs/AMCF_PHYSICAL_SOFTWARE_ADAPTER_LAYER.md",
+    "docs/AMCF_HARDWARE_ADAPTER_PLANNING_LAYER.md",
     "docs/AMCF_SOFTWARE_IO_PUBLIC_SUMMARY.md",
     "docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md",
     "docs/AMCF_PHYSICAL_PLAYER_DOCS_MAP.md",
@@ -88,6 +90,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "tests/test_amcf_cli_packaging.py",
     "tests/test_amcf_source_seeded_event_materializer.py",
     "tests/test_amcf_physical_adapters.py",
+    "tests/test_amcf_hardware_adapter_planning.py",
     "tests/test_amcf_setup.py",
     "tests/test_public_release_tag_prep.py",
 }

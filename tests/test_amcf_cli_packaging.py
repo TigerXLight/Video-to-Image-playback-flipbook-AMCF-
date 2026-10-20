@@ -29,6 +29,7 @@ class AmcfCliPackagingTests(unittest.TestCase):
             "amcf_digital_validator",
             "amcf_physical_carrier",
             "amcf_physical_adapters",
+            "amcf_hardware_adapter_planning",
             "amcf_quality_metrics",
             "amcf_setup",
             "amcf_temporal_component_codec",

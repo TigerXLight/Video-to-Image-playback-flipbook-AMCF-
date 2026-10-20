@@ -89,7 +89,7 @@ This is a deterministic software-only contract. It does not use or claim:
 - physical Level 5 or physical-medium proof.
 
 The next hardware-specific phase must select concrete device interfaces and
-add a separate adapter implementation for each device. Each implementation
-must map device events into this status contract, preserve fail-closed display
-and transition rules, and retain the existing claim boundary until measured
-hardware evidence exists.
+add a separate adapter implementation for each device. The offline planning
+layer now records those Windows-facing provider choices and their capability,
+feedback, and safety contracts. See
+docs/AMCF_HARDWARE_ADAPTER_PLANNING_LAYER.md.
