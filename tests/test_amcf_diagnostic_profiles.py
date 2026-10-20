@@ -12,6 +12,7 @@ from amcf_diagnostic_profiles import (  # noqa: E402
     diff_panel,
     flow_magnitude_heatmap,
     proxy_motion_audit,
+    render_12b_water_object_candidate_video,
     render_03m_motion_truth_family,
     roi_motion_audit,
     _normalize_proxy_label,
@@ -98,6 +99,31 @@ class DiagnosticProfileTests(unittest.TestCase):
         self.assertEqual(_proxy_color("proxy_person_or_moving_object", style="12B"), (0, 255, 0))
         self.assertEqual(_proxy_color("proxy_uncertain", style="12B"), (0, 255, 255))
         self.assertEqual(_proxy_color("proxy_person_or_moving_object"), (0, 255, 255))
+
+    def test_12b_candidate_renderer_keeps_proposals_separate_from_tracks(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            source = temp / "source.mp4"
+            writer = cv2.VideoWriter(str(source), cv2.VideoWriter_fourcc(*"mp4v"), 10.0, (64, 32))
+            for _ in range(2):
+                writer.write(np.zeros((32, 64, 3), dtype=np.uint8))
+            writer.release()
+            proposals = temp / "proposals.json"
+            proposals.write_text(
+                '[{"frame_index": 0, "bbox": [4, 4, 8, 8], "preliminary_label": "person_or_moving_object_candidate"}, '
+                '{"frame_index": 0, "bbox": [20, 4, 8, 8], "preliminary_label": "uncertain_motion_region"}]',
+                encoding="utf-8",
+            )
+            tracks = temp / "tracks.json"
+            tracks.write_text(
+                '[{"track_id": "track_1", "label": "proxy_person_or_moving_object", '
+                '"frame_start": 1, "frame_end": 1, "bboxes": [[4, 4, 8, 8]]}]',
+                encoding="utf-8",
+            )
+            report = render_12b_water_object_candidate_video(source, proposals, tracks, temp / "out.mp4", max_frames=2)
+            self.assertEqual(report["status"], "PASS")
+            self.assertEqual(report["rendered_candidate_count"], 1)
+            self.assertEqual(report["track_count"], 1)
 
     def test_proxy_motion_audit_distinguishes_leftward_candidates_from_reviewed_objects(self):
         tracks = [

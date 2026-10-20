@@ -793,6 +793,102 @@ def proxy_motion_audit(tracks: Iterable[dict[str, Any]], *, leftward_threshold_p
     }
 
 
+def render_12b_water_object_candidate_video(
+    source_video: Path,
+    proposal_manifest: Path,
+    track_manifest: Path,
+    output_video: Path,
+    *,
+    max_frames: int = 240,
+) -> dict[str, Any]:
+    """Render the original 12B proposal-layer water/object diagnostic.
+
+    Test 12B's referenced ``semantic_proxy_water_vs_object_overlay_12B`` did
+    not draw every persistent track. It drew only per-frame classical-CV
+    proposals classified as water/fluid or person/object candidates. The
+    persistent proxy track manifest is retained for the separate motion audit.
+    """
+    import cv2
+
+    proposals = json.loads(proposal_manifest.read_text(encoding="utf-8"))
+    tracks = json.loads(track_manifest.read_text(encoding="utf-8"))
+    by_frame: dict[int, list[dict[str, Any]]] = {}
+    for proposal in proposals:
+        by_frame.setdefault(int(proposal.get("frame_index", 0)), []).append(proposal)
+    candidate_counts: dict[str, int] = {}
+    candidate_count = 0
+    capture = cv2.VideoCapture(str(source_video))
+    if not capture.isOpened():
+        raise RuntimeError(f"could not open 12B proxy source: {source_video}")
+    fps = float(capture.get(cv2.CAP_PROP_FPS) or 30.0)
+    writer = None
+    frame_count = 0
+    try:
+        while frame_count < max_frames:
+            ok, frame = capture.read()
+            if not ok or frame is None:
+                break
+            if writer is None:
+                height, width = frame.shape[:2]
+                writer = _open_writer(output_video, fps, width, height)
+            overlay = frame.copy()
+            # Keep the historical zero-based proposal-frame lookup so the
+            # regenerated profile corresponds to the original 12B artifact.
+            for proposal in by_frame.get(frame_count, []):
+                label = str(proposal.get("preliminary_label", ""))
+                if label not in {
+                    "water_or_fluid_motion_candidate",
+                    "person_or_moving_object_candidate",
+                }:
+                    continue
+                color = {
+                    "person_or_moving_object_candidate": (0, 255, 0),
+                    "water_or_fluid_motion_candidate": (255, 128, 0),
+                }[label]
+                x, y, width, height = [int(value) for value in proposal.get("bbox", [0, 0, 0, 0])]
+                cv2.rectangle(overlay, (x, y), (x + width, y + height), color, 2)
+                text = "water/fluid" if label.startswith("water_") else "object?"
+                cv2.putText(
+                    overlay,
+                    text,
+                    (x, max(12, y - 4)),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.45,
+                    color,
+                    1,
+                    cv2.LINE_AA,
+                )
+                candidate_count += 1
+                candidate_counts[label] = candidate_counts.get(label, 0) + 1
+            writer.write(_label(overlay, "water/fluid vs person/object candidates"))
+            frame_count += 1
+    finally:
+        capture.release()
+        if writer is not None:
+            writer.release()
+    return {
+        "status": "PASS" if frame_count > 0 else "FAIL",
+        "profile": "12B_semantic_proxy_candidates",
+        "source_video": str(source_video),
+        "proposal_manifest": str(proposal_manifest),
+        "track_manifest": str(track_manifest),
+        "output_video": str(output_video),
+        "frame_count": frame_count,
+        "fps": fps,
+        "proposal_count": len(proposals),
+        "rendered_candidate_count": candidate_count,
+        "rendered_candidate_label_counts": candidate_counts,
+        "track_count": len(tracks),
+        "motion_audit": proxy_motion_audit(tracks),
+        "historical_contract": "12B proposal-layer water/object overlay",
+        "boxes_are_proxy_tracks": True,
+        "pixel_segmentation_masks_used": False,
+        "semantic_object_amcf_solved": False,
+        "human_review_required": True,
+        "unsafe_acceptance_count": 0,
+    }
+
+
 def render_reviewed_proxy_video(
     source_video: Path,
     reviewed_manifest: Path,

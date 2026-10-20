@@ -18,7 +18,7 @@ repositories.
 | --- | ---: | ---: | ---: | ---: |
 | `src` | 99 | 99 | 0 | 99 |
 | `demo` | 65 | 65 | 0 | 65 |
-| `docs` | 140 | 140 | 0 | 140 |
+| `docs` | 142 | 142 | 0 | 142 |
 | `tests` | 67 | 67 | 0 | 67 |
 | `packaging` | 3 | 3 | 0 | 3 |
 | repository-root files | 23 | 23 | 0 | 23 |
@@ -44,8 +44,9 @@ The downloaded public checkout contains the local parity commits on its local
 git -C Github_Public_Current rev-parse HEAD
 ```
 
-At the time of this reconciliation it is two commits ahead of `origin/main`
-before the 12B correction commit is added. The push was attempted with
+At the time of this reconciliation it is at least five commits ahead of
+`origin/main`, including the 12B correction, complete tracked test suite, and
+diagnostic-state contract. The push was attempted with
 the OpenSSL Git transport but Git Credential Manager returned no credentials,
 so the remote GitHub branch was not changed by this run. No claim of a pushed
 GitHub update is made until authentication is available.

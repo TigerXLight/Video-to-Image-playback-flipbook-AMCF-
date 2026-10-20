@@ -31,7 +31,7 @@ Main/output/amcf_diagnostic_coverage_audit_20261020_full/DIAGNOSTIC_COVERAGE_REP
 The corrected 12B-specific audit is also recorded at:
 
 ```text
-Main/output/amcf_diagnostic_coverage_audit_20261020_12b/DIAGNOSTIC_COVERAGE_REPORT.md
+Main/output/amcf_diagnostic_coverage_audit_20261020_12b_v3/DIAGNOSTIC_COVERAGE_REPORT.md
 ```
 
 ## Proxy Direction Answer

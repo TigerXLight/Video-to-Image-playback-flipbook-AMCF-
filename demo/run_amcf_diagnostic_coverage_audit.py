@@ -22,6 +22,7 @@ sys.path.insert(0, str(MAIN_ROOT / "src"))
 from amcf_diagnostic_profiles import (  # noqa: E402
     render_03m_motion_truth_family,
     render_motion_heat_comparison_video,
+    render_12b_water_object_candidate_video,
     render_reviewed_proxy_video,
     render_roi_comparison_video,
 )
@@ -156,6 +157,8 @@ def main() -> int:
     manifest_12d = WORKSPACE_ROOT / "Tests/Test 12D/20261006_172244/imported_12c/calibrated_proxy_tracks_12C.json"
     manifest_12e = WORKSPACE_ROOT / "Tests/Test 12E/20261006_181534/reviewed_tracks/reviewed_proxy_tracks_12E.json"
     manifest_12b = WORKSPACE_ROOT / "Tests/Test 12B/20261006_164238/proxy_tracks/proxy_tracks_12B.json"
+    proposals_12b = WORKSPACE_ROOT / "Tests/Test 12B/20261006_164238/region_proposals/region_proposals_12B.json"
+    source_12b = WORKSPACE_ROOT / "Tests/Test 12B/20261006_164238/semantic_inputs/FOURTH_TRUTH_BASELINE_INPUT_12B.mp4"
 
     profiles = [
         _run_profile(
@@ -192,13 +195,11 @@ def main() -> int:
         ),
         _run_profile(
             "12B_semantic_proxy_candidates",
-            lambda: render_reviewed_proxy_video(
-                timelapse_video,
+            lambda: render_12b_water_object_candidate_video(
+                source_12b,
+                proposals_12b,
                 manifest_12b,
                 output_dir / "12b_semantic_proxy_candidates.mp4",
-                profile_name="12B_semantic_proxy_candidates",
-                color_style="12B",
-                overlay_title="12B water/fluid vs person/object candidates; proxy diagnostic only",
             ),
         ),
         _run_profile(
