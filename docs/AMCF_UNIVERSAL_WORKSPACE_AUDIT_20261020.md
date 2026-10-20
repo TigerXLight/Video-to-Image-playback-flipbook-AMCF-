@@ -1,8 +1,6 @@
 # AMCF Universal Workspace Audit (2026-10-20)
 
-This document is the public-facing summary of the complete local workspace audit. The detailed path reference is at the workspace root:
-
-`T:\References\to go\Media\tools\Video to Image\AMCF_UNIVERSAL_WORKSPACE_CLOSEOUT_REFERENCE_20261020.txt`
+This document is the public-facing summary of the complete local workspace audit. The detailed path reference is the workspace-root file named `AMCF_UNIVERSAL_WORKSPACE_CLOSEOUT_REFERENCE_20261020.txt`.
 
 ## Coverage
 
