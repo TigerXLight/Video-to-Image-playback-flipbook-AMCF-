@@ -22,6 +22,13 @@ research = [
   "tifffile",
   "lazy-loader",
 ]
+device = [
+  "Pillow",
+  "pyserial",
+  "pywin32; sys_platform == 'win32'",
+  "twain; sys_platform == 'win32'",
+  "hidapi; sys_platform == 'win32'",
+]
 
 [project.scripts]
 amcf = "amcf_cli:main"
@@ -64,6 +71,9 @@ py-modules = [
   "amcf_device_profiles",
     "amcf_device_interface_conformance",
   "amcf_universal_hardware_simulation",
+  "amcf_carrier_renderer",
+  "amcf_carrier_payload",
+  "amcf_device_system",
   "amcf_physical_io",
   "amcf_physical_medium_simulation",
   "amcf_physical_player_integrated_demo_reports",

@@ -26,6 +26,7 @@ The current repository implements deterministic software/control simulators and 
 16. `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md`
 17. `CLAIM_BOUNDARIES.md`
 18. `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md`
+19. `docs/AMCF_DEVICE_SYSTEM.md`
 
 ## Physical-Player Docs
 
@@ -48,6 +49,7 @@ The current repository implements deterministic software/control simulators and 
 - `docs/AMCF_PUBLIC_RELEASE_TAG_CHECKLIST.md` - manual checklist for later explicit tag approval.
 - `docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md` - staged development sequence and known commits.
 - `docs/AMCF_HARDWARE_SOFTWARE_PATHS.md` - relationship between digital AMCF and physical paths.
+- `docs/AMCF_DEVICE_SYSTEM.md` - implemented universal rendering, printer, reader, calibration, discovery, and player software layer.
 
 ## Demo Scripts
 

@@ -10,6 +10,7 @@ AMCF is a software-first runtime and validation path for indexed component playb
 - Static AMCF Player UI state viewer stub in `viewer/`.
 - Release demo and standard-library tests in `demo/` and `tests/`.
 - Documentation for software-first hardware support, mechanical/optical physical-player boundaries, optional future deep-tool adapters, and claim boundaries.
+- A universal physical software layer for carrier rendering, printer jobs, scan recovery, device discovery/calibration, and player control in `src/amcf_device_system.py`.
 
 ## Software-first hardware support
 
@@ -35,7 +36,7 @@ Stage 1 Physical I/O Architecture adds a shared `AMCFPhysicalManifest` foundatio
 
 Physical reader support means future devices that read or scan AMCF physical media back into AMCF digital state for validation, recovery, diagnostics, or export.
 
-Physical-output/printer preparation support means software generation of indexed AMCF carrier packages that could later inform print, page, cartridge, or other material-output experiments. The package models carrier sections and lanes in software now; it does not claim real printing, real printer integration, print calibration, hardware validation, or manufacturing readiness.
+Physical-output/printer preparation support means software generation of indexed AMCF carrier packages that could later inform print, page, cartridge, or other material-output experiments. The package now renders actual SVG/PNG/PDF reference sheets and has optional Windows Print Spooler and calibration paths, but it does not claim physical print accuracy, hardware validation, or manufacturing readiness.
 
 Physical player support means future mechanical/optical devices that physically present AMCF media for direct viewing through controlled motion and a fixed view gate. The preferred future mechanism is a compact tablet-like handheld body with a folded internal media path, side-loaded indexed section cartridge, A/B staging gates or equivalent physical double-buffering, shutter/illumination blanking, prefetch/reader lanes, sensor feedback/index lock, brake/latch/pause, and reverse/seek/index where practical.
 
@@ -149,6 +150,18 @@ transport, playback control, and fail-closed fault probes. It does not open a
 real printer, scanner, motor, or player. See
 `docs/AMCF_UNIVERSAL_HARDWARE_SIMULATION.md`.
 
+The `carrier-render` command renders a generated carrier package to printable
+SVG, PNG, and PDF sheets. The `device-system` command runs the complete
+universal software layer: rendering, printer preflight/job/spool state,
+pixel-based scan registration/lane/colour recovery, reader-to-package
+reconstruction, persistent device configuration and software calibration, and
+player handshake/control including sensors, motor, shutter, illumination,
+seek, reverse, stop, retry, and cancellation. The default mode is
+deterministic simulation. Optional `win32print`, WIA/TWAIN, serial, and HID
+providers are fail-closed and require explicit device profiles and optional
+dependencies. See `docs/AMCF_DEVICE_SYSTEM.md` and
+`packaging/requirements-device.txt`.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.
@@ -165,7 +178,14 @@ For the bounded 14H WebP archive contract, `demo/run_amcf_14h_video_roundtrip_de
 
 The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation and optical-flow track reporting when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
-The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, `diagnostics`, `print-plan`, `physical-roundtrip`, `device-conformance`, `hardware-simulation`, and `setup` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; they are not real printer/scanner/player integrations or hardware validation claims.
+The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, `diagnostics`, `print-plan`, `carrier-render`, `carrier-payload`, `device-system`, `device-discover`, `physical-roundtrip`, `device-conformance`, `hardware-simulation`, and `setup` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; the default path is simulation and no command by itself claims physical accuracy or hardware validation.
+
+`carrier-payload` is the source-free native physical-carrier path. It frames
+the actual AMCF archive bytes into printable binary payload pages, recovers
+them from page images, checks the archive SHA-256 and page CRCs, rejects a
+corrupted page, and opens the recovered archive through the normal AMCF reader.
+It does not embed or require the source MP4. Physical printer/scanner accuracy
+still requires hardware-specific calibration.
 
 The maintained CLI also exposes `seeded-materializer`. This is the compact 4K
 source-seeded AMCF event-materializer profile: it retains the canonical event
@@ -189,7 +209,7 @@ amcf seeded-materializer --input-archive <archive.amcf.zip> --output <report-dir
 
 The Windows packaging now provides `packaging/build_amcf_release_bundle.ps1`,
 which builds both `amcf.exe` (CLI) and `amcf_gui.exe` (small workflow UI) into a
-ZIP. The GUI provides source/archive selection, source-to-AMCF, archive-to-video,
+portable ZIP with `INSTALL_AMCF.cmd`/`UNINSTALL_AMCF.cmd` per-user setup. The GUI provides source/archive selection, source-to-AMCF, archive-to-video,
 seeded validation, the maintained 03M zone-motion plus 08E heat diagnostics,
 dependency checks/setup, and the deterministic printer/reader/player software
 corridor check. The bundle includes the small physical-I/O fixture set so that

@@ -390,6 +390,33 @@ The workflow may claim:
 - MP4/video-container export dependency
 - PDF/SVG/PNG rendering dependency
 
+## 15A. Superseding Implementation Status (2026-10-21)
+
+The historical boundary list above records the design state at the time this
+specification was written. The following software-layer items are now
+implemented in the maintained public workflow:
+
+- printable SVG/PNG/PDF carrier rendering with registration, timing, lane, and
+  colour-registry evidence;
+- simulated printer job/spool/status/cancellation/retry handling;
+- optional WIA and TWAIN acquisition providers with fail-closed behavior;
+- pixel-level marker/lane/colour recovery from folder or acquired scan images;
+- recovered reader-to-carrier-package reconstruction;
+- simulated player handshake, manifest load, verification, seek/reverse,
+  motor, sensor, shutter, illumination, stop, retry, and cancellation paths;
+- optional serial JSON and HID JSON player transports;
+- device discovery, software-reference calibration, persistent configuration,
+  retry, and cancellation;
+- a Tkinter workflow GUI, PyInstaller CLI/GUI executables, portable ZIP, and
+  per-user install/uninstall scripts.
+
+These are functional software contracts and deterministic simulations. They do
+not claim measured print accuracy, real scanner tolerance, firmware
+compatibility, or physical Level 5. The native payload carrier path embeds the
+actual AMCF archive bytes and recovers them exactly in the software-rendered
+image test; physical printer/scanner preservation of those bytes remains
+unvalidated until real hardware is calibrated.
+
 ## 16. Why CLI Should Come Before GUI / EXE
 
 The CLI should come first because it forces stable decisions about:

@@ -44,6 +44,10 @@ def cmd_status(_: argparse.Namespace) -> int:
                 "device-profiles",
                 "device-conformance",
                 "hardware-simulation",
+                "carrier-render",
+                "carrier-payload",
+                "device-system",
+                "device-discover",
                 "setup",
             ],
             "hardware_validation_claimed": False,
@@ -358,6 +362,59 @@ def cmd_hardware_simulation(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_carrier_render(args: argparse.Namespace) -> int:
+    """Render a generated physical carrier package as scan/print artifacts."""
+    from amcf_carrier_renderer import render_carrier_package
+
+    result = render_carrier_package(args.carrier_root, args.output, args.formats.split(","))
+    return _print_result(result)
+
+
+def cmd_carrier_payload(args: argparse.Namespace) -> int:
+    """Render, recover, and natively decode an exact AMCF archive carrier payload."""
+    from amcf_carrier_payload import run_native_payload_roundtrip
+
+    result = run_native_payload_roundtrip(
+        args.input_archive,
+        args.output,
+        page_bytes=args.page_bytes,
+        write_pdf=not args.no_pdf,
+    )
+    return _print_result(result)
+
+
+def cmd_device_system(args: argparse.Namespace) -> int:
+    """Run rendering, printer job, scan recovery, discovery, calibration, and player control."""
+    from amcf_device_system import run_device_software_system
+
+    result = run_device_software_system(
+        args.carrier_package,
+        args.output,
+        printer_backend=args.printer_backend,
+        reader_backend=args.reader_backend,
+        player_backend=args.player_backend,
+        printer_name=args.printer_name,
+        reader_device=args.reader_device,
+        player_port=args.player_port,
+        player_device=args.player_device,
+        native_archive_path=args.native_archive,
+    )
+    return _print_result(result)
+
+
+def cmd_device_discover(args: argparse.Namespace) -> int:
+    """Enumerate available Windows providers and always include simulation devices."""
+    from amcf_device_system import discover_devices
+
+    result = discover_devices()
+    if args.output:
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        result["output"] = str(output.resolve())
+    return _print_result({"ok": True, **result})
+
+
 def cmd_print_plan(args: argparse.Namespace) -> int:
     result = generate_physical_carrier_from_amcf_archive(args.input, args.output)
     result["unsafe_acceptance_count"] = 0
@@ -547,6 +604,51 @@ def build_parser() -> argparse.ArgumentParser:
     simulation.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
     simulation.add_argument("--output", required=True)
     simulation.set_defaults(func=cmd_hardware_simulation)
+
+    carrier_render = sub.add_parser(
+        "carrier-render",
+        help="Render a physical carrier package as printable SVG, PNG, and PDF artifacts.",
+    )
+    carrier_render.add_argument("--carrier-root", required=True)
+    carrier_render.add_argument("--output", required=True)
+    carrier_render.add_argument("--formats", default="svg,png,pdf", help="Comma-separated formats: svg,png,pdf.")
+    carrier_render.set_defaults(func=cmd_carrier_render)
+
+    carrier_payload = sub.add_parser(
+        "carrier-payload",
+        help="Render and recover exact native AMCF archive bytes through printable payload pages.",
+    )
+    carrier_payload.add_argument("--input-archive", required=True)
+    carrier_payload.add_argument("--output", required=True)
+    carrier_payload.add_argument("--page-bytes", type=int, default=16 * 1024)
+    carrier_payload.add_argument("--no-pdf", action="store_true", help="Skip the optional multi-page PDF output.")
+    carrier_payload.set_defaults(func=cmd_carrier_payload)
+
+    device_system = sub.add_parser(
+        "device-system",
+        help="Run the complete universal physical software layer with rendering, printer, reader, and player simulation.",
+    )
+    device_system.add_argument("--carrier-package", required=True, help="Generated physical carrier package root.")
+    device_system.add_argument("--output", required=True)
+    device_system.add_argument("--printer-backend", choices=["simulation", "win32print"], default="simulation")
+    device_system.add_argument("--reader-backend", choices=["folder-image", "wia", "twain"], default="folder-image")
+    device_system.add_argument("--player-backend", choices=["simulation", "serial", "hid"], default="simulation")
+    device_system.add_argument("--printer-name", help="Windows printer name for --printer-backend win32print.")
+    device_system.add_argument("--reader-device", help="WIA/TWAIN device name when a real reader backend is selected.")
+    device_system.add_argument("--player-port", help="Serial player port when --player-backend serial is selected.")
+    device_system.add_argument("--player-device", help="HID player path when --player-backend hid is selected.")
+    device_system.add_argument(
+        "--native-archive",
+        help="Native AMCF archive to encode into the physical payload lane; defaults to the carrier package's source archive when present.",
+    )
+    device_system.set_defaults(func=cmd_device_system)
+
+    discover = sub.add_parser(
+        "device-discover",
+        help="Discover available Windows printer, WIA/TWAIN reader, serial/HID player, and simulation providers.",
+    )
+    discover.add_argument("--output", help="Optional JSON output path.")
+    discover.set_defaults(func=cmd_device_discover)
 
     setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, checkpoints, and the optional HOOT proof dataset.")
     setup.add_argument("--manifest", help="Dependency manifest JSON.")

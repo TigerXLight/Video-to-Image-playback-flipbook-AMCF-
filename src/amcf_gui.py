@@ -51,6 +51,9 @@ class AmcfApp(tk.Tk):
             "Encode source video to AMCF",
             "Render diagnostics (03M zone + 08E heat)",
             "Create physical print plan",
+            "Render carrier SVG PNG PDF",
+            "Encode native AMCF archive into carrier pages",
+            "Run complete physical software system",
             "Run physical software adapter layer",
             "Plan physical device adapters",
             "Run virtual hardware provider layer",
@@ -134,6 +137,9 @@ class AmcfApp(tk.Tk):
             "Encode source video to AMCF",
             "Render diagnostics (03M zone + 08E heat)",
             "Create physical print plan",
+            "Render carrier SVG PNG PDF",
+            "Encode native AMCF archive into carrier pages",
+            "Run complete physical software system",
         }
         if input_required and not input_path.exists():
             messagebox.showerror("AMCF", "Choose an existing input file first.")
@@ -153,6 +159,12 @@ class AmcfApp(tk.Tk):
             args = ["diagnostics", "--input-video", str(input_path), "--output", str(output_path)]
         elif mode == "Create physical print plan":
             args = ["print-plan", "--input", str(input_path), "--output", str(output_path)]
+        elif mode == "Render carrier SVG PNG PDF":
+            args = ["carrier-render", "--carrier-root", str(input_path), "--output", str(output_path)]
+        elif mode == "Encode native AMCF archive into carrier pages":
+            args = ["carrier-payload", "--input-archive", str(input_path), "--output", str(output_path)]
+        elif mode == "Run complete physical software system":
+            args = ["device-system", "--carrier-package", str(input_path), "--output", str(output_path)]
         elif mode == "Run physical software adapter layer":
             args = ["adapter-roundtrip", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Plan physical device adapters":

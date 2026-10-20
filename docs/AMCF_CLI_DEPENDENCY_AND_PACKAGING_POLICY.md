@@ -4,8 +4,9 @@
 
 This document records the installable package boundary for the maintained AMCF
 workflow CLI. It makes the tested `src/amcf_cli.py` module available as the
-`amcf` console command. The CLI is real and installable; an EXE, installer,
-GUI, and hardware adapter remain separate boundaries.
+`amcf` console command. The CLI, Windows EXE, workflow GUI, and per-user
+installer are built together; physical hardware remains an explicit separate
+validation boundary.
 
 ## Package Boundary
 
@@ -73,8 +74,9 @@ optional research dependencies.
 - workflow outputs remain under the caller-selected `output/` directory;
 - generated archives, videos, reports, and editable-install metadata are not
   committed as release source;
-- no real printer, reader, scanner, player, motor, sensor, cartridge, USB, or
-  serial integration is included;
+- no physically validated printer, reader, scanner, player, motor, sensor,
+  cartridge, USB, or serial integration is claimed; optional provider hooks
+  are present and fail closed when a device or dependency is unavailable;
 - hardware validation claimed: `false`;
 - physical Level 5 claimed: `false`;
 - manufactured player claimed: `false`;
@@ -90,5 +92,24 @@ Windows console-EXE path. PyInstaller 6.22.3 built the current binary on
 output/amcf_cli_exe_20261020/amcf.exe
 ```
 
-The EXE is a CLI wrapper; it does not claim a GUI, hardware access, physical
-Level 5, or a manufactured player.
+The EXE is a CLI wrapper. The release bundle also contains the onedir GUI,
+`RUN_AMCF_GUI.cmd`, `INSTALL_AMCF.cmd`, `install_amcf.ps1`, and their matching
+uninstaller. The installer is per-user and does not require administrator
+rights. None of these artifacts claims physical accuracy, physical Level 5,
+or a manufactured player.
+
+## Current Windows Bundle Verification
+
+`packaging/build_amcf_release_bundle.ps1` builds:
+
+- `amcf.exe`;
+- `amcf_gui/amcf_gui.exe`;
+- optional-device requirements;
+- portable launch/install/uninstall scripts;
+- the deterministic software-I/O fixture set.
+
+The bundle was rebuilt and its CLI/device-system path was exercised on
+2026-10-21. The installer was also tested into and removed from a temporary
+directory with shortcuts disabled. Interactive GUI launch and real device
+providers still require a Windows desktop/device environment and are not
+silently treated as hardware validation.

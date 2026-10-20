@@ -11,6 +11,9 @@ It is a simulation of the software contracts, not a claim that a printer,
 scanner, reader, motor, optical player, or physical carrier has been built or
 validated.
 
+The simulation is action-level: it records command/response transcripts and
+fault decisions, rather than only checking static provider descriptors.
+
 ## Command
 
 From the project root:
@@ -31,18 +34,27 @@ The run covers the following paths. `Reader -> Printer` is a validated relay
 through the software control plane; it is not a separate physical bus claim.
 
 1. `PC -> Printer`: create a carrier artifact, verify the canonical manifest
-   hash, and reopen the artifact before accepting it.
-2. `Reader -> PC`: recover section captures and require registration and
+   hash, poll the result, close the session, and reject a bad manifest hash.
+2. `PC -> Reader`: open a reader session, inspect status, select and read a
+   section, request a rescan, reread it, reject an out-of-range selection, and
+   close the session.
+3. `Reader -> PC`: recover section captures and require registration and
    payload-hash agreement. Invalid captures remain fail-closed and request a
    rescan.
-3. `Reader -> Printer`: attach capture attestations to a reprint manifest and
+4. `Reader -> Printer`: attach capture attestations to a reprint manifest and
    create a second carrier artifact only after every capture is accepted.
-4. `Player <-> PC`: load the manifest, prefetch a hidden staging section,
+5. `Player <-> PC`: load the manifest, prefetch a hidden staging section,
    verify it, and permit the software switch only after verification.
-5. Virtual reader/player: run indexed sections through a scan gate and a
+6. `Player -> PC`: return playback, validation, output, and fault status after
+   load, play, pause, seek, and reverse actions.
+7. Virtual reader/player: run indexed sections through a scan gate and a
    folded A/B staged-player timeline. The model includes timing markers,
    registration, component payload, alpha/object masks, colour registry,
    metadata/transform, and hash/checksum lanes.
+8. Existing mechanical/optical physical method: generate a deterministic
+   physical-carrier fixture, run folded indexed transport with A/B staging,
+   hidden/view gates, play/pause/step/seek/reverse, and verify alignment and
+   unverified-staging faults fail closed.
 
 ## Outputs
 
@@ -57,6 +69,10 @@ The output directory contains:
 - `05_virtual_reader_and_player/`: virtual scan-gate, playback, A/B timeline,
   and fault-probe evidence;
 - `06_pc_to_player/`: loopback player transcript;
+- `07_action_level_device_channels/`: PC-to-reader command/response
+  transcript and invalid-command fail-closed evidence;
+- `08_mechanical_optical_player/`: generated carrier fixture, physical-method
+  timeline, player validation, and alignment/staging fault probes;
 - `universal_hardware_simulation_report.json`: final machine-readable result;
 - `universal_hardware_simulation_feedback.json`: display/transition feedback;
 - `UNIVERSAL_HARDWARE_SIMULATION_SUMMARY.md`: short human-readable summary.
@@ -74,4 +90,6 @@ The final report must keep these values false:
 
 The fault probe corrupts or removes required information and checks that the
 reader/player path rejects it rather than continuing with an unsafe accept.
-The later hardware-specific provider layer must preserve these contracts.
+The existing physical-method simulator is now part of this run; it remains a
+software model only. The later hardware-specific provider layer must preserve
+these contracts.

@@ -30,7 +30,12 @@ New-Item -ItemType Directory -Force $BundleDir | Out-Null
 Copy-Item (Join-Path $CliDir "amcf.exe") (Join-Path $BundleDir "amcf.exe")
 Copy-Item $GuiAppDir (Join-Path $BundleDir "amcf_gui") -Recurse -Force
 Copy-Item (Join-Path $PSScriptRoot "RUN_AMCF_GUI.cmd") (Join-Path $BundleDir "RUN_AMCF_GUI.cmd")
+Copy-Item (Join-Path $PSScriptRoot "install_amcf.ps1") (Join-Path $BundleDir "install_amcf.ps1")
+Copy-Item (Join-Path $PSScriptRoot "uninstall_amcf.ps1") (Join-Path $BundleDir "uninstall_amcf.ps1")
+Copy-Item (Join-Path $PSScriptRoot "INSTALL_AMCF.cmd") (Join-Path $BundleDir "INSTALL_AMCF.cmd")
+Copy-Item (Join-Path $PSScriptRoot "UNINSTALL_AMCF.cmd") (Join-Path $BundleDir "UNINSTALL_AMCF.cmd")
 Copy-Item (Join-Path $PSScriptRoot "README_WINDOWS.md") (Join-Path $BundleDir "README_WINDOWS.md")
+Copy-Item (Join-Path $PSScriptRoot "requirements-device.txt") (Join-Path $BundleDir "requirements-device.txt")
 Copy-Item (Join-Path $Root "QUICKSTART.md") (Join-Path $BundleDir "QUICKSTART.md")
 $FixtureSource = Join-Path $Root "tests\fixtures\amcf_software_io"
 $FixtureTarget = Join-Path $BundleDir "tests\fixtures\amcf_software_io"

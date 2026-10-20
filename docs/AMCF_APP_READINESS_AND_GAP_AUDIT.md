@@ -9,18 +9,64 @@
 > are retained as historical app/physical-I/O analysis; do not use those old
 > “no CLI/package” lines as the current status.
 
+> **Superseding implementation update (2026-10-21):** The historical gap
+> tables below were written before the universal device-system implementation.
+> They are retained as an audit trail, but their `missing`/`future` entries do
+> not describe the current source tree. Use `docs/AMCF_DEVICE_SYSTEM.md` and
+> the commands below for the current status.
+
+## Current implementation status
+
+The requested software layer is now implemented and tested in
+`src/amcf_device_system.py`:
+
+- carrier sections render to SVG, PNG, and PDF with registration marks,
+  timing/index lanes, colour swatches, lane metadata, and hashes;
+- printer preflight, persistent job state, simulated spool output, completion,
+  retry, cancellation, and optional Windows Print Spooler submission/status;
+- folder-image reader recovery plus optional WIA/TWAIN acquisition;
+- pixel-based registration-marker, lane-presence, and colour-registry checks;
+- reader-to-recovered-AMCF-package reconstruction with scan evidence;
+- source-free native AMCF payload framing into printable pages, exact image
+  recovery, archive SHA-256/CRC verification, corruption rejection, and native
+  reader decode;
+- persistent device configuration and software reference calibration;
+- player protocol handshake, manifest load, staging, verification, switching,
+  sensors, motor, shutter, illumination, seek, reverse, stop, cancel, serial,
+  and HID transport entry points;
+- provider discovery for Windows printers, WIA/TWAIN readers, serial players,
+  HID devices, and deterministic simulation devices.
+
+Run the full software path with:
+
+```text
+amcf print-plan --input <archive.amcf.zip> --output <carrier-package>
+amcf carrier-payload --input-archive <archive.amcf.zip> --output <payload-output>
+amcf device-system --carrier-package <carrier-package> --output <run-output>
+amcf device-discover --output <run-output>\device_discovery.json
+```
+
+The default run is a real executable software workflow, not a description or
+fixture-only report. It remains explicit about what it cannot prove: physical
+print accuracy, scanner tolerances on an actual device, firmware compatibility,
+manufactured-player behaviour, or physical print/scan tolerances. The native
+payload path does encode the actual AMCF archive bytes and can recover them in
+the software-rendered image test; it does not claim that a real printer or
+scanner preserves those bytes until hardware calibration is performed.
+
 Current verified state:
 
 - installable console command: `amcf`
 - verified commands: `status`, `--help`
 - digital workflow commands present: `encode`, `component-archive`, `decode`,
-  and `print-plan`
+  `print-plan`, and `carrier-payload`
 - diagnostic coverage remains a source-checkout audit runner under
   `demo/run_amcf_diagnostic_coverage_audit.py`
 - Windows console EXE built and smoke-tested at
   `output/amcf_cli_exe_20261020/amcf.exe`; this is a CLI binary, not a GUI or
   hardware runtime
-- real printer/scanner/player hardware remains unimplemented and unclaimed
+- real printer/scanner/player hardware remains unvalidated and unclaimed;
+  optional provider entry points fail closed when hardware is unavailable
 - named diagnostic families are covered by
   `demo/run_amcf_diagnostic_coverage_audit.py`; see
   `docs/AMCF_DIAGNOSTIC_AND_METHOD_CLOSEOUT_20261020.md`
@@ -36,7 +82,7 @@ Current verified state:
 - HEAD: `4bd3a6619e252ca7f61fe0fca58b5f263372cafe`
 - Audit time: 2026-10-12 18:35:58 +01:00
 - Runtime behaviour changed: no
-- GUI implemented: no
+- GUI implemented: yes, workflow launcher with the same native payload action
 - executable built: yes, console CLI only
 - dependencies added: no
 - hardware validation claimed: false

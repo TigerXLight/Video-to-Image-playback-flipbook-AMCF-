@@ -1,0 +1,6 @@
+# Optional real Windows/device providers. The deterministic simulation works without these.
+Pillow
+pyserial
+pywin32; platform_system == "Windows"
+twain; platform_system == "Windows"
+hidapi; platform_system == "Windows"
