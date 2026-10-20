@@ -19,7 +19,7 @@ All Test 02 application code in `Main` was newly written for this workspace. No 
 
 ## Reference repositories inspected
 
-See `Github repos\REPOSITORY_MANIFEST.tsv`. OpenCV and scikit-image are used through installed package APIs only. FFmpeg is used as an installed executable. SAM 2, RAFT, PySceneDetect, Cutie, XMem and CoTracker remain research references only; CoTracker is explicitly not copied because its majority licence is CC-BY-NC.
+See `Github repos\REPOSITORY_MANIFEST.tsv`. OpenCV and scikit-image are used through installed package APIs only. FFmpeg is used as an installed executable. SAM 2/SAMURAI and CoTracker are external runtime dependencies for the deep-inference adapter; RAFT, PySceneDetect, Cutie, XMem, and related repositories remain reference-only until their own adapters are implemented. CoTracker is explicitly not copied because its majority licence is CC-BY-NC.
 
 ## Deep-inference runtime boundary
 

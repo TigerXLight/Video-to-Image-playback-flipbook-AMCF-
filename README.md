@@ -51,11 +51,17 @@ The static HTML viewer displays player-facing JSON state: reconstructed playback
 
 The viewer is a software inspection stub, not a final UI, not the physical player, and not playback proof.
 
-## Optional future deep semantic adapters
+## External deep semantic dependencies
 
 The clean core package does not bundle SAM2, SAMURAI, CoTracker, AOT, Cutie, DEVA, RAFT, XMem, TAPNet, Track-Anything, copied third-party repositories, model checkpoints, or deep-tool weights.
 
-Future optional deep semantic adapters require their own licence and provenance boundaries. If commercial use is restricted for an adapter, describe that work as source-available non-commercial or non-commercial research software, not strict OSI open source.
+SAM2/SAMURAI and CoTracker are external runtime dependencies for the deep
+semantic path. They are executable through the Main adapter but are not copied
+into the AMCF package. Other research adapters remain future or reference-only
+until their own runtime contract is implemented. Every external adapter keeps
+its own licence and provenance boundary. If commercial use is restricted for
+an adapter, describe that work as source-available non-commercial or
+non-commercial research software, not strict OSI open source.
 
 ## Executable deep semantic inference
 
