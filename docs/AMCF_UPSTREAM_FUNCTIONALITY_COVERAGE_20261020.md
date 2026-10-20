@@ -12,11 +12,11 @@ that should remain outside the project licence.
 | OpenCV | Image/video loading, masks, contours, optical-flow/diagnostic operations, and the deep adapter frame/overlay path | Installed API use; Main tests and the 2026-10-20 deep run passed |
 | scikit-image | Image-quality metrics and comparison gates | Installed API use; full Main/public suites passed |
 | FFmpeg/FFprobe | Video/audio extraction, MP4 export, and decoded-video checks | External executable boundary; existing video pipeline and acceptance runs passed |
-| SAM2/SAMURAI | Box-prompt segmentation masks for the semantic component/diagnostic path | `src/amcf_deep_semantic_inference.py`; Main and public five-frame CPU runs passed |
+| SAM2/SAMURAI | Box-prompt segmentation masks for the semantic component/diagnostic path and the bounded HOOT annotated Level-5 proof | `src/amcf_deep_semantic_inference.py` and `src/amcf_hoot_level5_inference.py`; Main and public five-frame CPU runs plus a 54-frame/18-mask HOOT reproduction passed |
 | CoTracker | Point tracks and visibility for persistent motion/identity evidence | `src/amcf_deep_semantic_inference.py`; Main and public five-frame CPU runs passed |
 
-The deep adapter retains the upstream repositories and checkpoints outside the
-AMCF package. It is a real execution bridge, not a sidecar-only validator.
+The deep adapters retain the upstream repositories and checkpoints outside the
+AMCF package. They are real execution bridges, not sidecar-only validators.
 
 ## Reference-only or separately bounded surfaces
 
@@ -39,9 +39,11 @@ implemented.
 The local and downloaded public trees now contain byte-identical Main/public
 source, demo, documentation, and test surfaces. Both full suites pass at
 `523/523`. The accepted digital AMCF archive/decode, diagnostics, software
-I/O/physical simulation, and bounded controlled/HOOT proof records remain
+I/O/physical simulation, bounded controlled/HOOT proof records, generic
+SAM2/CoTracker bridge, and parameterized HOOT inference reproduction remain
 present. The previously missing executable deep-inference bridge is now
-present and was run in both trees.
+present and has been run in both trees; the standalone HOOT path has also been
+run against the local annotated sequence.
 
 This does not claim that every arbitrary-video semantic identity problem is
 solved, that every upstream research repository is embedded, or that physical

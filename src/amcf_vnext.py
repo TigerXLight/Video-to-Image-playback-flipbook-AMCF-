@@ -191,6 +191,13 @@ def deep_runner_path() -> Path:
     return MAIN / "src" / "amcf_deep_semantic_inference.py"
 
 
+def hoot_runner_path() -> Path:
+    installed_path = MAIN / "amcf_hoot_level5_inference.py"
+    if installed_path.exists():
+        return installed_path
+    return MAIN / "src" / "amcf_hoot_level5_inference.py"
+
+
 def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--config", help=f"Path to AMCF config JSON. Default: {DEFAULT_CONFIG}")
 
@@ -490,6 +497,48 @@ def cmd_deep_inference(args: argparse.Namespace) -> int:
     return int(completed.returncode)
 
 
+def cmd_hoot_level5(args: argparse.Namespace) -> int:
+    config = load_config(args.config)
+    runner = hoot_runner_path()
+    deep_python = Path(args.deep_python).resolve() if args.deep_python else config_deep_python(config)
+    sam2_repo = config_optional_path(config, "sam2_repo")
+    sam2_checkpoint = config_optional_path(config, "sam2_checkpoint")
+    missing = [
+        name
+        for name, value in {
+            "runner": runner,
+            "deep_python": deep_python,
+            "sam2_repo": sam2_repo,
+            "sam2_checkpoint": sam2_checkpoint,
+            "input": Path(args.input).resolve(),
+        }.items()
+        if value is None or not value.exists()
+    ]
+    if missing:
+        print(json.dumps({"status": "failed", "error": "missing HOOT inference resource", "missing": missing}, indent=2))
+        return 2
+    command = [
+        str(deep_python),
+        str(runner),
+        "--input",
+        str(Path(args.input).resolve()),
+        "--output",
+        str(Path(args.output).resolve()),
+        "--sam2-repo",
+        str(sam2_repo),
+        "--sam2-checkpoint",
+        str(sam2_checkpoint),
+        "--max-visible-masks",
+        str(args.max_visible_masks),
+        "--device",
+        args.device,
+    ]
+    env = dict(os.environ)
+    env["PYTHONUNBUFFERED"] = "1"
+    completed = subprocess.run(command, cwd=str(config_workspace(config)), env=env, text=True, check=False)
+    return int(completed.returncode)
+
+
 def cmd_config(args: argparse.Namespace) -> int:
     config = load_config(args.config)
     result = {
@@ -626,7 +675,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("archive")
     p.set_defaults(func=cmd_inspect_archive)
 
-    p = sub.add_parser("toolchain-status", help="Check optional SAM2/CoTracker path/import availability without running deep inference.")
+    p = sub.add_parser("toolchain-status", help="Check configured SAM2/CoTracker path/import availability without running inference.")
     add_common_args(p)
     p.add_argument("--output", help="Optional output directory for toolchain status JSON/CSV.")
     p.set_defaults(func=cmd_toolchain_status)
@@ -644,6 +693,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--skip-sam2", action="store_true")
     p.add_argument("--skip-cotracker", action="store_true")
     p.set_defaults(func=cmd_deep_inference)
+
+    p = sub.add_parser("hoot-level5", help="Run the bounded HOOT annotated lost/recovered semantic proof with real SAM2 inference.")
+    add_common_args(p)
+    p.add_argument("--input", required=True, help="Extracted HOOT sequence directory or explicit HOOT zip archive.")
+    p.add_argument("--output", required=True, help="Output directory for reproducible HOOT evidence.")
+    p.add_argument("--deep-python", help="Override configured Python runtime for deep inference.")
+    p.add_argument("--max-visible-masks", type=int, default=36)
+    p.add_argument("--device", default="cpu", choices=("cpu", "cuda"))
+    p.set_defaults(func=cmd_hoot_level5)
 
     p = sub.add_parser("github-manifest", help="Emit recommended GitHub include/exclude lists.")
     add_common_args(p)

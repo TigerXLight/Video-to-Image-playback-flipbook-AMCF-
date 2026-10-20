@@ -42,6 +42,7 @@ py-modules = [
   "amcf_diagnostic_profiles",
   "amcf_diagnostic_state",
   "amcf_deep_semantic_inference",
+  "amcf_hoot_level5_inference",
   "amcf_digital_encoder",
   "amcf_digital_validator",
   "amcf_full_workspace_parity_ledger",

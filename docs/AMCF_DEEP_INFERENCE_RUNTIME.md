@@ -45,6 +45,21 @@ remains an external non-commercial/research-bounded dependency according to
 the local repository audit.  This keeps the execution capability reproducible
 without falsely relicensing upstream material.
 
+## HOOT annotated Level-5 reproduction
+
+The historical HOOT run is also executable from Main through:
+
+```text
+RUN_AMCF_VNEXT.cmd hoot-level5 --input <extracted-hoot-directory-or-zip> --output <evidence-directory>
+```
+
+This path parses the supplied official frame annotations, identifies a
+visible -> full-occlusion/absence -> visible interval, runs real SAM2 masks on
+the visible frames, and writes the event window, masks, overlays, semantic
+sidecar, hashes, and final status.  It does not download or vendor HOOT data
+implicitly.  The Level-5 claim is bounded to the supplied annotated sequence;
+it is not a universal person/object identity claim.
+
 ## Local acceptance run
 
 The first Main-facing execution was run against the same five-frame proxy
@@ -53,6 +68,11 @@ five frames of CoTracker output shaped `1 x 5 x 16 x 2`, separate diagnostic
 overlays, and no source-video fallback.  Evidence was written under
 `Main/output/deep_inference_acceptance_20261020/` and is generated output, not
 release source.
+
+The standalone HOOT reproduction was then run on the existing 54-frame
+`potted_plant/008` extraction with 18 visible SAM2 masks.  It passed with the
+annotated lost/recovered event, `unsafe_acceptance_count = 0`, and bounded
+Level-5 status under `Main/output/hoot_level5_acceptance_20261020/`.
 
 This closes the specific “Main only validates stored deep evidence” gap.  It
 does not claim universal semantic identity for arbitrary videos, and it does

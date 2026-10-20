@@ -23,11 +23,13 @@ See `Github repos\REPOSITORY_MANIFEST.tsv`. OpenCV and scikit-image are used thr
 
 ## Deep-inference runtime boundary
 
-The Main adapter `src/amcf_deep_semantic_inference.py` now executes the
-accepted SAM2 mask and CoTracker tracking path when the user supplies the
-external repositories, compatible Python runtime, and checkpoints. Those
-repositories and weights are not copied into the AMCF package. The adapter
-writes bounded masks, tracks, overlays, and integrity sidecars; it does not
+The Main adapters `src/amcf_deep_semantic_inference.py` and
+`src/amcf_hoot_level5_inference.py` now execute the accepted SAM2 mask,
+CoTracker tracking, and bounded HOOT annotated lost/recovered paths when the
+user supplies the external repositories, compatible Python runtime,
+checkpoints, and HOOT input. Those repositories, weights, and dataset files
+are not copied into the AMCF package. The adapters write bounded masks,
+tracks, event overlays, semantic sidecars, and integrity records; they do not
 silently convert stored proof artifacts into a claim of fresh inference.
 
 SAM2/SAMURAI and CoTracker retain their upstream licence and distribution

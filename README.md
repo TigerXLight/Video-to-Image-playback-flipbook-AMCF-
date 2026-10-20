@@ -76,6 +76,14 @@ outside the package and retain their own licences; configure their paths in
 produces diagnostic inference evidence, not a hidden full-video fallback or an
 automatic universal Level-5 claim. See `docs/AMCF_DEEP_INFERENCE_RUNTIME.md`.
 
+The bounded real-world HOOT proof is executable separately through
+`RUN_AMCF_VNEXT.cmd hoot-level5 --input <extracted-sequence-or-zip> --output
+<evidence-directory>`. It parses official frame-level visibility/occlusion
+annotations, runs SAM2 on visible frames, and emits the lost/recovered event
+window, masks, overlays, semantic sidecar, hashes, and a dataset-bounded
+Level-5 status. HOOT data and SAM2 resources remain external and are never
+silently downloaded or embedded.
+
 ## Claim boundaries
 
 This package does not claim physical proof, physical Level 5, hardware validation, manufacturing readiness, final UI, real scans, physical player proof, or a built prototype.
