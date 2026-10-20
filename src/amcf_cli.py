@@ -40,6 +40,7 @@ def cmd_status(_: argparse.Namespace) -> int:
                 "hardware-plan",
                 "hardware-providers",
                 "software-control",
+                "device-providers",
                 "setup",
             ],
             "hardware_validation_claimed": False,
@@ -270,6 +271,34 @@ def cmd_software_control(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_device_providers(args: argparse.Namespace) -> int:
+    """Discover and exercise selected software or explicitly enabled device adapters."""
+    from amcf_device_provider_adapters import run_device_provider_discovery
+
+    project_root = Path(args.project_root).resolve() if args.project_root else Path(__file__).resolve().parents[1]
+    result = run_device_provider_discovery(
+        project_root,
+        Path(args.output),
+        printer_backend=args.printer_backend,
+        reader_backend=args.reader_backend,
+        player_backend=args.player_backend,
+        printer_name=args.printer_name,
+        reader_device=args.reader_device,
+        reader_source=args.reader_source,
+        player_port=args.player_port,
+        enable_hardware=args.enable_hardware,
+    )
+    report = result["report"]
+    return _print_result(
+        {
+            "ok": bool(report.get("final_passed")),
+            "project_root": str(project_root),
+            "output_dir": result.get("output_dir", str(Path(args.output).resolve())),
+            **result,
+        }
+    )
+
+
 def cmd_print_plan(args: argparse.Namespace) -> int:
     result = generate_physical_carrier_from_amcf_archive(args.input, args.output)
     result["unsafe_acceptance_count"] = 0
@@ -409,6 +438,26 @@ def build_parser() -> argparse.ArgumentParser:
     software_control.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
     software_control.add_argument("--output", required=True)
     software_control.set_defaults(func=cmd_software_control)
+
+    device = sub.add_parser(
+        "device-providers",
+        help="Discover and exercise concrete printer, reader, and player provider adapters.",
+    )
+    device.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
+    device.add_argument("--output", required=True)
+    device.add_argument("--printer-backend", choices=["file", "windows-spooler"], default="file")
+    device.add_argument("--reader-backend", choices=["folder", "windows-wia"], default="folder")
+    device.add_argument("--player-backend", choices=["loopback", "serial"], default="loopback")
+    device.add_argument("--printer-name", help="Windows Print Spooler printer name when that backend is selected.")
+    device.add_argument("--reader-device", help="Windows WIA device name when that backend is selected.")
+    device.add_argument("--reader-source", help="Folder containing captured sections for the folder reader backend.")
+    device.add_argument("--player-port", help="Serial port for the JSON-line player backend.")
+    device.add_argument(
+        "--enable-hardware",
+        action="store_true",
+        help="Explicitly enable the selected hardware transport; failures remain fail-closed.",
+    )
+    device.set_defaults(func=cmd_device_providers)
 
     setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, checkpoints, and the optional HOOT proof dataset.")
     setup.add_argument("--manifest", help="Dependency manifest JSON.")

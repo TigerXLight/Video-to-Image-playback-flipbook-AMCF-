@@ -120,6 +120,15 @@ This adds capability negotiation, ordered command envelopes, bounded local
 seek/reverse, an auditable transcript, and sequence-gap/unverified-switch
 fail-closed probes. It does not open hardware.
 
+Discover and exercise the concrete provider adapters with the software-only
+defaults:
+
+    amcf device-providers --project-root . --output output/device_provider_discovery
+
+The optional Windows Spooler, WIA, and serial backends require explicit device
+selection and `--enable-hardware`; missing or failed device checks remain
+fail-closed. See `docs/AMCF_DEVICE_PROVIDER_ADAPTERS.md`.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

@@ -48,6 +48,10 @@ The installed console command is:
 
     amcf hardware-providers --project-root . --output output/hardware_provider_runtime
 
+The newer `device-providers` command sits above this provider-neutral runtime
+and selects concrete file/folder/loopback adapters or explicitly enabled
+Windows transport hooks without changing the status contract.
+
 The command writes:
 
 - hardware_provider_runtime_report.json

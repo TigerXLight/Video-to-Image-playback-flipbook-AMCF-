@@ -66,3 +66,12 @@ sequence ordering, records all corridor commands and responses, bounds local
 seek/reverse, and rejects unverified visible switches. It remains software-only
 and keeps physical display and transition permissions disabled. See
 `docs/AMCF_SOFTWARE_CONTROL_PROTOCOL.md`.
+
+## Device Provider Adapters
+
+The `device-providers` command now exercises concrete `file`, `folder`, and
+`loopback` adapters for the three corridors. Windows Print Spooler, WIA, and
+serial adapters are explicit opt-in transport hooks. They require a selected
+device profile and `--enable-hardware`, and they reject missing dependencies,
+failed probes, invalid hashes, and malformed replies without authorizing a
+physical transition. See `docs/AMCF_DEVICE_PROVIDER_ADAPTERS.md`.

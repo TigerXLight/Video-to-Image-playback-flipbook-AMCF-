@@ -124,6 +124,13 @@ envelopes, provider responses, bounded local seek/reverse, transcript output,
 and fail-closed rejection for unverified switches or sequence gaps. See
 `docs/AMCF_SOFTWARE_CONTROL_PROTOCOL.md`.
 
+Concrete device-provider adapters are available through the `device-providers`
+command. The default `file`, `folder`, and `loopback` providers exercise the
+printer/carrier, reader/scanner, and player corridors without hardware. Windows
+Print Spooler, WIA, and serial transports are explicit opt-in hooks and remain
+fail-closed until a device profile and `--enable-hardware` are supplied. See
+`docs/AMCF_DEVICE_PROVIDER_ADAPTERS.md`.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.
