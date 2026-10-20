@@ -17,7 +17,7 @@ The maintained diagnostic contract keeps 03M camera-compensated zone motion, 08E
 
 ## Executable Parity
 
-Local `Main` and `Github_Public_Current` both pass the full 520-test suite and the unified digital acceptance runner. The maintained trees are byte-identical for `src` (99 files), `demo` (65), `docs` (142), and `tests` (67). The CLI, software-I/O, reader/player, virtual hardware, physical carrier, and physical-player simulation modules are present and tested in both.
+Local `Main` and `Github_Public_Current` both pass the full 520-test suite and the unified digital acceptance runner. The maintained trees are byte-identical for `src` (99 files), `demo` (65), `docs` (144), and `tests` (67). The CLI, software-I/O, reader/player, virtual hardware, physical carrier, and physical-player simulation modules are present and tested in both. The third-party/reference provenance closeout is recorded in `AMCF_THIRD_PARTY_REFERENCE_CLOSEOUT_20261020.md`.
 
 The canonical component archive remains larger than the source-size ceiling. The exact temporal component profile retains all 2,592 logical events and reproduces 288/288 frame hashes source-free. The source-seeded compact profile is an optional source-assisted profile, not a replacement for the strict native archive.
 
