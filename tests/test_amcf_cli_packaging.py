@@ -35,6 +35,7 @@ class AmcfCliPackagingTests(unittest.TestCase):
             "amcf_device_provider_adapters",
             "amcf_device_profiles",
             "amcf_device_interface_conformance",
+            "amcf_universal_hardware_simulation",
             "amcf_quality_metrics",
             "amcf_setup",
             "amcf_temporal_component_codec",

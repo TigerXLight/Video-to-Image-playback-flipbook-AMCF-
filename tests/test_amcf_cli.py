@@ -42,6 +42,7 @@ class AmcfCliTests(unittest.TestCase):
         self.assertIn("device-providers", help_text)
         self.assertIn("device-profiles", help_text)
         self.assertIn("device-conformance", help_text)
+        self.assertIn("hardware-simulation", help_text)
         self.assertIn("setup", help_text)
 
     def test_status_command_passes(self) -> None:
@@ -112,6 +113,19 @@ class AmcfCliTests(unittest.TestCase):
         self.assertTrue(report["final_passed"])
         self.assertEqual(report["unsafe_acceptance_count"], 0)
         self.assertFalse(report["hardware_connected"])
+
+    def test_hardware_simulation_command(self) -> None:
+        output = self.tmp / "hardware_simulation"
+        self.assertEqual(
+            cli_main(["hardware-simulation", "--project-root", str(PACKAGE), "--output", str(output)]),
+            0,
+        )
+        report = json.loads((output / "universal_hardware_simulation_report.json").read_text(encoding="utf-8"))
+        self.assertTrue(report["final_passed"])
+        self.assertEqual(report["unsafe_acceptance_count"], 0)
+        self.assertFalse(report["hardware_connected"])
+        self.assertTrue(report["corridors"]["reader_to_printer"]["passed"])
+        self.assertTrue((output / "04_reader_to_printer" / "reader_to_printer_contract.json").exists())
 
     def test_hardware_adapter_plan_command(self) -> None:
         output = self.tmp / "hardware_plan"

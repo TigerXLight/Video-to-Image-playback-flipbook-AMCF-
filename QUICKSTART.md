@@ -144,6 +144,14 @@ adapter paths plus the current provider/profile/control paths:
 
 See `docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md`.
 
+Run the complete software-only hardware simulation, including the carrier,
+reader, reader-to-printer relay, virtual scan gate, staged player, and
+fail-closed fault probes:
+
+    amcf hardware-simulation --project-root . --output output/universal_hardware_simulation
+
+See `docs/AMCF_UNIVERSAL_HARDWARE_SIMULATION.md`.
+
 ## 2. Run virtual hardware demo
 
 ```cmd

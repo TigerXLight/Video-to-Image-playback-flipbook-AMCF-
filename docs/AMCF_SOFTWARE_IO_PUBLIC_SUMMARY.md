@@ -91,3 +91,26 @@ together with the provider-neutral runtime, versioned control protocol,
 concrete providers, and profile-selected providers. It verifies the shared
 manifest, timestamped update events, hashes, status feedback, and fail-closed
 rules without opening hardware. See `docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md`.
+
+## Universal Hardware Simulation
+
+The `hardware-simulation` command is the executable software base for the
+future physical layer. It runs the normalized corridors and their simulation
+paths together:
+
+- `PC -> Printer`: writes and reopens a carrier artifact after manifest-hash validation.
+- `Reader -> PC`: captures section fixtures and checks registration, colour, and payload-hash feedback.
+- `Reader -> Printer`: relays only accepted reader captures into a new carrier artifact with capture attestations.
+- `Player <-> PC`: loads, prefetches, verifies, and switches staged sections through the loopback control provider.
+- Virtual reader/player: exercises timing, registration, masks, colour status, rescan, A/B staging, playback, seek, reverse, and fault rejection.
+
+Run it with:
+
+    amcf hardware-simulation --project-root . --output output/universal_hardware_simulation
+
+The run writes per-corridor contracts, provider probes, capture and relay
+artifacts, player transcripts, a virtual staged timeline, fault-probe output,
+feedback, and one final report. It is source-independent and software-only;
+it does not claim a real printer, scanner, motor, manufactured player, or
+physical Level 5 validation. A later hardware provider must satisfy the same
+contracts before any physical transition can be enabled.

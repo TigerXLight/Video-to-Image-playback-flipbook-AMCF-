@@ -142,6 +142,13 @@ The `device-conformance` command combines the older fixture/adapter behavior
 with the current provider, profile, and software-control behavior in one
 transport-neutral report. See `docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md`.
 
+The `hardware-simulation` command executes the software-only device layer as
+one run: carrier artifact creation, reader capture recovery, validated
+reader-to-printer relay, virtual scan-gate decisions, A/B staged player
+transport, playback control, and fail-closed fault probes. It does not open a
+real printer, scanner, motor, or player. See
+`docs/AMCF_UNIVERSAL_HARDWARE_SIMULATION.md`.
+
 ## Quickstart
 
 See `QUICKSTART.md` for demo and test commands.
@@ -158,7 +165,7 @@ For the bounded 14H WebP archive contract, `demo/run_amcf_14h_video_roundtrip_de
 
 The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation and optical-flow track reporting when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
-The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, `diagnostics`, `print-plan`, `physical-roundtrip`, and `setup` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; they are not real printer/scanner/player integrations or hardware validation claims.
+The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, `diagnostics`, `print-plan`, `physical-roundtrip`, `device-conformance`, `hardware-simulation`, and `setup` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; they are not real printer/scanner/player integrations or hardware validation claims.
 
 The maintained CLI also exposes `seeded-materializer`. This is the compact 4K
 source-seeded AMCF event-materializer profile: it retains the canonical event

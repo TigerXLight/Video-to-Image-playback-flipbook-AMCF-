@@ -58,6 +58,7 @@ class AmcfApp(tk.Tk):
             "Discover device providers",
             "Validate device profiles",
             "Run universal device conformance",
+            "Run universal hardware simulation",
             "Check dependencies",
             "Prepare deep dependencies",
             "Download HOOT proof dataset",
@@ -166,6 +167,8 @@ class AmcfApp(tk.Tk):
             args = ["device-profiles", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Run universal device conformance":
             args = ["device-conformance", "--project-root", self.project_root.get(), "--output", str(output_path)]
+        elif mode == "Run universal hardware simulation":
+            args = ["hardware-simulation", "--project-root", self.project_root.get(), "--output", str(output_path)]
         elif mode == "Check dependencies":
             args = [
                 "setup",

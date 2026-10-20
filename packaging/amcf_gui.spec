@@ -33,6 +33,7 @@ a = Analysis(
         "amcf_device_provider_adapters",
         "amcf_device_profiles",
         "amcf_device_interface_conformance",
+    "amcf_universal_hardware_simulation",
         "tkinter",
         "_tkinter",
     ],

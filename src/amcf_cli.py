@@ -43,6 +43,7 @@ def cmd_status(_: argparse.Namespace) -> int:
                 "device-providers",
                 "device-profiles",
                 "device-conformance",
+                "hardware-simulation",
                 "setup",
             ],
             "hardware_validation_claimed": False,
@@ -340,6 +341,23 @@ def cmd_device_conformance(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_hardware_simulation(args: argparse.Namespace) -> int:
+    """Run the complete no-hardware printer, reader, and player simulation."""
+    from amcf_universal_hardware_simulation import run_universal_hardware_simulation
+
+    project_root = Path(args.project_root).resolve() if args.project_root else Path(__file__).resolve().parents[1]
+    result = run_universal_hardware_simulation(project_root, Path(args.output))
+    report = result["report"]
+    return _print_result(
+        {
+            "ok": bool(report.get("final_passed")),
+            "project_root": str(project_root),
+            "output_dir": result.get("output_dir", str(Path(args.output).resolve())),
+            **result,
+        }
+    )
+
+
 def cmd_print_plan(args: argparse.Namespace) -> int:
     result = generate_physical_carrier_from_amcf_archive(args.input, args.output)
     result["unsafe_acceptance_count"] = 0
@@ -521,6 +539,14 @@ def build_parser() -> argparse.ArgumentParser:
     conformance.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
     conformance.add_argument("--output", required=True)
     conformance.set_defaults(func=cmd_device_conformance)
+
+    simulation = sub.add_parser(
+        "hardware-simulation",
+        help="Run the complete software-only printer, reader, virtual carrier, and player simulation.",
+    )
+    simulation.add_argument("--project-root", help="Repository or bundle root containing tests/fixtures/amcf_software_io.")
+    simulation.add_argument("--output", required=True)
+    simulation.set_defaults(func=cmd_hardware_simulation)
 
     setup = sub.add_parser("setup", help="Check or prepare Python, FFmpeg, SAM2, CoTracker, checkpoints, and the optional HOOT proof dataset.")
     setup.add_argument("--manifest", help="Dependency manifest JSON.")

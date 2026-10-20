@@ -74,6 +74,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "src/amcf_device_provider_adapters.py",
     "src/amcf_device_profiles.py",
     "src/amcf_device_interface_conformance.py",
+    "src/amcf_universal_hardware_simulation.py",
     "packaging/amcf_gui.spec",
     "packaging/amcf_cli.spec",
     "packaging/tkinter_runtime_hook.py",
@@ -88,6 +89,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "docs/AMCF_DEVICE_PROVIDER_ADAPTERS.md",
     "docs/AMCF_DEVICE_PROFILE_LAYER.md",
     "docs/AMCF_DEVICE_INTERFACE_CONFORMANCE.md",
+    "docs/AMCF_UNIVERSAL_HARDWARE_SIMULATION.md",
     "docs/AMCF_SOFTWARE_IO_PUBLIC_SUMMARY.md",
     "docs/AMCF_PHYSICAL_PLAYER_DEVELOPMENT_SEQUENCE.md",
     "docs/AMCF_PHYSICAL_PLAYER_DOCS_MAP.md",
@@ -109,6 +111,7 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "profiles/amcf_device_profiles.example.json",
     "profiles/amcf_universal_device_interface.template.json",
     "tests/test_amcf_device_interface_conformance.py",
+    "tests/test_amcf_universal_hardware_simulation.py",
     "tests/test_amcf_setup.py",
     "tests/test_public_release_tag_prep.py",
 }
