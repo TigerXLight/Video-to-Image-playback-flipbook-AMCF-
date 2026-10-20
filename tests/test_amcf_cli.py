@@ -31,6 +31,7 @@ class AmcfCliTests(unittest.TestCase):
         self.assertIn("decode", help_text)
         self.assertIn("print-plan", help_text)
         self.assertIn("component-archive", help_text)
+        self.assertIn("seeded-materializer", help_text)
         self.assertIn("setup", help_text)
 
     def test_status_command_passes(self) -> None:

@@ -31,6 +31,33 @@ amcf status
 The editable install command is a developer/package check, not a Windows EXE
 build. FFmpeg/FFprobe remain external optional tools for MP4 input/export.
 
+## 1B. Compact 4K seeded event-materializer profile
+
+Validate an existing compact profile without the original source MP4:
+
+```cmd
+amcf seeded-materializer --input-archive "path\to\amcf_4k_source_seeded_event_materializer.amcf.zip" --output "output\seeded_validation"
+```
+
+The validator decodes the embedded seed, materializes all retained component
+events through the scaled masks, composites the frames, and checks the stored
+event/frame hashes. It must report `direct_seed_playback_used: false`. This is
+the compact source-seeded profile; it is not the strict seed-free native-pixel
+archive.
+
+To build the profile from an existing compressed 4K seed profile and canonical
+event/mask archive, pass both `--profile-archive` and `--canonical-archive` to
+the same command. The resulting archive is written under the selected output
+directory.
+
+To build the optional Windows bundle from PowerShell:
+
+```powershell
+.\packaging\build_amcf_release_bundle.ps1 -Python ".\.venv\Scripts\python.exe"
+```
+
+The ZIP contains both the console CLI and the small workflow GUI.
+
 To inspect or prepare the optional deep semantic runtime:
 
 ```cmd

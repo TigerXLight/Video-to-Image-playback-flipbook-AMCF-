@@ -118,9 +118,34 @@ For the bounded 14H WebP archive contract, `demo/run_amcf_14h_video_roundtrip_de
 
 The package now also includes a component-event archive parity layer in `src/amcf_component_event_archive.py`. It stores a base visual state plus timestamped changed-region component events, can decode/reconstruct frames without rereading source pixels, reports archive size-ceiling status, uses WebP payloads when Pillow is available, falls back to deterministic PPM payloads when needed, can use optional OpenCV changed-region segmentation and optical-flow track reporting when available, and can generate a static inspection viewer package. This is still software parity work, not a final GUI/EXE.
 
-The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, and `print-plan` commands over the existing clean public pipeline. The CLI is a software workflow entrypoint; it is not a GUI, EXE, real printer/scanner/player integration, or hardware validation claim.
+The package also includes a first public workflow CLI module in `src/amcf_cli.py`, exercised by `demo/run_amcf_cli_workflow_demo.py`. It exposes `status`, `encode`, `component-archive`, `decode`, `seeded-materializer`, and `print-plan` commands over the existing clean public pipeline. The console CLI and optional GUI are software workflow entrypoints; they are not real printer/scanner/player integrations or hardware validation claims.
 
-The CLI now has a `pyproject.toml` package boundary with the console command `amcf`. The base package has no Python runtime dependencies; optional research packages are declared under the `research` extra. MP4 input/export still requires external FFmpeg/FFprobe tools. See `docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`.
+The maintained CLI also exposes `seeded-materializer`. This is the compact 4K
+source-seeded AMCF event-materializer profile: it retains the canonical event
+graph and masks, materializes every event through the component compositor, and
+validates event/frame hashes without requiring the original source MP4. Direct
+seed playback is forbidden. Because the 4K pixels are derived from the embedded
+compressed seed, `native_component_pixel_payload_present` is deliberately false;
+the strict native-pixel archive remains a separate authoritative profile.
+See `docs/AMCF_SOURCE_SEEDED_EVENT_MATERIALIZER.md` for the exact contract and
+the strict/native-versus-seeded distinction.
+
+The validated local checkpoint for this profile is 6,547,011 bytes, 2,592
+logical events, 288 reconstructed 3840x1920 frames, full coverage, event
+ablation rejection, and corrupted-seed rejection. The generated archive and
+review media remain local evidence rather than repository contents. Validate an
+existing archive with:
+
+```text
+amcf seeded-materializer --input-archive <archive.amcf.zip> --output <report-dir>
+```
+
+The Windows packaging now provides `packaging/build_amcf_release_bundle.ps1`,
+which builds both `amcf.exe` (CLI) and `amcf_gui.exe` (small workflow UI) into a
+ZIP. The GUI is a front end for software/virtual workflows, not physical-device
+validation.
+
+The CLI now has a `pyproject.toml` package boundary with the console command `amcf`. The base package has no Python runtime dependencies; optional research packages are declared under the `research` extra. MP4 input/export and the seeded materializer require external FFmpeg/FFprobe tools. See `docs/AMCF_CLI_DEPENDENCY_AND_PACKAGING_POLICY.md`.
 
 The optional deep runtime now has a reproducible bootstrap path. `amcf setup --check`
 reports Python modules, FFmpeg, pinned SAMURAI/SAM2 and CoTracker paths, and

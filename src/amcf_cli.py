@@ -14,6 +14,7 @@ from amcf_video_pipeline import decode_amcf_to_frames, decode_amcf_to_video, enc
 from amcf_digital_encoder import encode_source_frames
 from amcf_digital_validator import validate_amcf_archive
 from amcf_setup import run_setup
+from amcf_source_seeded_event_materializer import build_source_seeded_archive, validate_source_seeded_archive
 
 
 def _print_result(result: dict[str, Any]) -> int:
@@ -26,7 +27,7 @@ def cmd_status(_: argparse.Namespace) -> int:
         {
             "ok": True,
             "app": "AMCF public workflow CLI",
-            "commands": ["status", "encode", "component-archive", "decode", "print-plan", "setup"],
+            "commands": ["status", "encode", "component-archive", "decode", "seeded-materializer", "print-plan", "setup"],
             "hardware_validation_claimed": False,
             "physical_level_5_claimed": False,
             "manufactured_player_claimed": False,
@@ -107,6 +108,19 @@ def cmd_decode(args: argparse.Namespace) -> int:
     return _print_result(result)
 
 
+def cmd_seeded_materializer(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    output.mkdir(parents=True, exist_ok=True)
+    if args.profile_archive:
+        if not args.canonical_archive:
+            return _print_result({"ok": False, "error": "--canonical-archive is required with --profile-archive", "unsafe_acceptance_count": 1})
+        archive_path = output / "amcf_4k_source_seeded_event_materializer.amcf.zip"
+        result = build_source_seeded_archive(args.profile_archive, args.canonical_archive, archive_path, output)
+    else:
+        result = validate_source_seeded_archive(args.input_archive, output, render_video=args.render_video)
+    return _print_result(result)
+
+
 def cmd_print_plan(args: argparse.Namespace) -> int:
     result = generate_physical_carrier_from_amcf_archive(args.input, args.output)
     result["unsafe_acceptance_count"] = 0
@@ -181,6 +195,18 @@ def build_parser() -> argparse.ArgumentParser:
     decode.add_argument("--component-event", action="store_true")
     decode.add_argument("--video", action="store_true")
     decode.set_defaults(func=cmd_decode)
+
+    seeded = sub.add_parser(
+        "seeded-materializer",
+        help="Validate or build the compact source-seeded 4K AMCF event-materializer profile.",
+    )
+    seeded_source = seeded.add_mutually_exclusive_group(required=True)
+    seeded_source.add_argument("--input-archive", help="Existing source-seeded materializer archive to validate/decode.")
+    seeded_source.add_argument("--profile-archive", help="4K compressed-seed profile archive used to build a materializer archive.")
+    seeded.add_argument("--canonical-archive", help="Canonical low-resolution event/mask archive required with --profile-archive.")
+    seeded.add_argument("--output", required=True, help="Output directory for the report, archive, and optional review video.")
+    seeded.add_argument("--render-video", action="store_true", help="Render the materialized component-composited review MP4.")
+    seeded.set_defaults(func=cmd_seeded_materializer)
 
     print_plan = sub.add_parser("print-plan", help="Create a no-hardware physical carrier / print-plan package.")
     print_plan.add_argument("--input", required=True)
