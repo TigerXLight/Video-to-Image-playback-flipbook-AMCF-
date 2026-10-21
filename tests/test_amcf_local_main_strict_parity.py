@@ -20,8 +20,10 @@ from amcf_local_main_test02 import TRACK_ORDER, make_tracks  # noqa: E402
 class AmcfLocalMainStrictParityTests(unittest.TestCase):
     def test_default_paths_find_local_main(self) -> None:
         paths = default_paths(PACKAGE)
-        self.assertEqual(paths.local_main_root.name, "Main")
-        self.assertTrue(paths.local_main_root.exists())
+        if paths.local_main_root.exists():
+            self.assertEqual(paths.local_main_root.name, "Main")
+        else:
+            self.assertEqual(paths.local_main_root, PACKAGE / "Main")
 
     def test_inventory_classifies_local_main_files(self) -> None:
         rows = inventory_file_parity(default_paths(PACKAGE))
@@ -33,8 +35,12 @@ class AmcfLocalMainStrictParityTests(unittest.TestCase):
         self.assertEqual(by_name["test_archive_decode.py"]["classification"], "LOCAL_SCHEMA_CHECK_PORTED")
         self.assertTrue(by_name["amcf_test02.py"]["public_exists"])
         self.assertTrue(by_name["amcf_tracking_test03a.py"]["public_exists"])
-        self.assertTrue(by_name["amcf_vnext.py"]["exact_hash_match"])
-        self.assertTrue(by_name["amcf_virtual_hardware.py"]["exact_hash_match"])
+        if default_paths(PACKAGE).local_main_root.exists():
+            self.assertTrue(by_name["amcf_vnext.py"]["exact_hash_match"])
+            self.assertTrue(by_name["amcf_virtual_hardware.py"]["exact_hash_match"])
+        else:
+            self.assertFalse(by_name["amcf_vnext.py"]["local_exists"])
+            self.assertFalse(by_name["amcf_virtual_hardware.py"]["local_exists"])
 
     def test_static_parity_matrix_has_no_hardware_claims(self) -> None:
         rows = inventory_file_parity(default_paths(PACKAGE))

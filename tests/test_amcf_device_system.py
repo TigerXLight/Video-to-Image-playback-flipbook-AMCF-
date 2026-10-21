@@ -9,19 +9,37 @@ import sys
 
 PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE / "src"))
+sys.path.insert(0, str(PACKAGE / "demo"))
 
+from amcf_digital_encoder import encode_source_frames  # noqa: E402
 from amcf_carrier_renderer import render_carrier_package
 from amcf_device_system import OperationController, discover_devices, recover_reader_package, run_device_software_system
+from amcf_physical_carrier import generate_physical_carrier_from_amcf_archive  # noqa: E402
+from generate_sample_source_frames import generate_source_frames  # noqa: E402
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-CARRIER_ROOT = PROJECT_ROOT / "demo" / "output" / "amcf_to_physical_carrier"
 
 
 class AmcfDeviceSystemTests(unittest.TestCase):
+    @staticmethod
+    def _make_carrier(root: Path) -> Path:
+        source_root = root / "source_frames"
+        carrier_root = root / "carrier_package"
+        carrier_root.mkdir(parents=True, exist_ok=True)
+        archive = carrier_root / "sample_video_source.amcf.zip"
+        generate_source_frames(source_root)
+        encode_source_frames(source_root / "source_frames_manifest.json", archive)
+        result = generate_physical_carrier_from_amcf_archive(archive, carrier_root)
+        if not result.get("ok"):
+            raise AssertionError(result)
+        return carrier_root
+
     def test_complete_simulated_device_system(self) -> None:
         with tempfile.TemporaryDirectory(prefix="amcf-device-system-") as directory:
-            report = run_device_software_system(CARRIER_ROOT, Path(directory))
+            root = Path(directory)
+            carrier_root = self._make_carrier(root)
+            report = run_device_software_system(carrier_root, root / "run")
             self.assertTrue(report["ok"], report)
             self.assertTrue(report["action_paths"]["pc_to_printer"])
             self.assertTrue(report["action_paths"]["reader_to_pc"])
@@ -29,15 +47,16 @@ class AmcfDeviceSystemTests(unittest.TestCase):
             self.assertTrue(report["action_paths"]["reader_to_native_amcf_archive"])
             self.assertTrue(report["action_paths"]["pc_to_player"])
             self.assertTrue(report["native_payload_roundtrip"]["direct_amcf_decoding"])
-            self.assertTrue((Path(directory) / "carrier_render" / "amcf_carrier_sections.pdf").exists())
-            self.assertTrue((Path(directory) / "reader_recovery" / "recovered_amcf_physical_package.zip").exists())
-            self.assertTrue((Path(directory) / "native_payload" / "recovered_native_amcf.zip").exists())
+            self.assertTrue((root / "run" / "carrier_render" / "amcf_carrier_sections.pdf").exists())
+            self.assertTrue((root / "run" / "reader_recovery" / "recovered_amcf_physical_package.zip").exists())
+            self.assertTrue((root / "run" / "native_payload" / "recovered_native_amcf.zip").exists())
             self.assertEqual(report["unsafe_acceptance_count"], 0)
 
     def test_render_and_pixel_recovery_reject_missing_registration(self) -> None:
         with tempfile.TemporaryDirectory(prefix="amcf-reader-") as directory:
             root = Path(directory)
-            render = render_carrier_package(CARRIER_ROOT, root / "render")
+            carrier_root = self._make_carrier(root)
+            render = render_carrier_package(carrier_root, root / "render")
             self.assertTrue(render["ok"])
             first = root / "render" / "section_0000.png"
             from PIL import Image, ImageDraw
@@ -46,7 +65,7 @@ class AmcfDeviceSystemTests(unittest.TestCase):
             draw.rectangle((52, 52, 86, 86), fill=(255, 255, 255))
             image.save(first)
             recovery = recover_reader_package(
-                CARRIER_ROOT,
+                carrier_root,
                 render["render_manifest_path"],
                 root / "render",
                 root / "recovery",

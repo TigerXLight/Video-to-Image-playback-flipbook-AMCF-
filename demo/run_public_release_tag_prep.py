@@ -126,6 +126,8 @@ ALLOWED_TAG_PREP_DIRTY_PATHS = {
     "tests/test_amcf_universal_hardware_simulation.py",
     "tests/test_amcf_carrier_payload.py",
     "tests/test_amcf_device_system.py",
+    "tests/test_amcf_local_main_strict_parity.py",
+    "tests/test_amcf_local_tests_progression_integration_ledger.py",
     "tests/test_amcf_setup.py",
     "tests/test_public_release_tag_prep.py",
 }

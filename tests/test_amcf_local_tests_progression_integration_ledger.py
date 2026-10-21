@@ -18,6 +18,7 @@ from amcf_local_tests_progression_integration_ledger import (  # noqa: E402
     summary_parts_found,
     write_progression_integration_outputs,
 )
+from amcf_local_main_strict_parity import default_paths  # noqa: E402
 
 
 class LocalTestsProgressionIntegrationLedgerTests(unittest.TestCase):
@@ -48,17 +49,24 @@ class LocalTestsProgressionIntegrationLedgerTests(unittest.TestCase):
             REPO_ROOT.parents[4],
             REPO_ROOT,
         )
-        self.assertTrue(comparison["available"])
-        self.assertEqual(comparison["local_python_files"], comparison["public_python_files"])
-        self.assertIn("decode/decode_pipeline.py", comparison["differing_python_files"])
-        self.assertIn("decode/decode_pipeline.py", comparison["public_safe_diffs"])
+        if comparison["available"]:
+            self.assertEqual(comparison["local_python_files"], comparison["public_python_files"])
+            self.assertIn("decode/decode_pipeline.py", comparison["differing_python_files"])
+            self.assertIn("decode/decode_pipeline.py", comparison["public_safe_diffs"])
+        else:
+            self.assertEqual(comparison["local_python_files"], 0)
+            self.assertEqual(comparison["public_python_files"], 0)
 
     def test_main_exact_mapping_records_exact_and_adapted_files(self) -> None:
         rows = compare_main_exact_mappings(REPO_ROOT.parents[4], REPO_ROOT)
         by_public = {row["public"]: row for row in rows}
-        self.assertTrue(by_public["src/amcf_local_main_test02.py"]["hash_match"])
-        self.assertTrue(by_public["src/amcf_vnext.py"]["hash_match"])
-        self.assertFalse(by_public["src/amcf_local_main_tracking_test03a.py"]["hash_match"])
+        workspace_main = default_paths(REPO_ROOT).local_main_root
+        if workspace_main.exists():
+            self.assertTrue(by_public["src/amcf_local_main_test02.py"]["hash_match"])
+            self.assertTrue(by_public["src/amcf_vnext.py"]["hash_match"])
+            self.assertFalse(by_public["src/amcf_local_main_tracking_test03a.py"]["hash_match"])
+        else:
+            self.assertTrue(all(not row["local_present"] for row in rows))
 
     def test_writes_generated_outputs_under_output(self) -> None:
         report = build_progression_integration_ledger(REPO_ROOT)
