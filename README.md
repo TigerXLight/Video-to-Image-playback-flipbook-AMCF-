@@ -1,16 +1,76 @@
-# AMCF GitHub Clean Package
+# Adaptive Multi-Rate Component Flipbook (AMCF)
 
-AMCF is a software-first runtime and validation path for indexed component playback. Digital AMCF is the canonical AMCF representation, scheduler, and validation model. Physical AMCF is the material embodiment of the same AMCF timing/update structure. This clean package focuses on the reusable AMCF core plus virtual hardware support for future physical reader and physical player integrations.
+AMCF is a digital video-to-image/component playback system. It converts a
+normal video into a synchronized collection of visual components and timed
+component events, then composites those events back into the moving scene.
 
-## What is included
+The idea is similar to a flipbook, but the whole scene does not have to be
+replaced on every page. A background, tree trunk, branch, leaf group, waterfall,
+foam, shadow, or reflection can keep its current state until its own next
+update is needed. Each component can therefore have its own update timing while
+the compositor still presents complete scenes at the source timing.
 
-- AMCF v-next runtime source in `src/amcf_vnext.py`.
-- Virtual cartridge, virtual reader, virtual scan-gate lane validation, player handoff state, and playback device abstraction in `src/amcf_virtual_hardware.py`.
-- Sample virtual cartridge and player UI state JSON in `examples/`.
-- Static AMCF Player UI state viewer stub in `viewer/`.
-- Release demo and standard-library tests in `demo/` and `tests/`.
-- Documentation for software-first hardware support, mechanical/optical physical-player boundaries, optional future deep-tool adapters, and claim boundaries.
-- A universal physical software layer for carrier rendering, printer jobs, scan recovery, device discovery/calibration, and player control in `src/amcf_device_system.py`.
+In simple form:
+
+```text
+source video
+    -> AMCF component/event archive
+    -> synchronized AMCF image-motion playback
+    -> optional decoded normal video
+```
+
+AMCF is not just a video wrapper. Its important data is the component/event
+structure: component identity, masks, positions, timestamps, ordering, visual
+layering, and the exact visual information needed to reconstruct each state.
+The digital process is the core AMCF system; a future physical carrier or
+player would carry, read, or present that same AMCF sequence.
+
+## What this repository provides
+
+- Source-to-AMCF and AMCF-to-video workflows.
+- Native component-event archives with direct source-independent decoding.
+- A smaller source-seeded 4K materializer profile for compact display tests.
+- Component scheduling, masks, transforms, layering, audio handling, and
+  decoded-frame validation.
+- Zone-motion, heat, proxy/crop, semantic, comparison, and archive diagnostics.
+- CLI, Windows GUI, virtual hardware, printable-carrier, reader, and player
+  software layers.
+- Tests, demos, documentation, dependency setup, and release packaging.
+
+## Download and start here
+
+For Windows, open the repository's **Releases** page and download the latest
+`AMCF_Windows_Bundle.zip` asset. Extract it and either:
+
+1. Run `INSTALL_AMCF.cmd` for per-user installation.
+2. Run `RUN_AMCF_GUI.cmd` for the guided workflow window.
+3. Run `amcf.exe --help` for the command-line interface.
+
+The repository itself contains the source, tests, demos, documentation, and
+build scripts. The Windows ZIP is a release artifact and is not committed to
+normal Git history. Start with `QUICKSTART.md`, then use `docs/` for the full
+AMCF, diagnostic, dependency, and physical-software contracts.
+
+The base workflow is software-only and does not require a printer, scanner,
+physical reader, or physical player. Optional device providers and deep
+semantic runtimes are enabled explicitly when their dependencies and licences
+are available.
+
+## Repository map
+
+- `src/` - AMCF runtime, archive, compositor, diagnostics, CLI, and device code.
+- `demo/` - runnable demonstrations and acceptance workflows.
+- `tests/` - regression and contract tests.
+- `docs/` - project definitions, progression coverage, claim boundaries, and
+  physical/software layer dossiers.
+- `packaging/` - Windows GUI/CLI build and installer scripts.
+- `profiles/` - example device and runtime profiles.
+- `site/` - the optional GitHub Pages documentation site.
+
+Before reusing code or third-party material, read `LICENSE_MAP.md`,
+`DEPENDENCIES_AND_PROVENANCE.md`, and `THIRD_PARTY_NOTICES.md`. This is a
+mixed-licence source-available research repository; one licence does not
+automatically apply to every path.
 
 ## Software-first hardware support
 
@@ -138,6 +198,11 @@ providers. The built-in software profile is safe by default; hardware profiles
 require both `hardware_requested: true` and the explicit `--enable-hardware`
 flag. See `docs/AMCF_DEVICE_PROFILE_LAYER.md` and
 `profiles/amcf_device_profiles.example.json`.
+
+Run `device-discover --output <path.json>` on the interactive Windows host to
+identify installed printer/scanner models before choosing a hardware profile.
+The onboarding sequence, driver/binding distinction, and real-I/O claim
+boundary are documented in `docs/AMCF_REAL_HARDWARE_ONBOARDING.md`.
 
 The `device-conformance` command combines the older fixture/adapter behavior
 with the current provider, profile, and software-control behavior in one
